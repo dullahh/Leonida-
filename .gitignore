@@ -38,6 +38,13 @@ htmlcov/
 *.m4v
 *.wav
 *.mp3
+# Include supplied videos; keep other local media and derived assets ignored.
+!data/recordings/inbox/*.mp4
+!data/recordings/inbox/*.mkv
+!data/recordings/inbox/*.mov
+!data/recordings/inbox/*.webm
+!data/recordings/inbox/*.avi
+!data/recordings/inbox/*.m4v
 *.onnx
 *.safetensors
 *.pt

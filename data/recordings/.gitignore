@@ -1,2 +1,8 @@
 inbox/*
+!inbox/*.mp4
+!inbox/*.mkv
+!inbox/*.mov
+!inbox/*.webm
+!inbox/*.avi
+!inbox/*.m4v
 !inbox/.gitkeep
