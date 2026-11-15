@@ -126,3 +126,12 @@ One-thread release from74d6949; no agents, analytical changes, providers, prepro
 ## Quote/abstention release clarity - 15 November 2026
 
 From87c34a2, separate display-only fix: a valid current synthetic quote supplies its own Yes midpoint even when ModelEstimate is absent. Existing classification, evidence gates, coefficients, execution and scenarios are unchanged. Precise missing-value labels and historical venue receipt/source provenance are visible. Audited running default: polling off,8 cached_stale markets from bundled2026-11-14 capture; documented existing optional live poller without fetching live data. Focused browser/display checks and full release checks pass (15 G3,11 G4, six fixture smoke). Source/model/candidate separation retained. Commit: Clarify quote and abstention states; stop after fix.
+
+
+## Institutional terminal UI - 15 November 2026
+
+The explicit one-thread frontend-only request supersedes project worker delegation for this task. Retain README-only successor 2935a2e while using 1baadb2 as the application baseline. Use the cached Playwright MCP server through localhost HTTP because this session did not expose native browser MCP bindings; the bridge and QA artifacts are ignored local files, not project dependencies.
+
+Use a neutral near-black terminal, semantic quote/evidence/active/risk colors, native system fonts and tabular values. Put sources first on desktop with a persistent market/model rail; put replay and market state before an active-source selector on narrow screens. Relocate existing reaction telemetry beneath sources without changing its scoring, bins or inclusion logic. Keep raw extraction, supported claims, model outputs and simulated fills visibly distinct. Preserve existing exact semantic values/tests while adding an explicit combined abstention summary.
+
+Use the native dialog lifecycle for accessible focus containment and Escape, but present receipts/traces as edge-aligned inspectors. Preserve table columns inside named focusable scroll regions on narrow screens. Reuse quoteReference and backend projection values; no analytical or transport behavior changes. Historical venue captures remain separate/stale; optional live labels are preserved without enabling network polling. UI_DIRECTION.md records audit, tokens, layout, evidence and limitations.

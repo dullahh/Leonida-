@@ -112,3 +112,14 @@ Run `python scripts/manage.py demo` then open http://127.0.0.1:8000. It selects 
 Real Twitch overlay accuracy and2-6real-source load need supplied footage. English lexical semantics are conservative/unvalidated; automatic diarization, scene recognition and native live chat/AV are absent. Only narrative has a configured estimate route. Long recordings need excerpts and may need pagination/efficient incremental projection. Original browser codec support varies; H.264/AAC was verified.
 
 Paper components and atomic persistence work, but automatic broker scheduling, detailed orders/fills/positions projection and execution tape remain G3. Media must remain candidate-only until an explicitly authorized later integration. No actual venue fee/depth or calibrated prediction claim. Formal tester-owned tests remain G4. No Git repository/commit was initialized.
+
+
+## Frontend terminal redesign - 15 November 2026
+
+User scope: one thread, Playwright MCP, frontend and design documentation only, starting with application baseline 1baadb2. HEAD 2935a2e added README only and is retained. No workers, backend/contract/calculation changes, media processing, external runtime dependencies or live venue fetches.
+
+Implemented neutral terminal surfaces, compact command/replay/scenario chrome, three-column synchronized source workspace, sticky market/model rail, source-aligned reaction/claim timeline, evidence tape, paper blotter and right-edge receipt inspectors. Below 700px the market summary precedes an active-source selector; tables scroll within labelled keyboard-focusable regions. Valid synthetic quote midpoint remains visible during model abstention. Existing semantic IDs/value assertions pass.
+
+Verification: G3 15 tests plus contract/type/scenario/build checks; final G4/release 11 tests; all six release scenario smoke checks; frontend build and diff whitespace check passed. Playwright MCP inspected both modes before/after, five decoded videos, Courtroom three supported claims, partial fill/trace/receipt, venue rules/eight historical quotes, stale outage cancellation, source/search controls, drawer focus and Escape. Widths 390/700/768/1024/1440 have no page overflow; final browser errors/external resource requests zero. Existing G4 Windows socket/resource/shutdown warnings remain. See UI_DIRECTION.md and local artifacts in var/ui-redesign.
+
+Isolated recordings/portable QA used ports 8002/8003 and separate var/ui-*.sqlite3 databases. Existing user server on 8000 was not mutated. No publication or push. Stop after the frontend redesign.
