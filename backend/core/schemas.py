@@ -683,3 +683,103 @@ class CommandResult(Contract):
     run_id: ID
     previous_run_id: ID | None = None
     duplicate_observation: bool = False
+
+
+class TwitchGameContext(Contract):
+    status: Literal["live", "offline", "unavailable", "user_provided"]
+    channel_login: ID | None = None
+    game_id: ID | None = None
+    game_name: str | None = None
+    source: Literal["twitch_helix", "manual"] = "twitch_helix"
+    observed_at: AwareDatetime
+    reason: str | None = None
+
+
+class LiveAudioSentimentSignal(Contract):
+    """Live speech interpretation, separate from recorded proxy claims and pricing."""
+    schema_version: Literal["1"] = "1"
+    signal_id: ID
+    source_window_id: ID
+    stream_id: ID
+    evidence_mode: Literal["live"] = "live"
+    start_seconds: Nonnegative
+    end_seconds: Nonnegative
+    event_start_at: AwareDatetime
+    event_end_at: AwareDatetime
+    text: Annotated[str, Field(min_length=1, max_length=2000)]
+    aspect: Aspect
+    target: Target
+    sentiment: Score | None
+    abstention_reason: str | None = None
+    semantic_confidence: Probability | None = None
+    classifier_name: ID
+    classifier_version: ID
+    speaker_role: Literal["unknown", "streamer"] = "unknown"
+    status: Literal["candidate", "abstain"]
+
+    @model_validator(mode="after")
+    def signal_state(self):
+        if self.end_seconds <= self.start_seconds or self.event_end_at <= self.event_start_at:
+            raise ValueError("live sentiment signal interval must have positive duration")
+        if self.sentiment is None and not self.abstention_reason:
+            raise ValueError("null live sentiment requires an abstention reason")
+        if (self.sentiment is None) != (self.status == "abstain"):
+            raise ValueError("live sentiment status must match sentiment availability")
+        if self.sentiment is not None and self.speaker_role != "streamer":
+            raise ValueError("only explicitly attributed streamer speech can carry sentiment")
+        return self
+
+
+class LiveMarketCandidate(Contract):
+    market_id: ID
+    ticker: ID
+    event_ticker: ID
+    series_ticker: ID
+    category: Literal["video_games", "esports"]
+    event_title: ID
+    market_title: ID
+    outcome_name: ID
+    matched_game_name: ID
+    match_method: Literal["game-yes-outcome-exact-v1"]
+    match_rationale: ID
+    market_status: ID
+    market_is_open: bool = True
+    rules_primary: str | None = None
+    rules_secondary: str | None = None
+    yes_bid: Price | None = None
+    yes_ask: Price | None = None
+    no_bid: Price | None = None
+    no_ask: Price | None = None
+    yes_bid_size: Nonnegative | None = None
+    yes_ask_size: Nonnegative | None = None
+    no_bid_size: Nonnegative | None = None
+    no_ask_size: Nonnegative | None = None
+    quote_mode: Literal["live", "cached_stale"]
+    is_stale: bool
+    captured_at: AwareDatetime
+    source_ref: ID
+    missing_reasons: dict[str, str] = Field(default_factory=dict)
+
+
+class LiveDecisionReview(Contract):
+    """Explicit live-route abstention; distinct from proxy estimates and paper orders."""
+    review_id: ID
+    market_id: ID
+    status: Literal["abstain"] = "abstain"
+    model_version: ID = "live-outcome-router-v1"
+    calibration_status: Literal["not_estimated"] = "not_estimated"
+    execution_mode: Literal["paper"] = "paper"
+    reasons: list[ID]
+
+
+class LiveMarketContext(Contract):
+    schema_version: Literal["1"] = "1"
+    discovery_id: ID
+    observed_at: AwareDatetime
+    discovery_status: Literal["matched", "stream_offline", "twitch_unavailable", "no_game_category", "no_matching_markets", "kalshi_unavailable"]
+    twitch: TwitchGameContext
+    game_source: Literal["twitch_helix", "manual"] = "twitch_helix"
+    market_source: Literal["kalshi_public_api"] = "kalshi_public_api"
+    market_error: str | None = None
+    candidates: list[LiveMarketCandidate] = Field(default_factory=list)
+    decision_reviews: list[LiveDecisionReview] = Field(default_factory=list)

@@ -4,7 +4,7 @@ from __future__ import annotations
 from dataclasses import dataclass
 from functools import lru_cache
 import re
-from typing import Protocol
+from typing import Any, Mapping, Protocol
 
 from backend.core.identity import stable_id
 from backend.core.schemas import EvidenceClaim, SourceWindow
@@ -145,3 +145,69 @@ def extract(window: SourceWindow) -> list[EvidenceClaim]:
         extractor_version=observation.extractor_version,
         dependency_group=observation.dependency_group,
     )]
+
+
+def classify_live_audio_segments(window: Mapping[str, Any], *, speaker_role: str = "unknown") -> list[dict[str, Any]]:
+    """Turn accepted live ASR segments into auditable sentiment signals.
+
+    This is the live-audio counterpart to ``extract(SourceWindow)``. Live
+    transcript observations have their own provenance and cannot be represented
+    as the frozen GTA V proxy ``EvidenceClaim`` contract. Only accepted ASR
+    segments are eligible. Unless a user explicitly confirms streamer speech,
+    every interpretation is an abstention with the existing speech-attribution
+    reason; source-channel identity alone is not speaker attribution.
+
+    Returned records match the root-owned ``LiveAudioSentimentSignal`` v1
+    contract. They are not market estimates, features, or paper decisions.
+    """
+    if speaker_role not in {"unknown", "streamer"}:
+        raise ValueError("speaker_role must be 'unknown' or explicitly confirmed 'streamer'")
+    if window.get("evidence_mode") != "live":
+        raise ValueError("live sentiment extraction requires evidence_mode='live'")
+    source_window_id = window.get("source_window_id")
+    stream_id = window.get("stream_id")
+    if not isinstance(source_window_id, str) or not source_window_id or not isinstance(stream_id, str) or not stream_id:
+        raise ValueError("live transcript provenance requires source_window_id and stream_id")
+    if window.get("status") != "transcribed":
+        return []
+    segments = window.get("accepted_segments")
+    if not isinstance(segments, (list, tuple)):
+        raise ValueError("accepted live transcript segments must be a list")
+
+    signals: list[dict[str, Any]] = []
+    for ordinal, segment in enumerate(segments):
+        if not isinstance(segment, Mapping) or segment.get("asr_status") != "accepted":
+            continue
+        raw_text = segment.get("text")
+        if not isinstance(raw_text, str) or not raw_text.strip():
+            continue
+        # Match the existing recorded-speech path's bounded classifier input.
+        quote = raw_text[:240].strip()
+        result = interpret(quote, modality="speech", speaker_role=speaker_role)
+        segment_index = segment.get("segment_index", ordinal)
+        signal_id = stable_id(
+            "live-audio-sentiment-v1", source_window_id, segment_index, quote,
+            speaker_role, result.classifier_name, result.classifier_version,
+        )
+        signals.append({
+            "schema_version": "1",
+            "signal_id": signal_id,
+            "source_window_id": source_window_id,
+            "stream_id": stream_id,
+            "evidence_mode": "live",
+            "start_seconds": segment.get("start_seconds"),
+            "end_seconds": segment.get("end_seconds"),
+            "event_start_at": segment.get("event_start_at"),
+            "event_end_at": segment.get("event_end_at"),
+            "text": quote,
+            "aspect": result.aspect,
+            "target": result.target,
+            "sentiment": result.sentiment,
+            "abstention_reason": result.abstention_reason,
+            "semantic_confidence": result.confidence,
+            "classifier_name": result.classifier_name,
+            "classifier_version": result.classifier_version,
+            "speaker_role": speaker_role,
+            "status": "candidate" if result.sentiment is not None else "abstain",
+        })
+    return signals

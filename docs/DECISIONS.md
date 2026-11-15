@@ -49,6 +49,7 @@ Updated 14 November 2026 after planning reviews and the subsequent user-authoriz
 | D36 | G1 ships a narrow schema-2 interface and root-owned HTML state viewer. | Full multi-stream grouping/scheduler/broker/React design remains future work; exact implemented seams are in G1_HANDOFF. |
 | D37 | Cache identity includes original fixture bytes and complete manifest/config versions; corrupt cache fails closed. | Offset/ROI/version changes cannot reuse old evidence silently; no provider runs during replay. Real asset hashing/OCR still needs media. |
 | D38 | Optional Twitch demo embeds the official player and sends only user-authorized tab audio to local Whisper in bounded chunks. | Avoids server-side stream extraction/API credentials. Live transcripts stay outside the GTA V proxy ledger and never affect estimates or paper state. |
+| D39 | Live channel metadata discovers exact named Yes outcomes from Kalshi Video Games and Esports series; matching is candidate discovery only. | Twitch's declared game is not itself quality evidence. Preserve actual venue IDs/rules/quotes; no fuzzy ticker invention, transcript-derived estimate or paper route. |
 
 The wire example's p=.097 uses its own illustrative model. Current config on its features yields p≈.124078 and No net EV≈.005922 with the example fee, below .03. Do not copy .097 into the configured estimator or weaken gates to force a demo fill. G2 needs coherent explicit eligible/blocked quote timelines.
 
@@ -176,3 +177,42 @@ pointer and running desk stay unchanged. Reports/commands: LOCAL_ASR_UPGRADE.md 
 ASR_COMPARISON.md. G3 22 tests, G4 11 tests and six-fixture release smoke passed;
 existing Windows socket/shutdown warnings remain. Commit separately as
 `Upgrade local speech transcription` and stop without deployment/push.
+
+## Manual live game lookup and decision abstention - 15 November 2026
+
+The optional Twitch demo accepts a manual game name so market discovery can run
+without Twitch OAuth credentials. When supplied, it overrides Twitch's category
+and is labeled manual. Each exact market candidate receives a separate
+`LiveDecisionReview` that explicitly abstains: game matching and raw Whisper
+transcripts do not establish an outcome probability. Do not route these reviews
+into the schema-2 GTA V proxy estimate or paper broker. This path emits no
+probability, side, order, or fill. A later live estimator needs supported and
+attributed evidence, outcome-specific relevance, a versioned model and actual
+quote/depth/fee rules.
+
+## Live audio sentiment candidates - 15 November 2026
+
+Connect accepted live Whisper segments to the existing conservative lexical
+speech classifier through a separate schema-1 `LiveAudioSentimentSignal` DTO.
+Do not coerce these live records into schema-2 recorded/synthetic GTA V proxy
+claims. Unknown speaker is the default and abstains; a user can explicitly
+confirm that captured speech is the streamer before candidate sentiment is
+emitted. Surface raw quote, source time, classifier/version, and abstention or
+heuristic sentiment in the live panel. These signals do not yet enter rolling
+features, estimates, or paper decisions; no audio is persisted beyond the
+existing transient conversion step.
+
+## Kalshi game-outcome discovery scope - 15 November 2026
+
+Match game names against actual open market `yes_sub_title` outcome labels,
+not just market titles. First select likely series from Kalshi's series metadata
+(series naming the game or generic Game Awards series), then inspect each
+series' open events with nested markets. Do not gate the series list on assumed
+website/API category equivalence; primary category labels can differ from the
+site's Video Games label. This retains contender markets such as Big Walk in
+the KXGAMEAWARDS event family while avoiding an all-series event crawl.
+Share the full series catalog for 30 minutes and each selected series' open
+events for 30 seconds across game lookups. Serialize all Kalshi reads at least
+500 ms apart and honor `Retry-After` in one host-wide cooldown after 429s. Any
+market quote older than ten seconds retains its source capture time and is
+marked stale, including data served from the shared cache.

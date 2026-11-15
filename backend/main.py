@@ -6,15 +6,18 @@ import os
 import re
 from threading import Lock
 from contextlib import asynccontextmanager
+from decimal import Decimal
 from pathlib import Path
+import httpx
 
 from fastapi import FastAPI, HTTPException, Request, WebSocket, WebSocketDisconnect
 from fastapi.responses import FileResponse
 
-from backend.core.config import ROOT
+from backend.core.config import ROOT, read_config
 from backend.core.projector import StateProjector
 from backend.core.runtime import Runtime
-from backend.core.schemas import CommandResult, CreateRunRequest, EvidenceCache, ExecutionTrace, Receipt, RunCommand, ScenarioRequest, StreamEnvelope
+from backend.core.schemas import CommandResult, CreateRunRequest, EvidenceCache, ExecutionTrace, LiveAudioSentimentSignal, LiveDecisionReview, LiveMarketCandidate, LiveMarketContext, Receipt, RunCommand, ScenarioRequest, StreamEnvelope, TwitchGameContext
+from backend.core.identity import stable_id
 
 
 def create_app(db_path: Path | None = None, cache_dir: Path | None = None, live_quotes: bool = False, evidence_cache_path: Path | None = None, scenario: str = "foundation") -> FastAPI:
@@ -24,15 +27,23 @@ def create_app(db_path: Path | None = None, cache_dir: Path | None = None, live_
         app.state.runtime = runtime
         app.state.projector = StateProjector(runtime)
         from backend.ingestion.live_audio import LiveAudioTranscriber
-        from backend.core.config import read_config
         model_name = read_config("local_asr.json").get("default_model", "small.en")
         app.state.live_audio_transcriber = LiveAudioTranscriber(ROOT / "var" / "models" / f"faster-whisper-{model_name}")
         app.state.live_audio_lock = Lock()
+        import httpx
+        from backend.ingestion.twitch import TwitchHelixClient
+        app.state.market_discovery_http = httpx.AsyncClient(timeout=10, limits=httpx.Limits(max_connections=12))
+        app.state.twitch_helix = TwitchHelixClient(
+            app.state.market_discovery_http,
+            client_id=os.environ.get("TWITCH_CLIENT_ID"),
+            client_secret=os.environ.get("TWITCH_CLIENT_SECRET"),
+        )
         try:
             await runtime.start()
             yield
         finally:
             await runtime.close()
+            await app.state.market_discovery_http.aclose()
 
     app = FastAPI(title="Leonida Alpha proxy desk", version="0.3.0", lifespan=lifespan)
 
@@ -140,6 +151,9 @@ def create_app(db_path: Path | None = None, cache_dir: Path | None = None, live_
         channel = request.headers.get("x-leonida-source", "").strip().lower()
         if not re.fullmatch(r"[a-z0-9_]{1,25}", channel):
             raise HTTPException(422, "A valid Twitch channel login is required")
+        speaker_role = request.headers.get("x-leonida-speaker-role", "unknown").strip().lower()
+        if speaker_role not in {"unknown", "streamer"}:
+            raise HTTPException(422, "Speaker role must be unknown or explicitly confirmed as streamer")
         raw_started_at = request.headers.get("x-leonida-started-at", "")
         try:
             event_at = datetime.fromisoformat(raw_started_at.replace("Z", "+00:00"))
@@ -179,9 +193,143 @@ def create_app(db_path: Path | None = None, cache_dir: Path | None = None, live_
                     available_at=datetime.now(timezone.utc), language="en",
                 ).as_dict()
         try:
-            return await asyncio.to_thread(transcribe)
+            result = await asyncio.to_thread(transcribe)
         except ValueError as error:
             raise HTTPException(422, str(error)) from error
+        from backend.ingestion.live_audio import extract_live_sentiment_signals
+        signals = extract_live_sentiment_signals(result, speaker_role=speaker_role)
+        result["sentiment_signals"] = [
+            LiveAudioSentimentSignal.model_validate(signal).model_dump(mode="json")
+            for signal in signals
+        ]
+        return result
+
+    @app.get("/api/live-market-context", response_model=LiveMarketContext)
+    async def live_market_context(request: Request, channel: str | None = None, game_name: str | None = None):
+        """Resolve an optional manual game name or Twitch category to actual Kalshi outcomes."""
+        channel = (channel or "").strip().lstrip("@").lower()
+        game_name = (game_name or "").strip()
+        if channel and not re.fullmatch(r"[a-z0-9_]{1,25}", channel):
+            raise HTTPException(422, "Twitch channel login must be 1–25 letters, numbers, or underscores")
+        if len(game_name) > 120:
+            raise HTTPException(422, "Manual game name must be at most 120 characters")
+        if not channel and not game_name:
+            raise HTTPException(422, "Provide a Twitch channel or a manual game name")
+        client_host = request.client.host if request.client else ""
+        try:
+            if not ipaddress.ip_address(client_host.split("%", 1)[0]).is_loopback:
+                raise HTTPException(403, "Live market discovery is available only through the local demo server")
+        except ValueError:
+            raise HTTPException(403, "Live market discovery is available only through the local demo server")
+        origin = request.headers.get("origin")
+        host = request.headers.get("host", "")
+        if origin and origin not in {f"http://{host}", f"https://{host}"}:
+            raise HTTPException(403, "Cross-origin live market discovery is not allowed")
+
+        if game_name:
+            twitch = TwitchGameContext(
+                status="user_provided", channel_login=channel or None, game_name=game_name,
+                game_id=None, source="manual", observed_at=datetime.now(timezone.utc),
+                reason="Game name entered manually for demo market discovery; no Twitch category was asserted.",
+            )
+        else:
+            twitch_result = await app.state.twitch_helix.get_live_stream(channel)
+            twitch = TwitchGameContext.model_validate(twitch_result.as_dict())
+        now = datetime.now(timezone.utc)
+        candidates: list[LiveMarketCandidate] = []
+        market_errors: list[str] = []
+        if twitch.status == "unavailable":
+            discovery_status = "twitch_unavailable"
+        elif twitch.status == "offline":
+            discovery_status = "stream_offline"
+        elif not twitch.game_name or (twitch.source != "manual" and not twitch.game_id):
+            discovery_status = "no_game_category"
+        else:
+            from backend.core.market import fetch_live_game_outcome_candidates
+            try:
+                raw_matches, market_errors = await fetch_live_game_outcome_candidates(
+                    app.state.market_discovery_http, read_config("market_registry.json"), twitch.game_name)
+                for raw in raw_matches:
+                    event = raw.get("event") if isinstance(raw.get("event"), dict) else {}
+                    tick = raw.get("ticker") or raw.get("market_ticker")
+                    event_ticker = raw.get("event_ticker") or event.get("event_ticker")
+                    series_ticker = raw.get("series_ticker") or (raw.get("series_metadata") or {}).get("ticker")
+                    if not isinstance(tick, str) or not tick or not isinstance(event_ticker, str) or not event_ticker or not isinstance(series_ticker, str) or not series_ticker:
+                        continue
+                    categories = raw.get("_discovery_categories", [])
+                    category = "esports" if "esports" in categories else "video_games"
+                    prices, missing = {}, {}
+                    sizes = {}
+                    for side in ("yes_bid", "yes_ask", "no_bid", "no_ask"):
+                        dollar_value = raw.get(side + "_dollars")
+                        legacy_value = raw.get(side)
+                        if dollar_value is not None:
+                            prices[side] = Decimal(str(dollar_value))
+                        elif legacy_value is not None:
+                            prices[side] = Decimal(str(legacy_value)) / Decimal(100)
+                        else:
+                            prices[side] = None
+                            missing[side] = "Not returned by Kalshi; no quote inferred"
+                        size_value = raw.get(side + "_size_fp")
+                        sizes[side + "_size"] = Decimal(str(size_value)) if size_value is not None else None
+                        if size_value is None:
+                            missing[side + "_size"] = "Not returned by Kalshi; no depth inferred"
+                    source_ref = raw.get("source_ref") or "Kalshi Get Events response"
+                    raw_captured_at = raw.get("_captured_at")
+                    try:
+                        captured_at = datetime.fromisoformat(str(raw_captured_at).replace("Z", "+00:00"))
+                        if captured_at.tzinfo is None or captured_at.utcoffset() is None:
+                            raise ValueError("captured_at is not timezone-aware")
+                    except ValueError:
+                        # Keep freshness visibly unavailable instead of stamping
+                        # a cached venue quote with this lookup's current time.
+                        captured_at = now
+                        missing["quote_freshness"] = "Original market capture time unavailable; quote treated as stale"
+                    quote_is_stale = (now - captured_at).total_seconds() > 10 or "quote_freshness" in missing
+                    candidates.append(LiveMarketCandidate(
+                        market_id=f"kalshi:{tick}", ticker=tick,
+                        event_ticker=event_ticker, series_ticker=series_ticker, category=category,
+                        event_title=str(event.get("title") or raw.get("event_title") or raw.get("title") or tick),
+                        market_title=str(raw.get("title") or raw.get("subtitle") or tick),
+                        outcome_name=str(raw.get("matched_yes_outcome") or raw.get("yes_sub_title") or ""),
+                        matched_game_name=str(raw.get("matched_game_name") or twitch.game_name),
+                        match_method=raw.get("match_method"),
+                        match_rationale=str(raw.get("match_rationale") or "Exact normalized Twitch game to Kalshi Yes outcome."),
+                        market_status=str(raw.get("status") or "unknown"), market_is_open=bool(raw.get("market_is_open")),
+                        rules_primary=raw.get("rules_primary"), rules_secondary=raw.get("rules_secondary"),
+                        quote_mode="cached_stale" if quote_is_stale else "live", is_stale=quote_is_stale,
+                        captured_at=captured_at,
+                        source_ref=str(source_ref), missing_reasons=missing, **prices, **sizes,
+                    ))
+                if candidates:
+                    discovery_status = "matched"
+                elif market_errors:
+                    discovery_status = "kalshi_unavailable"
+                else:
+                    discovery_status = "no_matching_markets"
+            except (httpx.HTTPError, ValueError, KeyError, TypeError) as error:
+                market_errors.append(f"Kalshi discovery failed: {type(error).__name__}: {str(error)[:200]}")
+                discovery_status = "kalshi_unavailable"
+
+        decision_reviews = [LiveDecisionReview(
+            review_id=stable_id("live-decision-review-v1", twitch.source, twitch.channel_login,
+                                twitch.game_name, candidate.ticker),
+            market_id=candidate.market_id,
+            reasons=[
+                "Abstained: an exact game-name match identifies a candidate market, not its settlement probability.",
+                "No outcome-specific live model or validated transcript-to-settlement mapping is configured.",
+                "Live Whisper chunks are not yet linked to supported, attributable features for this market.",
+                "Paper-only review: no order was created.",
+            ],
+        ) for candidate in candidates]
+        return LiveMarketContext(
+            discovery_id=stable_id("live-market-context", twitch.channel_login, twitch.game_id,
+                                   twitch.game_name, now.isoformat(), [item.ticker for item in candidates]),
+            observed_at=now, discovery_status=discovery_status, twitch=twitch,
+            game_source=twitch.source,
+            market_error="; ".join(market_errors[:4]) or None, candidates=candidates,
+            decision_reviews=decision_reviews,
+        )
 
     @app.get("/api/markets")
     async def markets(run_id: str | None = None):

@@ -1,0 +1,491 @@
+{
+  "$defs": {
+    "LiveDecisionReview": {
+      "additionalProperties": false,
+      "description": "Explicit live-route abstention; distinct from proxy estimates and paper orders.",
+      "properties": {
+        "review_id": {
+          "maxLength": 240,
+          "minLength": 1,
+          "title": "Review Id",
+          "type": "string"
+        },
+        "market_id": {
+          "maxLength": 240,
+          "minLength": 1,
+          "title": "Market Id",
+          "type": "string"
+        },
+        "status": {
+          "const": "abstain",
+          "default": "abstain",
+          "title": "Status",
+          "type": "string"
+        },
+        "model_version": {
+          "default": "live-outcome-router-v1",
+          "maxLength": 240,
+          "minLength": 1,
+          "title": "Model Version",
+          "type": "string"
+        },
+        "calibration_status": {
+          "const": "not_estimated",
+          "default": "not_estimated",
+          "title": "Calibration Status",
+          "type": "string"
+        },
+        "execution_mode": {
+          "const": "paper",
+          "default": "paper",
+          "title": "Execution Mode",
+          "type": "string"
+        },
+        "reasons": {
+          "items": {
+            "maxLength": 240,
+            "minLength": 1,
+            "type": "string"
+          },
+          "title": "Reasons",
+          "type": "array"
+        }
+      },
+      "required": [
+        "review_id",
+        "market_id",
+        "reasons"
+      ],
+      "title": "LiveDecisionReview",
+      "type": "object"
+    },
+    "LiveMarketCandidate": {
+      "additionalProperties": false,
+      "properties": {
+        "market_id": {
+          "maxLength": 240,
+          "minLength": 1,
+          "title": "Market Id",
+          "type": "string"
+        },
+        "ticker": {
+          "maxLength": 240,
+          "minLength": 1,
+          "title": "Ticker",
+          "type": "string"
+        },
+        "event_ticker": {
+          "maxLength": 240,
+          "minLength": 1,
+          "title": "Event Ticker",
+          "type": "string"
+        },
+        "series_ticker": {
+          "maxLength": 240,
+          "minLength": 1,
+          "title": "Series Ticker",
+          "type": "string"
+        },
+        "category": {
+          "enum": [
+            "video_games",
+            "esports"
+          ],
+          "title": "Category",
+          "type": "string"
+        },
+        "event_title": {
+          "maxLength": 240,
+          "minLength": 1,
+          "title": "Event Title",
+          "type": "string"
+        },
+        "market_title": {
+          "maxLength": 240,
+          "minLength": 1,
+          "title": "Market Title",
+          "type": "string"
+        },
+        "outcome_name": {
+          "maxLength": 240,
+          "minLength": 1,
+          "title": "Outcome Name",
+          "type": "string"
+        },
+        "matched_game_name": {
+          "maxLength": 240,
+          "minLength": 1,
+          "title": "Matched Game Name",
+          "type": "string"
+        },
+        "match_method": {
+          "const": "game-yes-outcome-exact-v1",
+          "title": "Match Method",
+          "type": "string"
+        },
+        "match_rationale": {
+          "maxLength": 240,
+          "minLength": 1,
+          "title": "Match Rationale",
+          "type": "string"
+        },
+        "market_status": {
+          "maxLength": 240,
+          "minLength": 1,
+          "title": "Market Status",
+          "type": "string"
+        },
+        "market_is_open": {
+          "default": true,
+          "title": "Market Is Open",
+          "type": "boolean"
+        },
+        "rules_primary": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Rules Primary"
+        },
+        "rules_secondary": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Rules Secondary"
+        },
+        "yes_bid": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Yes Bid"
+        },
+        "yes_ask": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Yes Ask"
+        },
+        "no_bid": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "No Bid"
+        },
+        "no_ask": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "No Ask"
+        },
+        "yes_bid_size": {
+          "anyOf": [
+            {
+              "minimum": 0.0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Yes Bid Size"
+        },
+        "yes_ask_size": {
+          "anyOf": [
+            {
+              "minimum": 0.0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Yes Ask Size"
+        },
+        "no_bid_size": {
+          "anyOf": [
+            {
+              "minimum": 0.0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "No Bid Size"
+        },
+        "no_ask_size": {
+          "anyOf": [
+            {
+              "minimum": 0.0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "No Ask Size"
+        },
+        "quote_mode": {
+          "enum": [
+            "live",
+            "cached_stale"
+          ],
+          "title": "Quote Mode",
+          "type": "string"
+        },
+        "is_stale": {
+          "title": "Is Stale",
+          "type": "boolean"
+        },
+        "captured_at": {
+          "format": "date-time",
+          "title": "Captured At",
+          "type": "string"
+        },
+        "source_ref": {
+          "maxLength": 240,
+          "minLength": 1,
+          "title": "Source Ref",
+          "type": "string"
+        },
+        "missing_reasons": {
+          "additionalProperties": {
+            "type": "string"
+          },
+          "title": "Missing Reasons",
+          "type": "object"
+        }
+      },
+      "required": [
+        "market_id",
+        "ticker",
+        "event_ticker",
+        "series_ticker",
+        "category",
+        "event_title",
+        "market_title",
+        "outcome_name",
+        "matched_game_name",
+        "match_method",
+        "match_rationale",
+        "market_status",
+        "quote_mode",
+        "is_stale",
+        "captured_at",
+        "source_ref"
+      ],
+      "title": "LiveMarketCandidate",
+      "type": "object"
+    },
+    "TwitchGameContext": {
+      "additionalProperties": false,
+      "properties": {
+        "status": {
+          "enum": [
+            "live",
+            "offline",
+            "unavailable",
+            "user_provided"
+          ],
+          "title": "Status",
+          "type": "string"
+        },
+        "channel_login": {
+          "anyOf": [
+            {
+              "maxLength": 240,
+              "minLength": 1,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Channel Login"
+        },
+        "game_id": {
+          "anyOf": [
+            {
+              "maxLength": 240,
+              "minLength": 1,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Game Id"
+        },
+        "game_name": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Game Name"
+        },
+        "source": {
+          "default": "twitch_helix",
+          "enum": [
+            "twitch_helix",
+            "manual"
+          ],
+          "title": "Source",
+          "type": "string"
+        },
+        "observed_at": {
+          "format": "date-time",
+          "title": "Observed At",
+          "type": "string"
+        },
+        "reason": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Reason"
+        }
+      },
+      "required": [
+        "status",
+        "observed_at"
+      ],
+      "title": "TwitchGameContext",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": {
+      "const": "1",
+      "default": "1",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "discovery_id": {
+      "maxLength": 240,
+      "minLength": 1,
+      "title": "Discovery Id",
+      "type": "string"
+    },
+    "observed_at": {
+      "format": "date-time",
+      "title": "Observed At",
+      "type": "string"
+    },
+    "discovery_status": {
+      "enum": [
+        "matched",
+        "stream_offline",
+        "twitch_unavailable",
+        "no_game_category",
+        "no_matching_markets",
+        "kalshi_unavailable"
+      ],
+      "title": "Discovery Status",
+      "type": "string"
+    },
+    "twitch": {
+      "$ref": "#/$defs/TwitchGameContext"
+    },
+    "game_source": {
+      "default": "twitch_helix",
+      "enum": [
+        "twitch_helix",
+        "manual"
+      ],
+      "title": "Game Source",
+      "type": "string"
+    },
+    "market_source": {
+      "const": "kalshi_public_api",
+      "default": "kalshi_public_api",
+      "title": "Market Source",
+      "type": "string"
+    },
+    "market_error": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Market Error"
+    },
+    "candidates": {
+      "items": {
+        "$ref": "#/$defs/LiveMarketCandidate"
+      },
+      "title": "Candidates",
+      "type": "array"
+    },
+    "decision_reviews": {
+      "items": {
+        "$ref": "#/$defs/LiveDecisionReview"
+      },
+      "title": "Decision Reviews",
+      "type": "array"
+    }
+  },
+  "required": [
+    "discovery_id",
+    "observed_at",
+    "discovery_status",
+    "twitch"
+  ],
+  "title": "LiveMarketContext",
+  "type": "object"
+}

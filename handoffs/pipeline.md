@@ -490,3 +490,96 @@ estimate, or paper execution state.
   active capture stream per run, and deduplicate repeated source-window IDs.
 - Browser embed support must use Twitch's required `parent` parameter and user
   interaction. This adapter itself does not prove Twitch playback/capture works.
+
+# Twitch Helix stream metadata handoff
+
+## Changed paths
+
+- `backend/ingestion/twitch.py`
+- This handoff.
+
+## Public interface
+
+```python
+from backend.ingestion.twitch import TwitchHelixClient
+
+helix = TwitchHelixClient(
+    http_client,
+    client_id=os.getenv("TWITCH_CLIENT_ID"),
+    client_secret=os.getenv("TWITCH_CLIENT_SECRET"),
+)
+result = await helix.get_live_stream("channel_login")
+wire_value = result.as_dict()
+```
+
+`TwitchLiveStreamResult` is a frozen dataclass with `status` (`live`,
+`offline`, `unavailable`), `channel_login`, nullable `game_id` and `game_name`,
+aware UTC `observed_at`, nullable `reason`, and `source="twitch_helix"`. The
+caller owns the supplied `httpx.AsyncClient`. App access tokens use Twitch's
+client-credentials flow and are cached in memory until shortly before expiry.
+Credentials and access tokens are never returned.
+
+## Verification
+
+- `python -m py_compile backend/ingestion/twitch.py` — exit 0.
+- `git diff --check -- backend/ingestion/twitch.py` — exit 0.
+- No tests were added or run. No Twitch request was made, so credentials/API
+  access and actual channel metadata have not been observed.
+
+## Limitations and integration actions
+
+- Root owns environment/config and route integration. Construct the adapter
+  with the app's shared async HTTP client and optional `TWITCH_CLIENT_ID` /
+  `TWITCH_CLIENT_SECRET` environment values. Missing credentials return an
+  explicit unavailable result; no process startup or replay path requires them.
+- Twitch reports a broadcaster's declared category. It can be empty or
+  inaccurate and does not prove what is visible/audible in the stream.
+- An offline channel is reported as offline with null game metadata. A live
+  channel with no complete category is still `live`, with null field(s) and a
+  reason. The adapter does not infer a game from transcript text.
+- This metadata result is not an evidence claim or market match. Pass nullable
+  game identity to the market-discovery stage; retain source and observed time.
+
+## Live audio sentiment extraction handoff
+
+### Changed paths
+
+- `backend/ingestion/live_audio.py`
+- `backend/perception/claims.py`
+- This handoff.
+
+### Public interface
+
+```python
+from backend.ingestion.live_audio import extract_live_sentiment_signals
+
+signals = extract_live_sentiment_signals(
+    transcript_window.as_dict(),
+    speaker_role="unknown",  # only pass "streamer" after explicit user confirmation
+)
+```
+
+The helper accepts the dictionary returned by
+`LiveAudioTranscriptWindow.as_dict()` and returns dictionaries matching the
+root-owned `LiveAudioSentimentSignal` v1 shape. It processes only accepted ASR
+segments and invokes the existing conservative lexical interpreter in speech
+mode. IDs are stable over source-window, segment index/text, speaker role and
+classifier version.
+
+With the default `speaker_role="unknown"`, the interpreter emits null sentiment,
+`status="abstain"`, and an explicit unverified-speaker reason. `stream_id` or a
+Twitch channel login does not establish speaker identity. A candidate sentiment
+requires an explicit caller-provided `speaker_role="streamer"`; even then the
+score is an uncalibrated lexical heuristic and needs review. These records do not
+create a feature snapshot, market estimate, or order.
+
+### Verification and integration
+
+- `.venv/bin/python -m py_compile backend/ingestion/live_audio.py backend/perception/claims.py` — exit 0.
+- `git diff --check` — exit 0.
+- No tests were added or run; no live audio was observed in this task.
+- Root should validate returned dictionaries against its new v1 contract and
+  expose them as `sentiment_signals` alongside transcript/ASR provenance.
+- The UI must default to unverified attribution and pass `speaker_role="streamer"`
+  only after a clear user confirmation. Otherwise live signals correctly abstain.
+- Do not route these live signals into the GTA V proxy quant path or paper broker.

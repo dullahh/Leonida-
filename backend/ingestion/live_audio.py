@@ -191,3 +191,16 @@ class LiveAudioTranscriber:
                 "event_end_at": (event_at + timedelta(seconds=local_end)).astimezone(timezone.utc).isoformat(),
             })
         return result
+
+
+def extract_live_sentiment_signals(window: dict, *, speaker_role: str = "unknown") -> list[dict]:
+    """Extract reviewable sentiment signals from a live transcript response.
+
+    The accepted-segment gate and transcript provenance are preserved. Speaker
+    attribution defaults to unknown, which causes the semantic classifier to
+    abstain. Callers may set ``speaker_role='streamer'`` only after explicit
+    user confirmation. The result contains no estimate, trade side, or order.
+    """
+    from backend.perception.claims import classify_live_audio_segments
+
+    return classify_live_audio_segments(window, speaker_role=speaker_role)

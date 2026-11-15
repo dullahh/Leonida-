@@ -1,5 +1,8 @@
 import { useEffect, useRef, useState } from 'react';
 import { Badge } from './Primitives';
+import type { LiveMarketContext } from '../generated/live-market-context';
+import type { LiveAudioSentimentSignal } from '../generated/live-audio-sentiment';
+import { LiveMarketMatches } from './LiveMarketMatches';
 
 export type LiveAudioChunk = {
   channel: string;
@@ -8,6 +11,7 @@ export type LiveAudioChunk = {
   startedAt: string;
   durationMs: number;
   mediaType: string;
+  speakerRole: 'unknown' | 'streamer';
 };
 
 export type LiveAudioResult = {
@@ -15,10 +19,12 @@ export type LiveAudioResult = {
   transcript?: string;
   reason?: string;
   provenance?: string;
+  sentimentSignals?: LiveAudioSentimentSignal[];
 };
 
 export type TwitchLiveCaptureProps = {
   onAudioChunk: (audio: Blob, metadata: LiveAudioChunk) => Promise<LiveAudioResult>;
+  onResolveGameMarkets: (channel: string, manualGameName: string) => Promise<LiveMarketContext>;
 };
 
 const CHUNK_MS = 15_000;
@@ -31,8 +37,9 @@ function formatTime(milliseconds: number) {
 }
 
 /** Twitch's player is only an embed. Audio is captured separately after an explicit browser permission. */
-export function TwitchLiveCapture({ onAudioChunk }: TwitchLiveCaptureProps) {
+export function TwitchLiveCapture({ onAudioChunk, onResolveGameMarkets }: TwitchLiveCaptureProps) {
   const [channel, setChannel] = useState('');
+  const [gameName, setGameName] = useState('');
   const [submittedChannel, setSubmittedChannel] = useState('');
   const [capturing, setCapturing] = useState(false);
   const [elapsedMs, setElapsedMs] = useState(0);
@@ -40,8 +47,13 @@ export function TwitchLiveCapture({ onAudioChunk }: TwitchLiveCaptureProps) {
   const [droppedChunks, setDroppedChunks] = useState(0);
   const [status, setStatus] = useState('No live audio captured.');
   const [transcripts, setTranscripts] = useState<string[]>([]);
+  const [sentimentSignals, setSentimentSignals] = useState<LiveAudioSentimentSignal[]>([]);
+  const [speakerRole, setSpeakerRole] = useState<'unknown' | 'streamer'>('unknown');
   const [provenance, setProvenance] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [marketContext, setMarketContext] = useState<LiveMarketContext | null>(null);
+  const [marketLoading, setMarketLoading] = useState(false);
+  const [marketError, setMarketError] = useState<string | null>(null);
   const streamRef = useRef<MediaStream | null>(null);
   const recorderRef = useRef<MediaRecorder | null>(null);
   const startedAtRef = useRef(0);
@@ -51,6 +63,7 @@ export function TwitchLiveCapture({ onAudioChunk }: TwitchLiveCaptureProps) {
   const callbackRef = useRef(onAudioChunk);
   const captureActiveRef = useRef(false);
   const streamIdRef = useRef<MediaStream | null>(null);
+  const marketRequestRef = useRef(0);
 
   useEffect(() => { callbackRef.current = onAudioChunk; }, [onAudioChunk]);
   useEffect(() => {
@@ -75,6 +88,7 @@ export function TwitchLiveCapture({ onAudioChunk }: TwitchLiveCaptureProps) {
   async function startCapture() {
     setError(null);
     setTranscripts([]);
+    setSentimentSignals([]);
     setProvenance(null);
     setChunkCount(0);
     setDroppedChunks(0);
@@ -145,11 +159,13 @@ export function TwitchLiveCapture({ onAudioChunk }: TwitchLiveCaptureProps) {
             startedAt,
             durationMs: Date.now() - segmentStartedAtRef.current,
             mediaType: event.data.type || mimeType,
+            speakerRole,
           };
           try {
             const result = await callbackRef.current(event.data, metadata);
             setChunkCount(count => count + 1);
             if (result.transcript) setTranscripts(current => [...current.slice(-4), result.transcript!]);
+            if (result.sentimentSignals?.length) setSentimentSignals(current => [...current, ...result.sentimentSignals!].slice(-20));
             if (result.provenance) setProvenance(result.provenance);
             const outcome = result.status ?? (result.transcript ? 'Audio chunk processed.' : `Chunk ${index + 1}: transcript unavailable`);
             setStatus(result.reason ? `${outcome} · ${result.reason}` : outcome);
@@ -182,11 +198,30 @@ export function TwitchLiveCapture({ onAudioChunk }: TwitchLiveCaptureProps) {
   function loadChannel(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
     const clean = channel.trim().replace(/^@/, '').toLowerCase();
-    if (!/^[a-z0-9_]{1,25}$/.test(clean)) { setError('Enter a Twitch channel name using letters, numbers or underscores.'); return; }
+    const cleanGameName = gameName.trim();
+    if (clean && !/^[a-z0-9_]{1,25}$/.test(clean)) { setError('Enter a Twitch channel name using letters, numbers or underscores.'); return; }
+    if (cleanGameName.length > 120) { setError('Game name must be 120 characters or fewer.'); return; }
+    if (!clean && !cleanGameName) { setError('Enter a Twitch channel or a game name to search Kalshi markets.'); return; }
     if (capturing) stopCapture();
     setError(null);
     setSubmittedChannel(clean);
-    setStatus('Player loaded. Start playback, then explicitly start tab audio capture when ready.');
+    setTranscripts([]);
+    setSentimentSignals([]);
+    setStatus(clean
+      ? 'Player loaded. Start playback, then explicitly start tab audio capture when ready.'
+      : 'Manual game selected. Market lookup is available; enter a Twitch channel to capture live audio.');
+    const requestId = ++marketRequestRef.current;
+    setMarketContext(null);
+    setMarketError(null);
+    setMarketLoading(true);
+    void onResolveGameMarkets(clean, cleanGameName).then(context => {
+      if (marketRequestRef.current === requestId) setMarketContext(context);
+    }).catch(failure => {
+      if (marketRequestRef.current !== requestId) return;
+      setMarketError(failure instanceof Error ? failure.message : String(failure));
+    }).finally(() => {
+      if (marketRequestRef.current === requestId) setMarketLoading(false);
+    });
   }
 
   const parent = window.location.hostname || 'localhost';
@@ -195,19 +230,27 @@ export function TwitchLiveCapture({ onAudioChunk }: TwitchLiveCaptureProps) {
     : null;
 
   return <section className="panel twitch-live-panel" aria-label="Twitch live audio demo">
-    <header className="twitch-live-heading"><div><span className="section-index">LIVE</span><h2>Live stream demo</h2><Badge tone={capturing ? 'green' : 'amber'} dot>{capturing ? 'Audio capture active' : 'Browser-authorized'}</Badge></div><span className="tiny muted">Twitch embed · local Whisper pipeline</span></header>
+    <header className="twitch-live-heading"><div><span className="section-index">LIVE</span><h2>Live stream demo</h2><Badge tone={capturing ? 'green' : 'amber'} dot>{capturing ? 'Audio capture active' : 'Browser-authorized'}</Badge></div><span className="tiny muted">Twitch embed · local speech + heuristic sentiment</span></header>
     <div className="twitch-live-layout">
       <div className="twitch-player-column">
         <form className="twitch-channel-form" onSubmit={loadChannel}>
-          <label htmlFor="twitch-channel">Twitch channel</label>
-          <input id="twitch-channel" value={channel} onChange={event => setChannel(event.target.value)} placeholder="channel_name" autoComplete="off" />
-          <button className="button secondary-button" type="submit">Load player</button>
+          <div className="twitch-input-group"><label htmlFor="twitch-channel">Twitch channel <span>(optional)</span></label>
+            <input id="twitch-channel" value={channel} onChange={event => setChannel(event.target.value)} placeholder="channel_name" autoComplete="off" /></div>
+          <div className="twitch-input-group"><label htmlFor="live-game-name">Game name <span>(manual fallback)</span></label>
+            <input id="live-game-name" value={gameName} onChange={event => setGameName(event.target.value)} placeholder="e.g. Grand Theft Auto VI" autoComplete="off" maxLength={120} /></div>
+          <button className="button secondary-button" type="submit">Find markets</button>
         </form>
         {embedUrl ? <div className="twitch-player-scroll" role="region" aria-label="Twitch player; horizontally scroll when the viewport is narrower than 400 pixels" tabIndex={0}><iframe className="twitch-player" src={embedUrl} title={`Twitch live stream ${submittedChannel}`} allow="autoplay; fullscreen" allowFullScreen /></div>
-          : <div className="twitch-player-placeholder">Load a channel to embed its official Twitch player.</div>}
+          : <div className="twitch-player-placeholder">Enter a Twitch channel to embed its official player. A game name alone can still search Kalshi markets.</div>}
         <p className="twitch-help">Twitch requires a player area at least 400 × 300 pixels; on narrow screens, scroll the player area horizontally. Play the stream first, then confirm “This Tab” / the current Leonida tab in the browser prompt and enable tab audio. The embedded player’s audio is captured. The browser still requires confirmation and cannot be forced to select this tab.</p>
       </div>
       <div className="twitch-capture-column">
+        <label className="twitch-help" htmlFor="live-speaker-role">Audio attribution for all chunks</label>
+        <select id="live-speaker-role" value={speakerRole} onChange={event => setSpeakerRole(event.target.value as 'unknown' | 'streamer')} disabled={capturing}>
+          <option value="unknown">Unknown speaker (safe default)</option>
+          <option value="streamer">I verified all captured speech is the streamer</option>
+        </select>
+        <p className="twitch-help">Select streamer only if all recognized speech in the shared audio is the streamer. Tab audio may include NPC dialogue or other voices; keep attribution unknown if they are mixed in.</p>
         <div className="twitch-capture-controls"><div><span className="eyebrow">AUDIO PIPELINE</span><strong>{formatTime(elapsedMs)} captured</strong></div>
           {capturing ? <button className="button" type="button" onClick={() => stopCapture()}>Stop capture</button>
             : <button className="button" type="button" onClick={() => void startCapture()} disabled={!submittedChannel}>Start tab audio capture</button>}
@@ -219,8 +262,19 @@ export function TwitchLiveCapture({ onAudioChunk }: TwitchLiveCaptureProps) {
           {provenance && <p className="twitch-provenance">{provenance}</p>}
           {transcripts.length ? transcripts.map((line, index) => <p key={`${index}-${line}`}>{line}</p>) : <p className="muted">No transcript available yet. The panel shows text only when the processing callback returns it.</p>}
         </div>
+        <div className="twitch-transcript" aria-live="polite">
+          <span className="eyebrow">LIVE SENTIMENT CANDIDATES · HEURISTIC</span>
+          {sentimentSignals.length ? sentimentSignals.slice().reverse().map(signal => <article key={signal.signal_id}>
+            <p><strong>{signal.status === 'candidate' && signal.sentiment !== null ? `Candidate ${signal.sentiment > 0 ? '+' : ''}${signal.sentiment.toFixed(2)} · ${signal.aspect}` : `Abstain · ${signal.aspect}`}</strong> <span className="muted">{signal.stream_id} · {formatTime(signal.start_seconds * 1000)}–{formatTime(signal.end_seconds * 1000)} · {signal.event_start_at} · {signal.speaker_role} · {signal.classifier_name} {signal.classifier_version}</span></p>
+            <p>{signal.text}</p>
+            {signal.abstention_reason && <p className="muted">{signal.abstention_reason}</p>}
+            {signal.status === 'candidate' && signal.semantic_confidence != null && <p className="muted">Heuristic confidence {Math.round(signal.semantic_confidence * 100)}% · candidate evidence only</p>}
+          </article>) : <p className="muted">No sentiment signals yet. Unknown-speaker speech is explicitly abstained.</p>}
+          <p className="muted">Absolute lexical sentiment candidates only; no rolling surprise, market estimate, or order is created from this live path.</p>
+        </div>
         <p className="twitch-footnote">Twitch playback is cross-origin. This panel does not extract its video or bypass Twitch access controls. Only browser-shared audio is sent to the configured callback; no market estimate is implied.</p>
       </div>
     </div>
+    <LiveMarketMatches context={marketContext} loading={marketLoading} error={marketError} />
   </section>;
 }

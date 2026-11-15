@@ -4,7 +4,7 @@ const {compile} = require('json-schema-to-typescript');
 async function main() {
   const check = process.argv.includes('--check');
   const root = path.resolve(__dirname, '..');
-  const targets = [['dashboard-envelope', 'contracts'], ['evidence-cache', 'evidence-cache'], ['run-command', 'commands'], ['create-run','create-run'], ['scenario-request','scenario-request']];
+  const targets = [['dashboard-envelope', 'contracts'], ['evidence-cache', 'evidence-cache'], ['run-command', 'commands'], ['create-run','create-run'], ['scenario-request','scenario-request'], ['live-market-context','live-market-context'], ['live-audio-sentiment','live-audio-sentiment']];
   for (const [schemaName, outputName] of targets) {
     const schema = JSON.parse(await fs.readFile(path.join(root, 'contracts/generated', schemaName + '.schema.json'), 'utf8'));
     const output = await compile(schema, schema.title, {bannerComment:'/* Generated from schema 2 serialization output. Root-owned; do not edit. */', additionalProperties:false});

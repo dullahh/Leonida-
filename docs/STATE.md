@@ -157,3 +157,81 @@ Live DTO remains separate from schema-2 `SourceWindow`, which is constrained to 
 The frontend typecheck and production build passed. The backend adapter `py_compile` and diff whitespace check passed. No browser test or actual Twitch stream/audio was exercised, so end-to-end capture remains unverified. The adapter writes chunks briefly to a local temporary directory for FFmpeg conversion and removes it after processing; no evidence cache or durable transcript write occurs. Root owns the HTTP composition; pipeline owns `backend/ingestion/live_audio.py`; frontend owns the live panel.
 
 Follow-up: the capture prompt now requests `preferCurrentTab`, includes the current Leonida tab, and excludes system audio. Instructions specify choosing **This Tab** with tab audio enabled so audio from the embedded Twitch player is captured. Browser confirmation remains mandatory and the chooser can still select another surface; this follow-up has not been exercised in a browser.
+
+## Twitch game to Kalshi outcome discovery - 15 November 2026
+
+User requested automatic market candidates from Twitch game metadata and supplied Kalshi's Video Games category, then added Esports. Added generated schema-1 `LiveMarketContext`, Twitch Helix app-token lookup using optional `TWITCH_CLIENT_ID` / `TWITCH_CLIENT_SECRET`, and a read-only Kalshi resolver that discovers series in Video Games and Esports, paginates open events with nested markets, and exact-matches the Twitch game against the actual Yes outcome. The UI presents both categories, actual ticker/event/series, raw market status, nullable bids/asks/depth, capture/source, and expandable rules alongside the live transcript.
+
+The live discovery is intentionally outside the fixed schema-2 GTA V proxy estimation ledger. It exposes actual outcome candidates; game category and transcript do not yet produce claims, probabilities, or paper decisions. Open-market status is normalized only for raw `open` or observed legacy `active`. No ticker or spread is invented. Missing Twitch credentials, offline/category-blank streams, empty match lists, and venue lookup failures remain explicit.
+
+Official site pages were reviewed; Kalshi's Video Games page contains multi-outcome award markets that substantiate exact Yes-outcome matching as a discovery method. API/adapter code compiled and frontend build/type checks ran. No app credentials were supplied; no Twitch API request or Kalshi market API request was made, and no actual browser live discovery was exercised. Thus live API availability and current category filter results are unverified. See generated `contracts/generated/live-market-context.schema.json`, `handoffs/pipeline.md`, `handoffs/quant.md`, and `handoffs/frontend.md`.
+
+## Manual live game lookup and decision review - 15 November 2026
+
+The live demo now accepts a manually entered game name, with or without a Twitch
+channel. Manual names bypass Twitch metadata lookup and can query the existing
+read-only Kalshi Video Games / Esports discovery. If channel and game are both
+entered, the manual value is labeled as the game source and overrides Twitch's
+category. Twitch audio capture still requires a channel/player.
+
+Each exact market candidate receives a separate schema-1 `LiveDecisionReview`.
+Current live review status is always `abstain`, with explicit reasons: this path
+has no outcome-specific model and Whisper chunks are not connected to supported,
+attributed features. It is distinct from the GTA V proxy estimator and emits no
+probability, trade side, order or fill. This allows inspection of the real market
+discovery plus decision-abstention path without implying a live strategy exists.
+Generated contracts were regenerated. Runtime Kalshi discovery still requires a
+networked local run; no live request was made for this change.
+
+Follow-up from runtime logs: Twitch returned `Grand Theft Auto V`, but Kalshi
+series lookups returned a non-list `series` field because the adapter queried the
+website child labels (`Video games`, `Esports`) as if they were series API root
+categories. The API requests now use the corresponding parent categories
+`Culture` and `Sports`, narrowing Sports results to rows labeled Esports and
+retaining Culture series for exact game-outcome matching. Unexpected response
+shapes report response keys or API messages rather than the misleading
+"omitted its series list". This parser adjustment is compiled but still needs a
+user-run live API retry.
+
+## Live audio sentiment wiring - 15 November 2026
+
+Accepted segments from user-authorized browser tab audio now pass through the
+existing conservative speech classifier. The response includes separate,
+versioned `LiveAudioSentimentSignal` records with stable IDs, transcript text,
+source timestamps, aspect/target, heuristic sentiment or abstention, and
+classifier provenance. The UI displays the newest twenty. Attribution defaults
+to unknown; the user may explicitly confirm the chunk's speech is the streamer,
+with the control locked during capture. Mixed NPC/background voices must stay
+unknown because no diarization runs.
+
+This is candidate sentiment telemetry only. It is not added to replay feature
+snapshots, does not compute rolling surprise or market estimates, and does not
+create paper orders. The live route and UI contract were generated; backend
+syntax checks and frontend typecheck are recorded in this change. No live
+Twitch audio was captured, and no tests were run for this integration.
+
+## Kalshi game-name matching correction - 15 November 2026
+
+Discovery compares the requested game name to the actual market `yes_sub_title`
+contender, not only to the market/event title. The supplied Big Walk link is
+event `KXGAMEAWARDS-BIG`, series `KXGAMEAWARDS`, with individual contender
+markets such as `KXGAMEAWARDS-BIG-BIG`; Big Walk is shown as a contender on the
+venue page. The previous discovery path filtered series using assumed `Culture`
+/ `Sports` labels before checking contenders, so a Game Awards series exposed
+under a different primary category could be discarded before matching.
+
+Discovery now fetches the series catalog once without a category filter, keeps
+series whose metadata names the requested game or Game Awards, then requests
+open nested events and exact-matches the Yes contender. Python compilation and
+diff whitespace checks passed. No live Kalshi API call was made; the linked page
+confirms the site-side series/event/contender, but the API response still needs a
+user-run retry to confirm the actual `yes_sub_title` payload and match.
+
+Follow-up for recurring 429s: the series catalog is now shared for 30 minutes,
+open nested events for a series are shared for 30 seconds, and all Kalshi GETs
+are serialized with a 500 ms minimum interval. A 429 applies one shared
+Retry-After cooldown (30 seconds if absent, capped at five minutes) to both
+catalog and event requests. Cached market rows retain their original capture
+time; quotes older than ten seconds are labeled stale rather than restamped as
+current. Backend syntax compilation and diff whitespace checks passed. No live
+Kalshi request or tests were run.

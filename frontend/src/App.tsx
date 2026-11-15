@@ -12,6 +12,8 @@ import { MarketRail } from './components/MarketRail';
 import { ReactionTelemetry } from './components/ReactionTelemetry';
 import { EvidenceTrail } from './components/EvidenceTrail';
 import { TwitchLiveCapture, type LiveAudioChunk, type LiveAudioResult } from './components/TwitchLiveCapture';
+import type { LiveMarketContext } from './generated/live-market-context';
+import type { LiveAudioSentimentSignal } from './generated/live-audio-sentiment';
 
 const unassignedSceneIds = new Set(['unknown', 'unassigned', 'manual-unassigned', 'manual-unknown']);
 const isAssignedScene = (sceneId: string) => {
@@ -59,6 +61,7 @@ export default function App() {
         'X-Leonida-Chunk-Id': metadata.chunkId,
         'X-Leonida-Chunk-Index': String(metadata.chunkIndex),
         'X-Leonida-Started-At': metadata.startedAt,
+        'X-Leonida-Speaker-Role': metadata.speakerRole,
       },
       body: audio,
       signal: AbortSignal.timeout(30_000),
@@ -67,6 +70,7 @@ export default function App() {
     if (!response.ok) throw new Error(typeof result?.detail === 'string' ? result.detail : `Live audio processing failed (${response.status}).`);
     if (!result || typeof result !== 'object') throw new Error('The live audio endpoint returned an invalid result.');
     const segments = Array.isArray(result.accepted_segments) ? result.accepted_segments : [];
+    const sentimentSignals: LiveAudioSentimentSignal[] = Array.isArray(result.sentiment_signals) ? result.sentiment_signals : [];
     const transcript = segments.map((segment: unknown) => segment && typeof segment === 'object' && typeof (segment as { text?: unknown }).text === 'string' ? (segment as { text: string }).text.trim() : '').filter(Boolean).join(' ');
     const auditSegments = Array.isArray(result.audit_segments) ? result.audit_segments : [];
     const notAccepted = auditSegments.filter((entry: unknown) => !entry || typeof entry !== 'object' || (entry as { status?: unknown }).status !== 'accepted');
@@ -92,16 +96,31 @@ export default function App() {
     return {
       status: result.status === 'unavailable' ? 'ASR unavailable' : auditSummary,
       transcript: transcript || undefined,
+      sentimentSignals,
       reason: typeof result.unavailable_reason === 'string' ? result.unavailable_reason : undefined,
       provenance: provenance || undefined,
     };
+  };
+  const resolveGameMarkets = async (channel: string, manualGameName: string): Promise<LiveMarketContext> => {
+    const params = new URLSearchParams();
+    if (channel) params.set('channel', channel);
+    if (manualGameName) params.set('game_name', manualGameName);
+    const response = await fetch(`/api/live-market-context?${params.toString()}`, {
+      cache: 'no-store', signal: AbortSignal.timeout(30_000),
+    });
+    const result = await response.json().catch(() => null);
+    if (!response.ok) throw new Error(typeof result?.detail === 'string' ? result.detail : `Live market discovery failed (${response.status}).`);
+    if (!result || typeof result !== 'object' || !result.twitch || !Array.isArray(result.candidates)) {
+      throw new Error('The live market endpoint returned an invalid discovery result.');
+    }
+    return result as LiveMarketContext;
   };
 
   return <div className="app">
     <a className="skip-link" href="#streams" onClick={() => setActiveView('desk')}>Skip to source workspace</a>
     <header className="topbar"><a className="brand" href="#" aria-label="Leonida Alpha home"><span className="brand-mark">L<span>α</span></span><div><strong>LEONIDA <span>ALPHA</span></strong><small>EVIDENCE & MARKET RESEARCH</small></div></a><div className="command-run"><span className="eyebrow">RUN</span><span className="mono" title={snapshot?.run_id}>{snapshot?.run_id ?? 'Awaiting snapshot'}</span></div><div className="header-right"><span className={`connection ${desk.connection}`}><i />{({ connecting: 'Connecting', streaming: 'Stream connected', polling: 'REST fallback', offline: 'Offline', mock: 'Frozen example' })[desk.connection]}</span><span className="local-label">PAPER / {snapshot?.gate ?? 'G3'}</span></div></header>
     <nav className="desk-nav" aria-label="Desk sections"><div><a className={activeView === 'trail' ? 'active' : ''} aria-current={activeView === 'trail' ? 'page' : undefined} href="#trail" onClick={() => setActiveView('trail')}>Evidence trail</a><a className={activeView === 'desk' && activeSection === '#streams' ? 'active' : ''} aria-current={activeView === 'desk' && activeSection === '#streams' ? 'page' : undefined} href="#streams" onClick={() => { setActiveView('desk'); setActiveSection('#streams'); }}>Full desk</a><a className={activeView === 'desk' && activeSection === '#markets' ? 'active' : ''} aria-current={activeView === 'desk' && activeSection === '#markets' ? 'page' : undefined} href="#markets" onClick={() => { setActiveView('desk'); setActiveSection('#markets'); }}>Venue context</a><a className={activeView === 'desk' && activeSection === '#paper' ? 'active' : ''} aria-current={activeView === 'desk' && activeSection === '#paper' ? 'page' : undefined} href="#paper" onClick={() => { setActiveView('desk'); setActiveSection('#paper'); }}>Paper activity</a></div><span className="nav-provenance">{snapshot?.evidence_mode === 'recorded' ? 'LOCAL RECORDINGS' : 'SYNTHETIC FIXTURE'}<span> / </span> {replayQuoteLabel} <span> / </span> HEURISTIC MODEL</span></nav>
-    <section id="live-demo-main"><TwitchLiveCapture onAudioChunk={submitLiveAudio} /></section>
+    <section id="live-demo-main"><TwitchLiveCapture onAudioChunk={submitLiveAudio} onResolveGameMarkets={resolveGameMarkets} /></section>
     <main>
       <h1 className="sr-only">Leonida Alpha evidence and prediction-market research terminal</h1>
       {desk.mockMode && <div className="notice amber" role="status">Frozen contract example · read-only preview. No backend or media activity is being shown.</div>}

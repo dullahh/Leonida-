@@ -1,0 +1,170 @@
+{
+  "additionalProperties": false,
+  "description": "Live speech interpretation, separate from recorded proxy claims and pricing.",
+  "properties": {
+    "schema_version": {
+      "const": "1",
+      "default": "1",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "signal_id": {
+      "maxLength": 240,
+      "minLength": 1,
+      "title": "Signal Id",
+      "type": "string"
+    },
+    "source_window_id": {
+      "maxLength": 240,
+      "minLength": 1,
+      "title": "Source Window Id",
+      "type": "string"
+    },
+    "stream_id": {
+      "maxLength": 240,
+      "minLength": 1,
+      "title": "Stream Id",
+      "type": "string"
+    },
+    "evidence_mode": {
+      "const": "live",
+      "default": "live",
+      "title": "Evidence Mode",
+      "type": "string"
+    },
+    "start_seconds": {
+      "minimum": 0.0,
+      "title": "Start Seconds",
+      "type": "number"
+    },
+    "end_seconds": {
+      "minimum": 0.0,
+      "title": "End Seconds",
+      "type": "number"
+    },
+    "event_start_at": {
+      "format": "date-time",
+      "title": "Event Start At",
+      "type": "string"
+    },
+    "event_end_at": {
+      "format": "date-time",
+      "title": "Event End At",
+      "type": "string"
+    },
+    "text": {
+      "maxLength": 2000,
+      "minLength": 1,
+      "title": "Text",
+      "type": "string"
+    },
+    "aspect": {
+      "enum": [
+        "narrative",
+        "overall",
+        "technical",
+        "gameplay",
+        "audio"
+      ],
+      "title": "Aspect",
+      "type": "string"
+    },
+    "target": {
+      "enum": [
+        "game",
+        "player_skill",
+        "streamer",
+        "unrelated",
+        "ambiguous"
+      ],
+      "title": "Target",
+      "type": "string"
+    },
+    "sentiment": {
+      "anyOf": [
+        {
+          "maximum": 1.0,
+          "minimum": -1.0,
+          "type": "number"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "title": "Sentiment"
+    },
+    "abstention_reason": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Abstention Reason"
+    },
+    "semantic_confidence": {
+      "anyOf": [
+        {
+          "maximum": 1.0,
+          "minimum": 0.0,
+          "type": "number"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Semantic Confidence"
+    },
+    "classifier_name": {
+      "maxLength": 240,
+      "minLength": 1,
+      "title": "Classifier Name",
+      "type": "string"
+    },
+    "classifier_version": {
+      "maxLength": 240,
+      "minLength": 1,
+      "title": "Classifier Version",
+      "type": "string"
+    },
+    "speaker_role": {
+      "default": "unknown",
+      "enum": [
+        "unknown",
+        "streamer"
+      ],
+      "title": "Speaker Role",
+      "type": "string"
+    },
+    "status": {
+      "enum": [
+        "candidate",
+        "abstain"
+      ],
+      "title": "Status",
+      "type": "string"
+    }
+  },
+  "required": [
+    "signal_id",
+    "source_window_id",
+    "stream_id",
+    "start_seconds",
+    "end_seconds",
+    "event_start_at",
+    "event_end_at",
+    "text",
+    "aspect",
+    "target",
+    "sentiment",
+    "classifier_name",
+    "classifier_version",
+    "status"
+  ],
+  "title": "LiveAudioSentimentSignal",
+  "type": "object"
+}

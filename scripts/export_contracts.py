@@ -12,7 +12,7 @@ from backend.core.cache import prepare_fixture_cache
 from backend.core.config import read_config
 from backend.core.market import unavailable
 from backend.core.reference_slice import build_snapshot
-from backend.core.schemas import EvidenceCache, RecordingManifest, StreamEnvelope, RunCommand, CreateRunRequest, ScenarioRequest
+from backend.core.schemas import EvidenceCache, RecordingManifest, StreamEnvelope, RunCommand, CreateRunRequest, ScenarioRequest, LiveMarketContext, LiveAudioSentimentSignal
 from backend.main import create_app
 
 
@@ -26,7 +26,7 @@ def artifacts() -> dict[str, str]:
         serialized = envelope.model_dump_json(indent=2) + "\n"
         StreamEnvelope.model_validate_json(serialized)
     output = {"dashboard-envelope.example.json": serialized}
-    for name, model in (("dashboard-envelope", StreamEnvelope), ("recording-manifest", RecordingManifest), ("evidence-cache", EvidenceCache), ("run-command", RunCommand), ("create-run", CreateRunRequest), ("scenario-request", ScenarioRequest)):
+    for name, model in (("dashboard-envelope", StreamEnvelope), ("recording-manifest", RecordingManifest), ("evidence-cache", EvidenceCache), ("run-command", RunCommand), ("create-run", CreateRunRequest), ("scenario-request", ScenarioRequest), ("live-market-context", LiveMarketContext), ("live-audio-sentiment", LiveAudioSentimentSignal)):
         output[f"{name}.schema.json"] = json.dumps(model.model_json_schema(mode="serialization"), indent=2) + "\n"
     output["openapi.json"] = json.dumps(create_app().openapi(), indent=2) + "\n"
     return output
