@@ -39,20 +39,6 @@ Actual historical GTA VI venue captures are shown separately with stale labels; 
 
 A valid scenario quote displays its midpoint independently of the model:14¢/15¢ shows **14.50% synthetic Yes midpoint** even when claims abstain. The model and candidate remain unavailable with explicit reasons. The Venue context tab defaults to eight bundled historical Kalshi quotes from14 November2026, with exact receipt timestamps and source paths. [Quote/abstention audit and existing optional live-mode command](docs/QUOTE_CLARITY.md) documents the precise data, staleness and failure behaviour; no live network call is required by default.
 
-## Exact three-minute demonstration
-
-| Pitch clock | Action and point |
-|---|---|
-|0:00–0:30|Play real recordings briefly, pause, then seek to the end. Show t4/t5 reaction activity. In a portable-only checkout, explain the unavailable private footage and start the labelled fixture instead.|
-|0:30–0:55|Inspect t4 “I can't bro” or t5 “what happened?”: contextual reaction, uncertain target, explicit pricing exclusion, no estimate/order.|
-|0:55–1:25|Load **Courtroom praise** as a separate synthetic run. Seek to2s: supported narrative claim,50% synthetic reference to about54.47% heuristic estimate.|
-|1:25–1:50|Open **Inspect full receipt**, then **Inspect trace** / **Eligibility receipt**: source words, attribution, model inputs, quote and6/10 partial fill with.06 fee.|
-|1:50–2:20|Close the dialog and seek to the timeline end310s. Show4+2 exits, flat position, total fees.12 and cash10000.08. This is computed from authored synthetic prices.|
-|2:20–2:45|Load **Venue outage / reset**, seek to10.2s. Show stale synthetic quote, cancelled pending entry and zero fills.|
-|2:45–3:00|State the honest boundary: source-linked research prototype; uncertain OCR/ASR, text heuristics, uncalibrated probability and simulated execution. Return to recordings.|
-
-Detailed cues and all six scenario behaviours: [DEMO_SCRIPT.md](docs/DEMO_SCRIPT.md).
-
 ## Verification and release evidence
 
 ```powershell
