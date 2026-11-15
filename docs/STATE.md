@@ -1,5 +1,9 @@
 # Repository state - 15 November 2026
 
+## G4 verification checkpoint
+
+Verified from4e154fa in one thread, without agents or application changes. Original15 G3 tests/build/schema checks and6 new G4 tests pass with no skips. Browser verifies all5 videos, telemetry/pricing exclusion, synthetic claim receipts, reset/reconnect/REST fallback and1440/390 layouts without console errors. Initial browser-harness debug-overhead failure and Windows media teardown warnings are recorded in G4_FAILURES.md. Full results, limitations and launch/demo checklist: [G4_VERIFICATION.md](G4_VERIFICATION.md). Separate commit title: G4 verification fixes; G3 is not amended. Existing user demo on8000 is retained. Stop after G4; G5 is unexecuted.
+
 ## Current reaction telemetry integration
 
 Reaction telemetry is integrated alongside the unchanged supported-claim classifier. See [REACTION_TELEMETRY.md](REACTION_TELEMETRY.md). All1651 cached observations were used without OCR/ASR/media reprocessing: t1/t2/t3/t4/t5 have8/1/8/6/13 active text cues respectively, but still zero supported quality claims and zero recorded estimates/orders. Text-only emotion/intensity/target scores remain heuristic; pending speaker verification is unchanged.
