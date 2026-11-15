@@ -48,6 +48,7 @@ Updated 14 November 2026 after planning reviews and the subsequent user-authoriz
 | D35 | GTA V proxy evidence has zero automatic relevance to real GTA VI markets. | Synthetic scenario estimate/candidate and actual live venue context are separate contracts/panels. No cross-game validation claim. |
 | D36 | G1 ships a narrow schema-2 interface and root-owned HTML state viewer. | Full multi-stream grouping/scheduler/broker/React design remains future work; exact implemented seams are in G1_HANDOFF. |
 | D37 | Cache identity includes original fixture bytes and complete manifest/config versions; corrupt cache fails closed. | Offset/ROI/version changes cannot reuse old evidence silently; no provider runs during replay. Real asset hashing/OCR still needs media. |
+| D38 | Optional Twitch demo embeds the official player and sends only user-authorized tab audio to local Whisper in bounded chunks. | Avoids server-side stream extraction/API credentials. Live transcripts stay outside the GTA V proxy ledger and never affect estimates or paper state. |
 
 The wire example's p=.097 uses its own illustrative model. Current config on its features yields p≈.124078 and No net EV≈.005922 with the example fee, below .03. Do not copy .097 into the configured estimator or weaken gates to force a demo fill. G2 needs coherent explicit eligible/blocked quote timelines.
 

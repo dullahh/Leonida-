@@ -1,10 +1,14 @@
 """FastAPI lifespan and composition only. No venue execution routes."""
 import asyncio
+from datetime import datetime, timezone
+import ipaddress
 import os
+import re
+from threading import Lock
 from contextlib import asynccontextmanager
 from pathlib import Path
 
-from fastapi import FastAPI, HTTPException, WebSocket, WebSocketDisconnect
+from fastapi import FastAPI, HTTPException, Request, WebSocket, WebSocketDisconnect
 from fastapi.responses import FileResponse
 
 from backend.core.config import ROOT
@@ -19,6 +23,11 @@ def create_app(db_path: Path | None = None, cache_dir: Path | None = None, live_
         runtime = Runtime(db_path or ROOT / "var/leonida.sqlite3", (evidence_cache_path.parent if evidence_cache_path else cache_dir or ROOT / "var/evidence-cache"), live_quotes, evidence_cache_path, scenario)
         app.state.runtime = runtime
         app.state.projector = StateProjector(runtime)
+        from backend.ingestion.live_audio import LiveAudioTranscriber
+        from backend.core.config import read_config
+        model_name = read_config("local_asr.json").get("default_model", "small.en")
+        app.state.live_audio_transcriber = LiveAudioTranscriber(ROOT / "var" / "models" / f"faster-whisper-{model_name}")
+        app.state.live_audio_lock = Lock()
         try:
             await runtime.start()
             yield
@@ -111,6 +120,68 @@ def create_app(db_path: Path | None = None, cache_dir: Path | None = None, live_
     @app.get("/api/cache", response_model=EvidenceCache)
     async def evidence_cache():
         return app.state.runtime.cache
+
+    @app.post("/api/live-audio/chunks")
+    async def live_audio_chunk(request: Request):
+        """Transcribe one user-authorized, bounded audio-only browser chunk."""
+        from backend.ingestion.live_audio import MAX_CHUNK_BYTES
+
+        client_host = request.client.host if request.client else ""
+        try:
+            if not ipaddress.ip_address(client_host.split("%", 1)[0]).is_loopback:
+                raise HTTPException(403, "Live capture is available only through the local demo server")
+        except ValueError:
+            raise HTTPException(403, "Live capture is available only through the local demo server")
+        origin = request.headers.get("origin")
+        host = request.headers.get("host", "")
+        if origin and origin not in {f"http://{host}", f"https://{host}"}:
+            raise HTTPException(403, "Cross-origin live audio upload is not allowed")
+
+        channel = request.headers.get("x-leonida-source", "").strip().lower()
+        if not re.fullmatch(r"[a-z0-9_]{1,25}", channel):
+            raise HTTPException(422, "A valid Twitch channel login is required")
+        raw_started_at = request.headers.get("x-leonida-started-at", "")
+        try:
+            event_at = datetime.fromisoformat(raw_started_at.replace("Z", "+00:00"))
+            if event_at.tzinfo is None or event_at.utcoffset() is None:
+                raise ValueError("timezone required")
+            chunk_index = int(request.headers.get("x-leonida-chunk-index", "0"))
+            if chunk_index < 0:
+                raise ValueError("chunk index must be nonnegative")
+            source_start = chunk_index * 15.0
+        except ValueError:
+            raise HTTPException(422, "Valid timezone-aware chunk start and nonnegative chunk index are required")
+
+        content_type = request.headers.get("content-type", "")
+        if content_type.lower().split(";", 1)[0].strip() not in {"audio/webm", "audio/wav", "audio/wave", "audio/x-wav"}:
+            raise HTTPException(415, "Only independently decodable WebM/Opus or WAV audio chunks are accepted")
+        try:
+            content_length = int(request.headers.get("content-length", "0"))
+        except ValueError:
+            raise HTTPException(400, "Invalid Content-Length")
+        if content_length > MAX_CHUNK_BYTES:
+            raise HTTPException(413, f"Audio chunks are limited to {MAX_CHUNK_BYTES} bytes")
+        payload = bytearray()
+        async for part in request.stream():
+            payload.extend(part)
+            if len(payload) > MAX_CHUNK_BYTES:
+                raise HTTPException(413, f"Audio chunks are limited to {MAX_CHUNK_BYTES} bytes")
+        if not payload:
+            raise HTTPException(422, "Audio chunk is empty")
+
+        transcriber = app.state.live_audio_transcriber
+        lock = app.state.live_audio_lock
+        def transcribe():
+            with lock:
+                return transcriber.transcribe_chunk(
+                    stream_id=f"twitch:{channel}", payload=bytes(payload), content_type=content_type,
+                    source_media_start_seconds=source_start, event_at=event_at,
+                    available_at=datetime.now(timezone.utc), language="en",
+                ).as_dict()
+        try:
+            return await asyncio.to_thread(transcribe)
+        except ValueError as error:
+            raise HTTPException(422, str(error)) from error
 
     @app.get("/api/markets")
     async def markets(run_id: str | None = None):

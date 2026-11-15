@@ -10,6 +10,8 @@ import { ExecutionTraceDialog } from './components/ExecutionTraceDialog';
 import { UnavailableSources } from './components/UnavailableSources';
 import { MarketRail } from './components/MarketRail';
 import { ReactionTelemetry } from './components/ReactionTelemetry';
+import { EvidenceTrail } from './components/EvidenceTrail';
+import { TwitchLiveCapture, type LiveAudioChunk, type LiveAudioResult } from './components/TwitchLiveCapture';
 
 const unassignedSceneIds = new Set(['unknown', 'unassigned', 'manual-unassigned', 'manual-unknown']);
 const isAssignedScene = (sceneId: string) => {
@@ -26,6 +28,7 @@ export default function App() {
   const [search, setSearch] = useState('');
   const [activeSource, setActiveSource] = useState('');
   const [activeSection, setActiveSection] = useState(window.location.hash || '#streams');
+  const [activeView, setActiveView] = useState<'trail' | 'desk'>(() => ['#streams', '#markets', '#paper'].includes(window.location.hash) ? 'desk' : 'trail');
   const [seekDraft, setSeekDraft] = useState<number | null>(null);
   const snapshot = desk.frame?.payload;
   useEffect(() => { const timer = setInterval(() => setNow(Date.now()), 1000); return () => clearInterval(timer); }, []);
@@ -42,14 +45,63 @@ export default function App() {
   const uniqueSources = new Set(snapshot?.windows.map(item => item.stream_id)).size;
   const displayedWindows = snapshot?.windows.filter(item => (streamFilter === 'all' || item.stream_id === streamFilter) && (!search || item.raw_text.toLowerCase().includes(search.toLowerCase()))).slice().reverse() ?? [];
   const quoteModes = [...new Set(snapshot?.venue_context.quotes.map(item => item.quote_mode))];
+  const replayQuote = snapshot?.quotes.at(-1);
+  const replayQuoteLabel = !replayQuote ? 'NO REPLAY QUOTE' : replayQuote.is_stale ? 'STALE REPLAY QUOTE' : `${replayQuote.quote_mode.replaceAll('_', ' ').toUpperCase()} QUOTE`;
   const latestFeature = snapshot?.features.at(-1);
   const manualSceneCount = new Set(snapshot?.claims.map(item => item.scene_id).filter(isAssignedScene) ?? []).size;
   const seek = () => { if (seekDraft != null) void desk.control('seek', { position_seconds: forwardOnly ? Math.max(position, seekDraft) : seekDraft }); setSeekDraft(null); };
+  const submitLiveAudio = async (audio: Blob, metadata: LiveAudioChunk): Promise<LiveAudioResult> => {
+    const response = await fetch('/api/live-audio/chunks', {
+      method: 'POST',
+      headers: {
+        'Content-Type': audio.type.startsWith('audio/webm') ? 'audio/webm' : audio.type || metadata.mediaType,
+        'X-Leonida-Source': metadata.channel,
+        'X-Leonida-Chunk-Id': metadata.chunkId,
+        'X-Leonida-Chunk-Index': String(metadata.chunkIndex),
+        'X-Leonida-Started-At': metadata.startedAt,
+      },
+      body: audio,
+      signal: AbortSignal.timeout(30_000),
+    });
+    const result = await response.json().catch(() => null);
+    if (!response.ok) throw new Error(typeof result?.detail === 'string' ? result.detail : `Live audio processing failed (${response.status}).`);
+    if (!result || typeof result !== 'object') throw new Error('The live audio endpoint returned an invalid result.');
+    const segments = Array.isArray(result.accepted_segments) ? result.accepted_segments : [];
+    const transcript = segments.map((segment: unknown) => segment && typeof segment === 'object' && typeof (segment as { text?: unknown }).text === 'string' ? (segment as { text: string }).text.trim() : '').filter(Boolean).join(' ');
+    const auditSegments = Array.isArray(result.audit_segments) ? result.audit_segments : [];
+    const notAccepted = auditSegments.filter((entry: unknown) => !entry || typeof entry !== 'object' || (entry as { status?: unknown }).status !== 'accepted');
+    const reasonCounts = new Map<string, number>();
+    for (const entry of notAccepted) {
+      if (!entry || typeof entry !== 'object') continue;
+      const reasons = (entry as { reasons?: unknown }).reasons;
+      if (!Array.isArray(reasons)) continue;
+      for (const reason of reasons) if (typeof reason === 'string') reasonCounts.set(reason, (reasonCounts.get(reason) ?? 0) + 1);
+    }
+    const reasonSummary = [...reasonCounts.entries()].slice(0, 3).map(([reason, count]) => `${reason.replaceAll('_', ' ')} (${count})`).join(', ');
+    const auditSummary = segments.length
+      ? `${segments.length} accepted speech segment${segments.length === 1 ? '' : 's'}${notAccepted.length ? ` · ${notAccepted.length} uncertain/rejected` : ''}`
+      : `No speech passed quality gates · ${auditSegments.length} audited${reasonSummary ? ` · ${reasonSummary}` : ''}`;
+    const modelIdentity = result.model_identity && typeof result.model_identity === 'object' ? result.model_identity as { name?: unknown; version?: unknown } : null;
+    const provenance = [
+      result.evidence_mode,
+      typeof modelIdentity?.name === 'string' ? modelIdentity.name : null,
+      typeof modelIdentity?.version === 'string' ? `model ${modelIdentity.version.slice(0, 12)}` : null,
+      result.asr_version,
+      result.gate_version,
+    ].filter((item): item is string => typeof item === 'string').join(' · ');
+    return {
+      status: result.status === 'unavailable' ? 'ASR unavailable' : auditSummary,
+      transcript: transcript || undefined,
+      reason: typeof result.unavailable_reason === 'string' ? result.unavailable_reason : undefined,
+      provenance: provenance || undefined,
+    };
+  };
 
   return <div className="app">
-    <a className="skip-link" href="#streams">Skip to source workspace</a>
+    <a className="skip-link" href="#streams" onClick={() => setActiveView('desk')}>Skip to source workspace</a>
     <header className="topbar"><a className="brand" href="#" aria-label="Leonida Alpha home"><span className="brand-mark">L<span>α</span></span><div><strong>LEONIDA <span>ALPHA</span></strong><small>EVIDENCE & MARKET RESEARCH</small></div></a><div className="command-run"><span className="eyebrow">RUN</span><span className="mono" title={snapshot?.run_id}>{snapshot?.run_id ?? 'Awaiting snapshot'}</span></div><div className="header-right"><span className={`connection ${desk.connection}`}><i />{({ connecting: 'Connecting', streaming: 'Stream connected', polling: 'REST fallback', offline: 'Offline', mock: 'Frozen example' })[desk.connection]}</span><span className="local-label">PAPER / {snapshot?.gate ?? 'G3'}</span></div></header>
-    <nav className="desk-nav" aria-label="Desk sections"><div>{[['#streams', 'Evidence desk'], ['#markets', 'Venue context'], ['#paper', 'Paper activity']].map(([href, label]) => <a key={href} className={activeSection === href ? 'active' : ''} aria-current={activeSection === href ? 'location' : undefined} href={href} onClick={() => setActiveSection(href)}>{label}</a>)}</div><span className="nav-provenance">{snapshot?.evidence_mode === 'recorded' ? 'LOCAL RECORDINGS' : 'SYNTHETIC FIXTURE'}<span> / </span> SYNTHETIC QUOTES <span> / </span> HEURISTIC MODEL</span></nav>
+    <nav className="desk-nav" aria-label="Desk sections"><div><a className={activeView === 'trail' ? 'active' : ''} aria-current={activeView === 'trail' ? 'page' : undefined} href="#trail" onClick={() => setActiveView('trail')}>Evidence trail</a><a className={activeView === 'desk' && activeSection === '#streams' ? 'active' : ''} aria-current={activeView === 'desk' && activeSection === '#streams' ? 'page' : undefined} href="#streams" onClick={() => { setActiveView('desk'); setActiveSection('#streams'); }}>Full desk</a><a className={activeView === 'desk' && activeSection === '#markets' ? 'active' : ''} aria-current={activeView === 'desk' && activeSection === '#markets' ? 'page' : undefined} href="#markets" onClick={() => { setActiveView('desk'); setActiveSection('#markets'); }}>Venue context</a><a className={activeView === 'desk' && activeSection === '#paper' ? 'active' : ''} aria-current={activeView === 'desk' && activeSection === '#paper' ? 'page' : undefined} href="#paper" onClick={() => { setActiveView('desk'); setActiveSection('#paper'); }}>Paper activity</a></div><span className="nav-provenance">{snapshot?.evidence_mode === 'recorded' ? 'LOCAL RECORDINGS' : 'SYNTHETIC FIXTURE'}<span> / </span> {replayQuoteLabel} <span> / </span> HEURISTIC MODEL</span></nav>
+    <section id="live-demo-main"><TwitchLiveCapture onAudioChunk={submitLiveAudio} /></section>
     <main>
       <h1 className="sr-only">Leonida Alpha evidence and prediction-market research terminal</h1>
       {desk.mockMode && <div className="notice amber" role="status">Frozen contract example · read-only preview. No backend or media activity is being shown.</div>}
@@ -58,6 +110,7 @@ export default function App() {
       {!snapshot ? <div className="waiting-panel"><Icon name="signal" size={34} /><h2>{desk.connection === 'offline' ? 'The local desk is offline' : 'Connecting to your evidence desk'}</h2><p>Start the backend with <code>python scripts/manage.py demo</code>, then this view will load its full state.</p><a href="?mock=1">Inspect the frozen contract example <Icon name="arrow" size={14} /></a></div> : <>
         <section className="playback-bar" aria-label="Synchronized replay controls"><div className="playback-main"><button type="button" className="play-button" disabled={disabled || playbackDuration <= 0} onClick={() => void desk.control(playback?.playing ? 'pause' : 'play')} aria-label={playback?.playing ? 'Pause replay' : 'Play replay'}><Icon name={playback?.playing ? 'pause' : 'play'} size={17} /></button><div><strong>{snapshot.scenario_name === 'recordings' ? 'Local recordings' : snapshot.scenario_name?.replaceAll('-', ' ') ?? 'Evidence replay'}</strong><span>{snapshot.run_status?.toUpperCase()} · {playbackDuration > 0 ? 'Synchronized event time' : 'Single fixture observation'}</span></div></div><div className="timeline"><span className="mono">{duration(seekDraft ?? position)}</span><input type="range" aria-label="Replay position" min={forwardOnly ? position : 0} max={Math.max(playbackDuration, 1)} step="0.1" value={forwardOnly ? Math.max(position, seekDraft ?? position) : seekDraft ?? position} disabled={disabled || playbackDuration <= 0} onChange={event => setSeekDraft(Number(event.target.value))} onPointerUp={seek} onKeyUp={event => { if (['ArrowLeft', 'ArrowRight', 'Home', 'End', 'PageUp', 'PageDown'].includes(event.key)) seek(); }} /><span className="mono muted">{duration(playbackDuration)}</span></div><div className="playback-actions"><label className="sr-only" htmlFor="replay-speed">Replay speed</label><select id="replay-speed" aria-label="Replay speed" value={playback?.speed ?? 1} onChange={event => void desk.control('set_speed', { speed: Number(event.target.value) })} disabled={disabled || playbackDuration <= 0}>{[0.5, 1, 2, 5].map(speed => <option value={speed} key={speed}>{speed}× speed</option>)}</select><button type="button" className="icon-button" disabled={disabled} onClick={() => void desk.control('reset')} aria-label="Reset to a new run" title="Reset to a new run"><Icon name="reset" /></button></div></section>
         <ScenarioChooser activeScenario={snapshot.scenario_name} disabled={disabled} onLoad={scenario => void desk.loadScenario(scenario)} />
+        {activeView === 'trail' ? <EvidenceTrail snapshot={snapshot} onOpenDesk={() => { setActiveView('desk'); setActiveSection('#streams'); }} onLoadDemo={() => void desk.loadScenario('courtroom-praise')} onReceipt={setReceiptId} /> : <>
         <section className="metric-strip" aria-label="Evidence coverage"><div><span>Recording sources</span><strong>{sourcesReady}<small> / {snapshot.recording_manifest.recordings.length}</small></strong><em>{sourcesReady ? 'Ready for synchronized playback' : 'Fixture fallback available'}</em></div><div><span>Unique observations</span><strong>{snapshot.windows.length.toString().padStart(2, '0')}</strong><em>{uniqueSources} contributing source{uniqueSources === 1 ? '' : 's'}</em></div><div><span>Supported claims</span><strong>{snapshot.claims.filter(item => item.sentiment != null).length.toString().padStart(2, '0')}</strong><em>{snapshot.claims.filter(item => item.sentiment == null).length} abstained · missing stays missing</em></div><div><span>Paper cash</span><strong>{dollars(snapshot.cash_usd)}</strong><em>{snapshot.order_count ?? 0} orders · {snapshot.fill_count ?? 0} fills</em></div></section>
         {forwardOnly && <p className="seek-guidance">Synthetic accounting advances forward only. Use Reset to inspect an earlier point in a fresh run.</p>}
         <div className="terminal-grid"><div className="desk-workspace"><section id="streams" className="stream-section"><div className="section-heading"><div><span className="section-index">01</span><h2>Source monitor</h2><Badge>{snapshot.streams.length} source slots</Badge></div><span className="tiny muted">SYNCHRONIZED / {duration(position)}</span></div><div className="mobile-source-selector"><label htmlFor="active-source">Active source</label><select id="active-source" value={activeSource || snapshot.recording_manifest.recordings[0]?.asset_id || ''} onChange={event => setActiveSource(event.target.value)}>{snapshot.recording_manifest.recordings.map((asset, index) => <option key={asset.asset_id} value={asset.asset_id}>{String(index + 1).padStart(2, '0')} / {asset.label}</option>)}</select></div><div className="stream-grid">{snapshot.recording_manifest.recordings.map((asset, index) => {
@@ -85,6 +138,7 @@ export default function App() {
         <div className="bottom-grid g3-coverage"><section className="panel coverage-panel"><div className="section-heading"><div><Icon name="signal" /><h2>Coverage & limitations</h2></div></div><div className="coverage-metrics"><div><strong>{uniqueSources}</strong><span>Observed sources</span></div><div><strong>{manualSceneCount > 0 ? manualSceneCount : 'Unknown'}</strong><span>{manualSceneCount > 0 ? 'Manual scenes' : 'Unassigned scenes'}</span></div><div><strong>{latestFeature?.disagreement == null ? 'N/A' : latestFeature.disagreement.toFixed(2)}</strong><span>Disagreement</span></div></div><ul>{snapshot.warnings.map((warning, index) => <li key={index}>{warning}</li>)}</ul></section></div>
         </div><MarketRail snapshot={snapshot} onReceipt={setReceiptId} /></div>
         <footer className="desk-footer"><span><i className="live-dot" />LEONIDA ALPHA · LOCAL RESEARCH DESK</span><span className="mono">SCHEMA {desk.frame?.schema_version} · SEQ {desk.frame?.sequence} · UPDATED {desk.receivedAt ? `${Math.max(0, Math.floor((now - desk.receivedAt) / 1000))}s AGO` : 'UNAVAILABLE'}</span><details><summary>Cache provenance</summary><p className="mono">{snapshot.cache_key}</p><p>Configuration {snapshot.configuration_fingerprint}</p></details></footer>
+        </>}
         <ReceiptDialog receipt={selectedReceipt} snapshot={snapshot} onClose={() => setReceiptId(null)} />
         <ExecutionTraceDialog order={selectedOrder} execution={snapshot.execution} onClose={() => setExecutionOrderId(null)} />
       </>}

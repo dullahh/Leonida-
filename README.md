@@ -23,19 +23,19 @@ python scripts/manage.py demo --scenario recordings
 python scripts/manage.py demo --scenario portable
 ```
 
-Both modes run without API credentials or network access after dependencies are installed. First-time dependency installation needs network access or prepopulated uv/npm caches; it cannot create unavailable packages offline. No Whisper model setup or media preprocessing is needed for the portable demo. A clean source-only copy was installed from the existing dependency caches and launched offline during release verification.
+Both modes run without API credentials or network access after dependencies are installed. No Whisper model setup or media preprocessing is needed for the portable demo.
 
 Default databases are separate: `var/demo-recordings.sqlite3` and `var/demo-portable.sqlite3`. `--db PATH` overrides this; a saved run matching the selected input resumes paused. A different saved scenario cannot override the selected launch mode; old audit is retained. Use Reset for a fresh epoch. `--port 8001` runs a second instance.
 
 ## What the desk shows
 
-- **Recorded evidence:** actual supplied GTA V RP screen recordings, cached OCR lines, machine speech transcripts, media times and source artifacts. GTA V is proxy demo evidence, not GTA VI gameplay. The five clips yield1651 observations; every quality interpretation currently abstains.
+- **Recorded evidence:** actual supplied GTA V RP screen recordings, cached OCR lines, machine speech transcripts, media times and source artifacts. GTA V is proxy demo evidence, not GTA VI gameplay. The five clips yield 1651 observations; every quality interpretation currently abstains.
 - **Reaction telemetry:** deterministic text cues suggest possible excitement, frustration, surprise or confusion. These scores do not measure actual emotion, vocal arousal or speaker identity. Profanity and shouting alone do not establish game quality.
-- **Supported claims:** explicit attributed game-quality opinions must pass the existing conservative classifier plus target-certainty, confidence and market-relevance gates. All current real clips remain excluded from pricing. The separate Courtroom fixture supplies clearly labelled qualifying annotations.
+- **Supported claims:** explicit attributed game-quality opinions must pass the existing conservative classifier plus target-certainty, confidence and market-relevance gates. All current real clips remain excluded from pricing. The separate where fixture supplies clearly labelled qualifying annotations.
 - **Market-relative probability:** the current valid synthetic quote midpoint anchors a bounded log-odds adjustment from unique relevant evidence. Absolute sentiment and pre-update surprise stay separate; source count and refreshes do not amplify the signal. Coefficients are illustrative and uncalibrated.
-- **Paper execution and receipts:** synthetic scenarios demonstrate250ms processing latency, fees, available depth, partial fills, cash/position accounting and exits. Receipts show source, feature, model, quote and order-stage IDs. No real-money route exists.
+- **Paper execution and receipts:** synthetic scenarios demonstrate 250ms processing latency, fees, available depth, partial fills, cash/position accounting and exits. Receipts show source, feature, model, quote and order-stage IDs. No real-money route exists.
 
-Actual historical GTA VI venue captures are shown separately with stale labels; this proxy material does not change their prices. Courtroom observations/baselines are supplied fixtures. Its price timeline, liquidity, fees and fills are synthetic/simulated, not a historical backtest or a promise of profit. No new live-source claim is made by this release.
+Actual historical GTA VI venue captures are shown separately with stale labels; this proxy material does not change their prices. Courtroom observations/baselines are supplied fixtures. Its price timeline, liquidity, fees and fills are synthetic/simulated, not a historical backtest or a promise of profit. The optional Twitch panel is an implementation path; no real stream capture has been verified.
 
 A valid scenario quote displays its midpoint independently of the model:14¢/15¢ shows **14.50% synthetic Yes midpoint** even when claims abstain. The model and candidate remain unavailable with explicit reasons. The Venue context tab defaults to eight bundled historical Kalshi quotes from14 November2026, with exact receipt timestamps and source paths. [Quote/abstention audit and existing optional live-mode command](docs/QUOTE_CLARITY.md) documents the precise data, staleness and failure behaviour; no live network call is required by default.
 
@@ -64,5 +64,19 @@ audio upload or paid API. [ASR audit](docs/LOCAL_ASR_UPGRADE.md) and
 timings and unresolved transcription/speaker uncertainty.
 
 The six portable scenarios are courtroom-praise, technical-failure-laughter, skill-rage-controls, mixed-missing-facecam, duplicate-reconnect and venue-outage-reset. The original diagnostic is retained as `--scenario foundation`. Optional `--live-quotes` is a separate read-only network mode and is unnecessary for either release demo; no credentials are required for normal replay.
+
+## Optional live Twitch audio demo
+
+The live panel embeds Twitch's official player. Enter a channel and start playback in the panel, then choose **Start tab audio capture**. In the browser prompt, confirm **This Tab** (the current Leonida tab) and enable tab audio; the embedded Twitch player's audio is what gets captured. The app requests that the current tab be prominent in the picker, but the browser still requires your confirmation. It sends audio-only, independently decodable 15-second chunks to the local backend; video is not uploaded. This requires a supported desktop browser and Twitch player access; screen-audio capture support varies by browser.
+
+Install the optional local model once, then rebuild the UI and launch the desk:
+
+```powershell
+python scripts/manage.py setup-speech --asr-model small.en
+npm --prefix frontend run build
+python scripts/manage.py demo --scenario portable
+```
+
+The live observation and quality-gated transcript are separate from the replay ledger. Speaker identity, game identity, aspect, sentiment, scene alignment and market relevance are not inferred by this live adapter, so the transcript does not affect estimates or paper activity. Audio chunks are written briefly to a local temporary directory for conversion, then removed; they are not added to the evidence cache. If the Whisper model is missing, decoding fails, or quality gates reject the speech, the panel shows that status without invented transcript text. Twitch embedding uses its official `parent` parameter; see [Twitch's embed documentation](https://dev.twitch.tv/docs/embed/video-and-clips/) and [browser screen-audio capture behavior](https://developer.mozilla.org/en-US/docs/Web/API/MediaDevices/getDisplayMedia).
 
 Next research milestones: an as-of historical game/year dataset, held-out calibration against market-only and competitor models, and execution evaluation using actual venue fee/depth rules. Current limits include uncertain transcripts/attribution, English lexical semantics, manual scenes and long-recording performance. No validated forecasting edge is claimed.

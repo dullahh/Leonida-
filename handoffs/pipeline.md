@@ -424,3 +424,69 @@ present in the broker. Real recordings remain candidate-only and all-abstaining.
 This worker verified fixture data and pure quant/broker compositions. Integrated
 scheduler, SQLite atomicity/restart, HTTP/WS and browser gates remain root-owned;
 their acceptance is not claimed here. No dependency or contract blocker remains.
+# Live audio ingestion handoff
+
+## Changed paths
+
+- `backend/ingestion/live_audio.py`
+- This handoff.
+
+## Public interface
+
+```python
+from backend.ingestion.live_audio import LiveAudioTranscriber
+
+transcriber = LiveAudioTranscriber(Path("var/models/faster-whisper-small.en"))
+window = transcriber.transcribe_chunk(
+    stream_id="twitch:<channel-login>",
+    payload=audio_bytes,
+    content_type="audio/webm;codecs=opus",  # or audio/wav
+    source_media_start_seconds=0.0,
+    event_at=aware_chunk_start,
+    available_at=aware_received_at,
+    language="en",
+)
+wire_value = window.as_dict()
+```
+
+The service accepts at most 2 MiB and 15 seconds per chunk. Supported input is
+WAV or a standalone WebM/Opus chunk. The browser should use a user-authorized
+display/tab-audio capture and submit non-overlapping chunks. It does not access
+Twitch media URLs, download stream content, or persist the incoming bytes.
+
+The result has a deterministic `source_window_id`, `evidence_mode: "live"`,
+source interval, aware event/availability timestamps, source and derived-payload
+hashes, ASR/model/gate versions, accepted segments, and the full quality-gate
+audit. Accepted segment offsets are absolute in the source timeline while
+`local_start_seconds`/`local_end_seconds` preserve chunk-relative times. An
+unavailable local model returns `status: "unavailable"`, a reason, null model
+identity/version, and no text. Decode/shape errors raise `ValueError` for a
+client error response.
+
+This is deliberately not the frozen `SourceWindow`: that contract only permits
+recorded/synthetic GTA V proxy evidence. The DTO has no game ID, target, aspect,
+sentiment, scene, market relevance, or claim. Route it only to a separately
+labelled live observation surface until game identity and semantic extraction
+are explicitly supplied and versioned. Do not put it into existing quote,
+estimate, or paper execution state.
+
+## Verification
+
+- `python -m py_compile backend/ingestion/live_audio.py` — exit 0.
+- `git diff --check` — exit 0.
+- No tests were added or run. No real Twitch stream or browser-captured audio
+  was available, so this does not claim an end-to-end live source works.
+
+## Limitations and integration actions
+
+- The producer must ensure chunks are independently decodable; some browser
+  MediaRecorder implementations emit later timeslice fragments without a
+  standalone WebM header. A short WAV chunk is the portable initial path.
+- English is the current local ASR configuration. There is no model download or
+  fallback in the service. Install/select a model through the existing setup
+  command before enabling capture.
+- Root owns HTTP routes and schemas. Instantiate one transcriber in the app
+  lifespan, run synchronous conversion/ASR in a worker thread, enforce one
+  active capture stream per run, and deduplicate repeated source-window IDs.
+- Browser embed support must use Twitch's required `parent` parameter and user
+  interaction. This adapter itself does not prove Twitch playback/capture works.
