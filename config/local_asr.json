@@ -1,0 +1,9 @@
+{
+  "configuration_version": "local-asr-config-v1",
+  "default_model": "small.en",
+  "quality_model": "small.en",
+  "fast_fallback_model": "tiny.en",
+  "validated_evidence_cache": "c50cb055b472236a68dc526cbca092cdcead3367384dbc8a8437de0bf67ea751",
+  "comparison_run": "d8730e510b079f8502bf1facea19dc7c4701cc19a98f2f219c451e602a448aba",
+  "fallback_policy": "Explicit selection only; never download or fall back during preprocessing/playback."
+}

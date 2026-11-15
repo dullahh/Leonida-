@@ -135,3 +135,43 @@ The explicit one-thread frontend-only request supersedes project worker delegati
 Use a neutral near-black terminal, semantic quote/evidence/active/risk colors, native system fonts and tabular values. Put sources first on desktop with a persistent market/model rail; put replay and market state before an active-source selector on narrow screens. Relocate existing reaction telemetry beneath sources without changing its scoring, bins or inclusion logic. Keep raw extraction, supported claims, model outputs and simulated fills visibly distinct. Preserve existing exact semantic values/tests while adding an explicit combined abstention summary.
 
 Use the native dialog lifecycle for accessible focus containment and Escape, but present receipts/traces as edge-aligned inspectors. Preserve table columns inside named focusable scroll regions on narrow screens. Reuse quoteReference and backend projection values; no analytical or transport behavior changes. Historical venue captures remain separate/stale; optional live labels are preserved without enabling network polling. UI_DIRECTION.md records audit, tokens, layout, evidence and limitations.
+
+## Local ASR upgrade - 15 November 2026
+
+The explicit speech-only, one-thread request supersedes worker delegation/ownership
+for this bounded change and its focused tests. No agents, paid API, audio upload,
+OCR implementation, claim semantics, reaction policy, pricing, frontend or scenario
+changes. Install the public small English CTranslate2 model once, pin its repository
+revision and identify actual model bytes by SHA-256. Run English CPU int8 ASR with
+one inference thread/worker, serial 15-second windows without overlap, local VAD,
+beam 5 and no previous-text conditioning. Retain every returned candidate and
+diagnostic before our heuristic gates; provider-side silence/quality filters cannot
+silently erase returned bad text from this audit.
+
+Strict timestamps never clip, severe loops/compression/poor speech diagnostics
+reject before classification, and borderline speech stays uncertain in audit only.
+Recognition confidence never assigns a speaker. Preserve raw audio-relative times,
+apply window/media/replay offsets once each, and keep accepted recognition separate
+from semantic/speaker support. Version PCM preprocessing, ASR implementation, gates,
+model bytes, package versions, windowing, all explicit transcription settings and
+media/PCM hashes in separate immutable ASR results. Comparison alternatives are
+never combined as additional evidence.
+
+ASR-only preprocessing validates the original composed evidence cache and copies
+its OCR observation objects/artifact references unchanged rather than reinterpreting
+legacy text or requiring fresh OCR. The input manifests' historical composition/
+semantic labels are preserved; per-speech extraction records the actual unchanged
+classifier version. New speech gets a distinct evidence cache and explicit source
+receipt model/version/gate explanation; no schema/frontend change is required.
+
+Both models completed all five clips and the actual two-second quiet lead-in.
+Small took 275.033s versus tiny 66.851s; both still hallucinate the t4 no loop and
+are rejected. No manually verified references exist and no word-accuracy gain is
+claimed. All intervals, especially music/shouting/overlap candidates, need listening
+review. Promote small only after full successful preprocessing and artifact checks;
+retain explicit tiny selection with identical gates and no silent fallback.
+The default changed after the c50cb055 quality cache succeeded. The original cache,
+pointer and running desk stay unchanged. Reports/commands: LOCAL_ASR_UPGRADE.md and
+ASR_COMPARISON.md. G3 22 tests, G4 11 tests and six-fixture release smoke passed;
+existing Windows socket/shutdown warnings remain. Commit separately as
+`Upgrade local speech transcription` and stop without deployment/push.

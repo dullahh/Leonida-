@@ -58,13 +58,15 @@ to run setup. OCR errors stop preprocessing rather than supplying invented text.
 
 All audio tracks are decoded to 16 kHz mono PCM. Two-second RMS activity
 measurements are cached. Activity is not sentiment and does not prove speech.
-The default manifest enables `audio_transcription=faster_whisper` and points
-`speech_model_path` to `var/models/faster-whisper-tiny.en`. Run
-`python scripts/manage.py setup-speech` once to download that local CTranslate2
-Whisper model. A different local model directory can be configured per recording.
-The provider never downloads models during preprocessing or playback. If the
-model is missing or ASR fails, chat extraction can still succeed and the asset
-report gives the exact speech error. Set `audio_transcription=disabled` explicitly
+Future preprocessing selects its model from `config/local_asr.json` or explicit
+`--asr-model small.en` (quality) / `--asr-model tiny.en` (fast fallback). The old
+manifest's tiny path remains historical input; the selected model path is recorded
+in each new cache's manifest. Run `python scripts/manage.py setup-speech --asr-model small.en`
+once to download the local CTranslate2 model; select `tiny.en` to install the fallback.
+The provider never downloads models during preprocessing or playback, and never
+silently falls back. Missing models or failed ASR stop new preprocessing before
+publishing a complete evidence cache. Existing cached playback remains available.
+Set `audio_transcription=disabled` explicitly
 if only PCM/activity and chat evidence are wanted.
 
 Keep `speaker_role=unknown` unless the segment is known to be streamer commentary.
@@ -72,10 +74,30 @@ ASR does not separate NPC dialogue, music vocals or other voices. Unknown-speake
 transcripts remain visible evidence but abstain from game-quality sentiment.
 For a mixed recording, trim to a verified commentary excerpt before setting
 `speaker_role=streamer`; this is a manual attribution claim, not diarization.
-ASR text is model output, not a verified quotation. Segments outside the actual
-decoded audio duration are rejected, and repeated/high-compression output is
-flagged as unreliable. Raw segments and their rejection/quality reasons remain
-in `transcript.json` and `transcript-validation.json` inside the cache artifacts.
+ASR uses serial 15-second windows without overlap, English transcription, local
+Silero VAD, CPU int8 and one inference thread. VAD times are restored to original
+audio coordinates before strict checks; media/replay offsets are applied separately.
+ASR text is model output, not a verified quotation. Out-of-duration/window timestamps,
+severe loops, compression above 2.4, average log probability below -1.0 or no-speech
+probability above .6 are rejected. Borderline diagnostics and short repetitions
+are uncertain. Only accepted segments enter classification/reactions; uncertain
+and rejected text stays audit-only. Gate coefficients are heuristic. Every segment
+still requires listening for word/speaker verification.
+Raw output, statuses/reasons, timing and content-hashed model/settings receipts
+remain in `transcript.json`, `transcript-validation.json` and `asr-receipt.json`.
+The independent ASR cache lives at `var/asr-cache/local-asr-v2/`.
+
+ASR-only command preserving current playback selection and requiring verified OCR reuse:
+
+```powershell
+python scripts/manage.py preprocess --asr-model small.en --reuse-ocr-only --no-select-cache
+```
+
+Use `--asr-model tiny.en` for the explicit fast fallback. Omit `--no-select-cache`
+only when you want the new evidence cache selected for future demo launches.
+Compare both models without changing evidence selection:
+`.venv/Scripts/python.exe -B scripts/compare_asr.py`.
+See [ASR audit](../../docs/LOCAL_ASR_UPGRADE.md) and [side-by-side review](../../docs/ASR_COMPARISON.md).
 
 ## Cached evidence and limitations
 

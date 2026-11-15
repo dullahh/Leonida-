@@ -1,5 +1,29 @@
 # Repository state - 15 November 2026
 
+## Local speech upgrade
+
+Single thread, no agents. `small.en` is now the default for future preprocessing
+after both comparison and the full local quality pipeline succeeded; `--asr-model tiny.en`
+is the explicit fast fallback. No OCR/claim/reaction/pricing/frontend/scenario logic
+changed. The ASR-only pass preserves all1,553 original OCR observations exactly,
+adds35 accepted small speech observations, and retains10 uncertain/23 rejected
+speech segments in audit only. All speakers remain unknown; supported quality
+claims, estimates and decisions remain zero. The old1651-observation playback cache,
+pointer and running user server remain unchanged.
+
+New quality cache: `var/evidence-cache/c50cb055b472236a68dc526cbca092cdcead3367384dbc8a8437de0bf67ea751.json`.
+Independent model caches: `var/asr-cache/local-asr-v2/`. Final side-by-side review:
+`var/asr-comparison/v1/d8730e510b079f8502bf1facea19dc7c4701cc19a98f2f219c451e602a448aba/`.
+See [audit/commands/results](LOCAL_ASR_UPGRADE.md) and [listening review](ASR_COMPARISON.md).
+All intervals need listening review; no reference transcripts or accuracy improvement
+are claimed. Both models still loop on t4; strict gates reject that text before
+classification. Small took275.033s versus tiny66.851s on273.744s of comparison audio,
+including the overlapping2s no-speech control. The downloaded small files total486,098,798 bytes.
+
+G3 passed22 tests plus schema/type/frontend build checks; G4/release suite passed11
+tests with the documented Windows socket/shutdown warnings. Six-scenario release
+HTTP/WS smoke passed. No deployment/push; stop after the local ASR upgrade.
+
 ## Quote and abstention display clarification
 
 Display-only fix from87c34a2: valid14¢/15¢ synthetic quote now displays14.50% market reference even when claims abstain. Model/correction/candidate remain unavailable with precise explanations; source-card absent-value reasons are explicit. Venue context exposes exact receipt time/source and was audited as eight bundled stale historical Kalshi quotes, polling disabled. Existing optional --live-quotes command and failure/expiry behaviour are documented in [QUOTE_CLARITY.md](QUOTE_CLARITY.md). Release checks pass:15 G3 tests,11 G4/startup/display tests, six-scenario smoke and frontend typecheck/build. No classification, pricing gate, coefficient, execution, scenario or media change. Separate commit title: Clarify quote and abstention states. Stop after this fix.

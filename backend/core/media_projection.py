@@ -100,6 +100,7 @@ def project(run_id, cache, position, speed, playing, config_key, venue, metadata
             explanation=["Cached source text -> conservative heuristic attribution -> unique source buckets -> market-relative scenario estimate.",
                 "Absolute sentiment and pre-update rolling surprise are separate; unseeded sources need 20 valid buckets for surprise.",
                 f"Anchor={result.estimate.market_reference_probability:.6f}; correction={result.estimate.correction_log_odds:.6f}; scenario={result.estimate.model_probability:.6f}.",
+                *dict.fromkeys(w.confidence_reason for w in windows if w.source_modality == "speech" and w.window_id in {c.window_id for c in used} and w.confidence_reason),
                 *result.decision.reasons],
             limitations=["GTA V proxy demonstration; no predictive validation for GTA VI.", "OCR and speech recognition may make errors. Inspect source frames and original words.",
                 "Conservative English keyword attribution is heuristic; no calibrated posterior.", "Only separately authorized fully synthetic scenarios can simulate paper fills; media remains candidate-only."])]

@@ -14,12 +14,13 @@ import tempfile
 from backend.core.identity import digest, stable_id
 from backend.core.schemas import CachedObservation, EvidenceCache, MediaAssetReport, ModalityAvailability, RecordingManifest, SourceWindow
 from backend.perception.claims import SEMANTIC_VERSION, interpret
-from .audio import extract_audio, pcm_duration, transcribe, validate_segments
+from .audio import (ASR_VERSION, AUDIO_PREPROCESSING_VERSION, GATE_VERSION, GATES, MODEL_NAMES,
+                    cached_transcribe, extract_audio, model_identity, transcription_settings)
 from .ocr import OCRLine, RapidOCRProvider, VisibleLineTracker
 from .tools import MediaSetupError, ffmpeg_path, file_sha256, media_info, package_version, run_ffmpeg
 
 MEDIA_EXTENSIONS = {".mp4", ".mkv", ".mov", ".webm", ".avi", ".m4v"}
-PREPROCESSING_VERSION = "local-media-v3-asr-boundaries"
+PREPROCESSING_VERSION = "local-media-v4-asr-quality"
 OCR_PROCESSING_ID = "sampled-native-crop-rapidocr-v1"
 OCR_VERSION_KEYS = ("rapidocr-onnxruntime", "onnxruntime", "imageio-ffmpeg", "av", "ffmpeg_binary_sha256")
 
@@ -133,13 +134,56 @@ def _reuse_ocr_audit(cache_directory: Path, manifest: RecordingManifest, version
     return {}, None
 
 
+def interpret_accepted_speech(segment: dict, speaker_role: str):
+    """Quality boundary: audit-only text never reaches the semantic classifier."""
+    if segment.get("asr_status") != "accepted":
+        return None
+    return interpret(segment["text"][:240].strip(), modality="speech", speaker_role=speaker_role)
+
+
 class MediaPreprocessor:
-    def __init__(self, repository_root: Path):
+    def __init__(self, repository_root: Path, asr_model: str | None = None, *, reuse_ocr_only: bool = False,
+                 source_cache_path: Path | None = None):
         self.repository_root = repository_root.resolve()
+        configuration = json.loads((self.repository_root / "config/local_asr.json").read_text(encoding="utf-8"))
+        self.asr_model = asr_model or configuration["default_model"]
+        if self.asr_model not in MODEL_NAMES:
+            raise ValueError("Choose small.en quality mode or tiny.en fast fallback explicitly.")
+        self.reuse_ocr_only = reuse_ocr_only
+        self.source_cache_path = source_cache_path
+        pointer = self.repository_root / "var/last-recording-cache.txt"
+        if reuse_ocr_only and source_cache_path is None and pointer.is_file():
+            self.source_cache_path = Path(pointer.read_text(encoding="utf-8").strip())
 
     def preprocess(self, manifest: RecordingManifest, cache_directory: Path) -> EvidenceCache:
+        # Select only for this new interpretation; never mutate a loaded cache
+        # or the user's legacy manifest/model provenance.
+        manifest = manifest.model_copy(update={"recordings": [
+            asset.model_copy(update={"speech_model_path": f"var/models/faster-whisper-{self.asr_model}"})
+            if asset.audio_transcription == "faster_whisper" else asset for asset in manifest.recordings]})
         cache_directory = cache_directory.resolve()
         cache_directory.mkdir(parents=True, exist_ok=True)
+        preserved = None
+        preserved_artifacts = {}
+        if self.reuse_ocr_only and self.source_cache_path is not None:
+            source_cache_path = self.source_cache_path.resolve()
+            if source_cache_path.parent != cache_directory:
+                raise MediaSetupError("ASR-only preservation requires the original cache directory so existing OCR artifact references stay unchanged.")
+            preserved = load_cache(source_cache_path)
+            def without_model(value):
+                raw = value.model_dump(mode="json")
+                # Composed caches retain mixed interpretation/version labels.
+                # Those labels are preserved below, never recomputed from OCR.
+                raw.pop("manifest_version", None)
+                raw.pop("semantic_version", None)
+                for item in raw["recordings"]:
+                    item.pop("speech_model_path", None)
+                return raw
+            if without_model(preserved.manifest) != without_model(manifest):
+                raise MediaSetupError("ASR-only source manifest differs beyond the selected speech model; existing OCR observations cannot be preserved.")
+            manifest = preserved.manifest.model_copy(update={"recordings": manifest.recordings})
+            preserved_artifacts = json.loads((cache_directory / preserved.cache_key / "artifacts.json").read_text(encoding="utf-8"))
+            preserved_artifacts[source_cache_path.name] = file_sha256(source_cache_path)
         asset_inputs = []
         for asset in manifest.recordings:
             if asset.local_path is None or asset.asset_sha256 is None:
@@ -157,6 +201,21 @@ class MediaPreprocessor:
                 model_path = resolve_local_path(asset.speech_model_path, self.repository_root, media=False)
                 versions[f"speech_model:{asset.asset_id}"] = digest({p.name: file_sha256(p) for p in sorted(model_path.glob("*")) if p.is_file()}) if model_path.is_dir() else "missing"
         versions["ocr_processing_id"] = OCR_PROCESSING_ID
+        versions.update({"asr_implementation": ASR_VERSION, "audio_preprocessing": AUDIO_PREPROCESSING_VERSION,
+                         "asr_quality_gates": GATE_VERSION, "asr_gate_settings": json.dumps(GATES, sort_keys=True),
+                         "asr_model_mode": self.asr_model,
+                         "asr_settings": json.dumps(transcription_settings(), sort_keys=True),
+                         "asr_runtime": "cpu/int8; cpu_threads=1; num_workers=1; windows=15s; overlap=0s"})
+        versions.update({name: package_version(name) for name in ("ctranslate2", "numpy")})
+        if preserved is not None:
+            versions.update({"asr_only_source_cache": preserved.cache_key,
+                             "asr_only_source_sha256": file_sha256(self.source_cache_path),
+                             "ocr_reuse_mode": "Original OCR observations/interpretations/artifacts preserved byte-for-byte; no OCR or OCR reclassification.",
+                             "preserved_ocr_sha256": digest([o.model_dump(mode="json") for o in preserved.observations if o.source_modality == "chat"])})
+        for asset in manifest.recordings:
+            if asset.audio_transcription == "faster_whisper" and asset.asset_sha256:
+                versions[f"asr_model_version:{asset.asset_id}"] = model_identity(
+                    resolve_local_path(asset.speech_model_path, self.repository_root, media=False))["version"]
         input_hash = digest(asset_inputs)
         key = digest({"schema": "2", "inputs": asset_inputs, "manifest": manifest.model_dump(mode="json"), "versions": versions})
         destination = cache_directory / f"{key}.json"
@@ -166,7 +225,7 @@ class MediaPreprocessor:
             from PIL import Image
         except ImportError as error:
             raise MediaSetupError("Pillow image decoding is unavailable. Run python scripts/manage.py setup.") from error
-        reusable_frames, reused_from = _reuse_ocr_audit(cache_directory, manifest, versions)
+        reusable_frames, reused_from = ({}, preserved.cache_key) if preserved else _reuse_ocr_audit(cache_directory, manifest, versions)
         provider = None
         directory = cache_directory / key
         directory.mkdir(parents=True, exist_ok=True)
@@ -186,7 +245,10 @@ class MediaPreprocessor:
             frames_dir.mkdir(parents=True, exist_ok=True)
             tracker = VisibleLineTracker(digest([asset.asset_sha256, asset.asset_id, asset.chat_region.model_dump()]))
             frame_count = 0
-            for index in range(math.ceil((end - start) / asset.sample_interval_seconds)):
+            if preserved is not None:
+                observations.extend(o for o in preserved.observations if o.asset_id == asset.asset_id and o.source_modality == "chat")
+                frame_count = next(r.frame_count for r in preserved.asset_reports if r.asset_id == asset.asset_id)
+            for index in range(0 if preserved is not None else math.ceil((end - start) / asset.sample_interval_seconds)):
                 media_seconds = round(start + index * asset.sample_interval_seconds, 6)
                 if media_seconds >= end:
                     break
@@ -197,6 +259,8 @@ class MediaPreprocessor:
                     shutil.copy2(cache_directory / reusable["frame_ref"], frame_path)
                     lines = [OCRLine(text=line["text"], confidence=line["confidence"], box=line["box"]) for line in reusable["lines"]]
                 else:
+                    if self.reuse_ocr_only:
+                        raise MediaSetupError("ASR-only preprocessing requires a verified matching raw OCR cache; OCR was not run.")
                     result = run_ffmpeg(["-ss", str(media_seconds), "-i", str(source), "-map", "0:v:0", "-frames:v", "1", "-f", "image2pipe", "-vcodec", "png", "pipe:1"])
                     if not result.stdout:
                         raise MediaSetupError(f"No frame returned at {media_seconds}s for {asset.asset_id}.")
@@ -234,35 +298,36 @@ class MediaPreprocessor:
                     try:
                         if not asset.speech_model_path:
                             raise MediaSetupError("speech_model_path is not configured; supply a local faster-whisper model directory.")
-                        segments = transcribe(audio_path, resolve_local_path(asset.speech_model_path, self.repository_root, media=False), asset.language)
+                        result = cached_transcribe(audio_path, resolve_local_path(asset.speech_model_path, self.repository_root, media=False),
+                                                  asset.language, self.repository_root / "var/asr-cache", asset.asset_sha256,
+                                                  start, duration_limit=end - start)
+                        segments, valid_segments, validation = result["raw_segments"], result["accepted_segments"], result["audit"]
                         _write_json(asset_dir / "transcript.json", segments)
-                        valid_segments, validation = validate_segments(segments, min(pcm_duration(audio_path), end - start))
                         _write_json(asset_dir / "transcript-validation.json", validation)
+                        _write_json(asset_dir / "asr-receipt.json", result)
                         speech_available = bool(valid_segments)
-                        rejected = len(segments) - len(valid_segments)
-                        warned = sum(bool(s.get("repetition_warning") or s.get("quality_warning")) for s in valid_segments)
-                        speech_reason = f"Rejected {rejected} ASR segment(s) outside valid audio support; {warned} retained segment(s) have quality warnings; see transcript-validation.json." if rejected or warned else (None if valid_segments else "ASR returned no speech segments.")
+                        counts = {status: sum(s["status"] == status for s in validation) for status in ("accepted", "uncertain", "rejected")}
+                        reasons = sorted({reason for entry in validation for reason in entry["reasons"]})
+                        model = result["identity"]["model"]
+                        receipt = f"ASR {model['name']} version={model['version']}; gates={GATE_VERSION}; accepted={counts['accepted']}, uncertain={counts['uncertain']}, rejected={counts['rejected']}; reasons={','.join(reasons)}; audit={asset_dir.relative_to(cache_directory).as_posix()}/asr-receipt.json"
+                        speech_reason = receipt
                         for segment_index, segment in enumerate(valid_segments):
                             media_seconds = start + segment["start_seconds"]
                             segment_end = start + segment["end_seconds"]
                             # Keep supported spans within the wire limit without manufacturing text.
                             text = segment["text"][:240].strip()
-                            meaning = interpret(text, modality="speech", speaker_role=asset.speaker_role)
-                            if segment["no_speech_probability"] > .6 or segment["avg_logprob"] < -1:
-                                meaning = type(meaning)(meaning.aspect, "ambiguous", None, "ASR quality is too low for an attributable evaluation.", None)
-                            if segment.get("repetition_warning"):
-                                meaning = type(meaning)(meaning.aspect, "ambiguous", None, segment["repetition_warning"], None)
-                            if segment.get("quality_warning"):
-                                meaning = type(meaning)(meaning.aspect, "ambiguous", None, segment["quality_warning"], None)
+                            meaning = interpret_accepted_speech(segment, asset.speaker_role)
+                            if meaning is None:
+                                continue
                             observations.append(CachedObservation(
-                                observation_id=stable_id("observation", asset.asset_sha256, "speech", media_seconds, segment_end, text, manifest.semantic_version), asset_id=asset.asset_id, stream_id=asset.stream_id,
+                                observation_id=stable_id("observation", asset.asset_sha256, asset.asset_id, "speech", media_seconds, segment_end, text, SEMANTIC_VERSION, result["cache_key"]), asset_id=asset.asset_id, stream_id=asset.stream_id,
                                 evidence_mode=asset.evidence_mode, provider="recorded_asr", source_modality="speech", media_seconds=media_seconds, media_end_seconds=segment_end, replay_seconds=asset.replay_offset(media_seconds), replay_end_seconds=asset.replay_offset(segment_end), available_replay_seconds=asset.replay_offset(segment_end),
                                 raw_text=text, supporting_quote=text, sentiment=meaning.sentiment, abstention_reason=meaning.reason, aspect=meaning.aspect, target=meaning.target, semantic_confidence=meaning.confidence,
-                                ocr_confidence=None, confidence_reason="Audio ASR is not OCR; segment quality is retained in transcript.json.", frame_ref=None, frame_reason="Speech observation is supported by the extracted audio segment.", audio_ref=audio_ref,
-                                scene_id=asset.scene_id, extractor_version=manifest.semantic_version,
+                                ocr_confidence=None, confidence_reason=receipt + "; observation=accepted; quality_gates_passed; speaker_role=" + asset.speaker_role + "; ASR confidence does not verify speaker identity.", frame_ref=None, frame_reason="Speech observation is supported by the extracted audio segment.", audio_ref=audio_ref,
+                                scene_id=asset.scene_id, extractor_version=SEMANTIC_VERSION,
                             ))
                     except MediaSetupError as error:
-                        speech_reason = str(error)
+                        raise MediaSetupError(f"ASR preprocessing incomplete for {asset.asset_id}: {error}") from error
                 else:
                     speech_reason = "Audio decoded to PCM with measured activity; speech transcription disabled in manifest. Set audio_transcription=faster_whisper and a local speech_model_path."
             else:
@@ -271,7 +336,7 @@ class MediaPreprocessor:
             reports.append(MediaAssetReport(asset_id=asset.asset_id, available=True, duration_seconds=info["duration_seconds"], frame_count=frame_count, audio_available=audio_available, audio_reason=audio_reason, audio_ref=audio_ref, speech_available=speech_available, speech_reason=speech_reason))
         observations.sort(key=lambda o: (o.available_replay_seconds if o.available_replay_seconds is not None else o.replay_seconds, o.replay_seconds, o.observation_id))
         _write_json(directory / "ocr-audit.json", audit)
-        artifacts = {p.relative_to(cache_directory).as_posix(): file_sha256(p) for p in sorted(directory.rglob("*")) if p.is_file() and p.name != "artifacts.json"}
+        artifacts = {**preserved_artifacts, **{p.relative_to(cache_directory).as_posix(): file_sha256(p) for p in sorted(directory.rglob("*")) if p.is_file() and p.name != "artifacts.json"}}
         _write_json(directory / "artifacts.json", artifacts)
         versions["artifact_index_sha256"] = file_sha256(directory / "artifacts.json")
         versions["semantics"] = "heuristic lexical attribution; uncalibrated; ambiguous text abstains"
@@ -314,6 +379,8 @@ def main() -> None:
     parser.add_argument("--manifest", type=Path, default=Path("data/recordings/manifest.json"))
     parser.add_argument("--cache-dir", type=Path, default=Path("var/evidence-cache"))
     parser.add_argument("--inspect-cache", type=Path)
+    parser.add_argument("--asr-model", choices=MODEL_NAMES)
+    parser.add_argument("--reuse-ocr-only", action="store_true")
     args = parser.parse_args()
     try:
         if args.inspect_cache:
@@ -321,7 +388,7 @@ def main() -> None:
         else:
             root = Path(__file__).resolve().parents[2]
             manifest = load_manifest(root / args.manifest, root)
-            cache = MediaPreprocessor(root).preprocess(manifest, root / args.cache_dir)
+            cache = MediaPreprocessor(root, args.asr_model, reuse_ocr_only=args.reuse_ocr_only).preprocess(manifest, root / args.cache_dir)
         print(json.dumps({"cache_key": cache.cache_key, "cache_path": str(args.inspect_cache or args.cache_dir / f"{cache.cache_key}.json"), "observations": len(cache.observations), "attributable_observations": sum(o.sentiment is not None for o in cache.observations), "providers": sorted({o.provider for o in cache.observations}), "evidence_modes": sorted({o.evidence_mode for o in cache.observations}), "asset_reports": [r.model_dump(mode="json") for r in cache.asset_reports]}, indent=2))
     except (MediaSetupError, ValueError, OSError) as error:
         parser.exit(2, f"Recording preprocessing failed: {error}\n")

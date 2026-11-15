@@ -51,6 +51,9 @@ def main():
     parser.add_argument("--live-quotes", action="store_true")
     parser.add_argument("--manifest", type=Path, default=ROOT / "data/recordings/manifest.json")
     parser.add_argument("--cache", type=Path)
+    parser.add_argument("--asr-model", choices=["small.en", "tiny.en"])
+    parser.add_argument("--reuse-ocr-only", action="store_true")
+    parser.add_argument("--no-select-cache", action="store_true")
     args = parser.parse_args()
     if args.action == "setup":
         run(["uv", "sync", "--frozen", "--cache-dir", ".cache/uv"])
@@ -98,11 +101,14 @@ def main():
             cache = Path((ROOT / "var/last-recording-cache.txt").read_text(encoding="utf-8").strip())
         run([PYTHON, "-B", "scripts/inspect_demo.py", "--scenario", scenario] + (["--cache", cache] if cache else []))
     elif args.action == "preprocess":
-        run([PYTHON, "scripts/media.py", "--manifest", args.manifest])
+        run([PYTHON, "scripts/media.py", "--manifest", args.manifest]
+            + (["--asr-model", args.asr_model] if args.asr_model else [])
+            + (["--reuse-ocr-only"] if args.reuse_ocr_only else [])
+            + (["--no-select-cache"] if args.no_select_cache else []))
     elif args.action == "generate-recording":
         run([PYTHON, "scripts/generate_recording.py"])
     elif args.action == "setup-speech":
-        run([PYTHON, "scripts/setup_speech.py"])
+        run([PYTHON, "scripts/setup_speech.py"] + (["--asr-model", args.asr_model] if args.asr_model else []))
     else:
         run([PYTHON, "scripts/refresh_market_snapshot.py"])
 

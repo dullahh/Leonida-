@@ -53,6 +53,16 @@ See [release checklist](docs/RELEASE_CHECKLIST.md), [final release report](docs/
 
 Recordings belong in `data/recordings/inbox/`; configure file/asset IDs, offsets and per-video chat crops in `data/recordings/manifest.json`. Original clips, models, evidence caches, databases and screenshots are ignored by Git. Preserve unknown speakers unless an interval has been manually verified. See [recording setup](data/recordings/README.md). Playback uses validated caches and never redoes OCR/ASR.
 
+Local speech preprocessing supports `--asr-model small.en` for quality mode and
+`--asr-model tiny.en` for the explicit fast fallback. Future preprocessing defaults
+are in `config/local_asr.json`; existing immutable evidence/playback selection stays
+unchanged. Install with `python scripts/manage.py setup-speech --asr-model small.en`,
+then run `python scripts/manage.py preprocess --asr-model small.en --reuse-ocr-only --no-select-cache`
+for an ASR-only pass using verified OCR artifacts. Both models run locally with no
+audio upload or paid API. [ASR audit](docs/LOCAL_ASR_UPGRADE.md) and
+[side-by-side listening review](docs/ASR_COMPARISON.md) document quality gates,
+timings and unresolved transcription/speaker uncertainty.
+
 The six portable scenarios are courtroom-praise, technical-failure-laughter, skill-rage-controls, mixed-missing-facecam, duplicate-reconnect and venue-outage-reset. The original diagnostic is retained as `--scenario foundation`. Optional `--live-quotes` is a separate read-only network mode and is unnecessary for either release demo; no credentials are required for normal replay.
 
 Next research milestones: an as-of historical game/year dataset, held-out calibration against market-only and competitor models, and execution evaluation using actual venue fee/depth rules. Current limits include uncertain transcripts/attribution, English lexical semantics, manual scenes and long-recording performance. No validated forecasting edge is claimed.
