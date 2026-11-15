@@ -1,5 +1,9 @@
 # Repository state - 15 November 2026
 
+## Quote and abstention display clarification
+
+Display-only fix from87c34a2: valid14¢/15¢ synthetic quote now displays14.50% market reference even when claims abstain. Model/correction/candidate remain unavailable with precise explanations; source-card absent-value reasons are explicit. Venue context exposes exact receipt time/source and was audited as eight bundled stale historical Kalshi quotes, polling disabled. Existing optional --live-quotes command and failure/expiry behaviour are documented in [QUOTE_CLARITY.md](QUOTE_CLARITY.md). Release checks pass:15 G3 tests,11 G4/startup/display tests, six-scenario smoke and frontend typecheck/build. No classification, pricing gate, coefficient, execution, scenario or media change. Separate commit title: Clarify quote and abstention states. Stop after this fix.
+
 ## G5 local release candidate
 
 Final pass began from74d6949, in one thread. Both full local and portable no-key launch modes verified; missing local media/cache selects a clearly labelled portable fixture. Matching saved inputs resume paused; different saved scenarios cannot override the requested mode. No analytical/provider/media/frontend feature changes. Final G3 checks15/15 and G4+release checks10/10 pass, with no skips. Clean source-only offline dependency installation/build, portable/full startup and22.4s control rehearsal pass; desktop/narrow console checks clean. Existing user8000 demo retained; temporary8002/8003 release servers stopped. See [G5_RELEASE_REPORT.md](G5_RELEASE_REPORT.md), [DEMO_SCRIPT.md](DEMO_SCRIPT.md), [RELEASE_CHECKLIST.md](RELEASE_CHECKLIST.md). Final separate commit: G5 demo release. No publication, push or deployment; stop after local release.

@@ -37,6 +37,8 @@ Default databases are separate: `var/demo-recordings.sqlite3` and `var/demo-port
 
 Actual historical GTA VI venue captures are shown separately with stale labels; this proxy material does not change their prices. Courtroom observations/baselines are supplied fixtures. Its price timeline, liquidity, fees and fills are synthetic/simulated, not a historical backtest or a promise of profit. No new live-source claim is made by this release.
 
+A valid scenario quote displays its midpoint independently of the model:14¢/15¢ shows **14.50% synthetic Yes midpoint** even when claims abstain. The model and candidate remain unavailable with explicit reasons. The Venue context tab defaults to eight bundled historical Kalshi quotes from14 November2026, with exact receipt timestamps and source paths. [Quote/abstention audit and existing optional live-mode command](docs/QUOTE_CLARITY.md) documents the precise data, staleness and failure behaviour; no live network call is required by default.
+
 ## Exact three-minute demonstration
 
 | Pitch clock | Action and point |
