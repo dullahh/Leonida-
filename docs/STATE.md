@@ -1,5 +1,9 @@
 # Repository state - 15 November 2026
 
+## G5 local release candidate
+
+Final pass began from74d6949, in one thread. Both full local and portable no-key launch modes verified; missing local media/cache selects a clearly labelled portable fixture. Matching saved inputs resume paused; different saved scenarios cannot override the requested mode. No analytical/provider/media/frontend feature changes. Final G3 checks15/15 and G4+release checks10/10 pass, with no skips. Clean source-only offline dependency installation/build, portable/full startup and22.4s control rehearsal pass; desktop/narrow console checks clean. Existing user8000 demo retained; temporary8002/8003 release servers stopped. See [G5_RELEASE_REPORT.md](G5_RELEASE_REPORT.md), [DEMO_SCRIPT.md](DEMO_SCRIPT.md), [RELEASE_CHECKLIST.md](RELEASE_CHECKLIST.md). Final separate commit: G5 demo release. No publication, push or deployment; stop after local release.
+
 ## G4 verification checkpoint
 
 Verified from4e154fa in one thread, without agents or application changes. Original15 G3 tests/build/schema checks and6 new G4 tests pass with no skips. Browser verifies all5 videos, telemetry/pricing exclusion, synthetic claim receipts, reset/reconnect/REST fallback and1440/390 layouts without console errors. Initial browser-harness debug-overhead failure and Windows media teardown warnings are recorded in G4_FAILURES.md. Full results, limitations and launch/demo checklist: [G4_VERIFICATION.md](G4_VERIFICATION.md). Separate commit title: G4 verification fixes; G3 is not amended. Existing user demo on8000 is retained. Stop after G4; G5 is unexecuted.

@@ -37,12 +37,17 @@ class Runtime:
         self.contexts, self.loaded_inputs = {}, {}
         self.frames = {e.run_id: e for e in self.store.all_runs()}
         for run_id, saved in self.store.inputs().items():
-            context = self._input(saved["name"], Path(saved["cache_path"]) if saved["cache_path"] else None)
+            try:
+                context = self._input(saved["name"], Path(saved["cache_path"]) if saved["cache_path"] else None)
+            except (OSError, ValueError):
+                # Preserve old audit; unavailable local inputs cannot block a
+                # fixture launch on a portable checkout.
+                continue
             if context.fingerprint == saved["fingerprint"]:
                 self.contexts[run_id] = context
         base = self._input("recordings" if evidence_cache_path else scenario, evidence_cache_path)
         active = self.store.active()
-        if active in self.contexts:
+        if active in self.contexts and self.contexts[active].fingerprint == base.fingerprint:
             self.active_run_id = active
         else:
             run_id = stable_id("run", "g3", base.fingerprint)
@@ -70,6 +75,8 @@ class Runtime:
         if name == "recordings":
             from backend.ingestion.recordings import load_cache
             cache = load_cache(path)
+            if any(not a.local_path or not (ROOT / a.local_path).is_file() for a in cache.manifest.recordings):
+                raise ValueError("Local recordings unavailable. Select a synthetic scenario or launch --scenario portable.")
         elif name == "foundation":
             cache = prepare_fixture_cache(ROOT / "config/foundation_scenario.json", self.cache_dir)
         else:

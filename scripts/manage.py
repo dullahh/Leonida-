@@ -3,11 +3,36 @@ import argparse
 import os
 import subprocess
 import sys
+import json
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 PYTHON = ROOT / (".venv/Scripts/python.exe" if os.name == "nt" else ".venv/bin/python")
 NPM = "npm.cmd" if os.name == "nt" else "npm"
+
+
+def select_demo(scenario, cache=None, root=ROOT):
+    """Resolve release input using files only; never extract/download media."""
+    if scenario == "portable":
+        return "courtroom-praise", None, "Portable deterministic fixture; synthetic evidence and prices."
+    if scenario not in {"auto", "recordings"}:
+        return scenario, cache, None
+    try:
+        if cache is None:
+            cache = Path((root / "var/last-recording-cache.txt").read_text(encoding="utf-8").strip())
+        cache = (root / cache).resolve()
+        data = json.loads(cache.read_text(encoding="utf-8"))
+        assets = data["manifest"]["recordings"]
+        if not assets or any(not a.get("local_path") or not (root / a["local_path"]).is_file() for a in assets):
+            raise ValueError("local recording files unavailable")
+        index = root / "var/evidence-cache" / data["cache_key"] / "artifacts.json"
+        if not index.is_file():
+            index = cache.parent / data["cache_key"] / "artifacts.json"
+        if not index.is_file() or any(not (cache.parent / p).is_file() for p in json.loads(index.read_text(encoding="utf-8"))):
+            raise ValueError("cached evidence artifacts unavailable")
+        return "recordings", cache, "Local recordings and cached evidence available."
+    except (OSError, ValueError, KeyError, TypeError) as error:
+        return "courtroom-praise", None, f"Local demo unavailable ({error}); selecting portable synthetic Courtroom fixture."
 
 
 def run(arguments, **kwargs):
@@ -22,7 +47,7 @@ def main():
     parser.add_argument("--gate", choices=["G1", "G2", "G3"], default="G3")
     parser.add_argument("--scenario", default="auto")
     parser.add_argument("--port", type=int, default=8000)
-    parser.add_argument("--db", type=Path, default=ROOT / "var/leonida.sqlite3")
+    parser.add_argument("--db", type=Path)
     parser.add_argument("--live-quotes", action="store_true")
     parser.add_argument("--manifest", type=Path, default=ROOT / "data/recordings/manifest.json")
     parser.add_argument("--cache", type=Path)
@@ -38,14 +63,10 @@ def main():
     if not PYTHON.exists():
         parser.error("Run python scripts/manage.py setup first")
     if args.action == "demo":
-        if args.scenario == "auto":
-            args.scenario = "recordings" if args.cache or (ROOT / "var/last-recording-cache.txt").exists() else "foundation"
-        cache = args.cache
-        if args.scenario == "recordings" and cache is None:
-            pointer = ROOT / "var/last-recording-cache.txt"
-            if not pointer.exists():
-                parser.error("Run python scripts/manage.py preprocess --manifest data/recordings/manifest.json first, or pass --cache PATH")
-            cache = Path(pointer.read_text(encoding="utf-8").strip())
+        args.scenario, cache, note = select_demo(args.scenario, args.cache)
+        if note:
+            print(note, flush=True)
+        args.db = args.db or ROOT / ("var/demo-recordings.sqlite3" if args.scenario == "recordings" else "var/demo-portable.sqlite3")
         env = dict(os.environ, LEONIDA_DB=str(args.db.resolve()), LEONIDA_LIVE_QUOTES="1" if args.live_quotes else "0",
             LEONIDA_SCENARIO="foundation" if args.scenario == "recordings" else args.scenario,
             LEONIDA_EVIDENCE_CACHE=str(cache.resolve()) if cache else "")
@@ -67,7 +88,7 @@ def main():
             run([NPM, "--prefix", "frontend", "run", "build"])
         if args.gate == "G3":
             run([PYTHON, "-B", "-m", "unittest", "discover", "-s", "tests/g3", "-p", "test_*.py", "-v"])
-        print(args.gate + " checks passed. Formal G4 suite is a later gate.")
+        print(args.gate + " checks passed. G4 verification: .venv/Scripts/python.exe -m unittest discover -s tests/g4 -v")
     elif args.action == "demo-check":
         scenario = args.scenario
         cache = args.cache
