@@ -1,0 +1,43 @@
+{
+  "scenario_version": "gta5-proxy-foundation-v1",
+  "replay_origin": "2026-11-14T20:30:00Z",
+  "manifest": {
+    "manifest_version": "gta5-recordings-example-v1",
+    "ocr_version": "supplied-fixture-v1",
+    "preprocessing_version": "chat-crop-v1",
+    "semantic_version": "supplied-annotation-v1",
+    "recordings": [
+      {
+        "asset_id": "proxy-video-1", "stream_id": "stream-1", "label": "Recording 01",
+        "local_path": null, "asset_sha256": null,
+        "availability_reason": "No video supplied; G1 uses a synthetic chat observation fixture.",
+        "media_start_seconds": 120, "timeline_start_seconds": 0,
+        "chat_region": {"x": 0.72, "y": 0.08, "width": 0.27, "height": 0.8},
+        "permission_note": "Supply an authorized local recording before OCR preprocessing."
+      },
+      {
+        "asset_id": "proxy-video-2", "stream_id": "stream-2", "label": "Recording 02",
+        "local_path": null, "asset_sha256": null,
+        "availability_reason": "Recording not supplied; no observations fabricated for this stream.",
+        "media_start_seconds": 35, "timeline_start_seconds": 2,
+        "chat_region": {"x": 0.72, "y": 0.08, "width": 0.27, "height": 0.8},
+        "permission_note": "Supply an authorized local recording before OCR preprocessing."
+      }
+    ]
+  },
+  "observation": {
+    "asset_id": "proxy-video-1", "stream_id": "stream-1",
+    "evidence_mode": "synthetic_replay", "provider": "supplied_fixture",
+    "media_seconds": 120,
+    "raw_text": "demo_viewer: The dialogue in this scene is repetitive.",
+    "supporting_quote": "The dialogue in this scene is repetitive.",
+    "sentiment": -0.4,
+    "ocr_confidence": null, "confidence_reason": "Supplied fixture text; OCR has not run.",
+    "frame_ref": null, "frame_reason": "No recording/frame supplied; this is an OCR-shaped fixture.",
+    "scene_id": "manual-proxy-scene", "extractor_version": "supplied-annotation-v1"
+  },
+  "baseline": {"mean": 0.0, "variance": 0.04, "count": 20, "version": "seeded-fixture-v1"},
+  "quote": {"yes_bid": "0.14", "yes_ask": "0.15", "no_bid": "0.85", "no_ask": "0.86"},
+  "requested_quantity": "10",
+  "simulation_fee_per_contract": "0.01"
+}

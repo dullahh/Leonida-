@@ -1,0 +1,279 @@
+{
+  "$defs": {
+    "ChatRegion": {
+      "additionalProperties": false,
+      "properties": {
+        "x": {
+          "maximum": 1.0,
+          "minimum": 0.0,
+          "title": "X",
+          "type": "number"
+        },
+        "y": {
+          "maximum": 1.0,
+          "minimum": 0.0,
+          "title": "Y",
+          "type": "number"
+        },
+        "width": {
+          "exclusiveMinimum": 0.0,
+          "maximum": 1.0,
+          "title": "Width",
+          "type": "number"
+        },
+        "height": {
+          "exclusiveMinimum": 0.0,
+          "maximum": 1.0,
+          "title": "Height",
+          "type": "number"
+        }
+      },
+      "required": [
+        "x",
+        "y",
+        "width",
+        "height"
+      ],
+      "title": "ChatRegion",
+      "type": "object"
+    },
+    "RecordingAsset": {
+      "additionalProperties": false,
+      "properties": {
+        "asset_id": {
+          "maxLength": 240,
+          "minLength": 1,
+          "title": "Asset Id",
+          "type": "string"
+        },
+        "stream_id": {
+          "maxLength": 240,
+          "minLength": 1,
+          "title": "Stream Id",
+          "type": "string"
+        },
+        "label": {
+          "maxLength": 240,
+          "minLength": 1,
+          "title": "Label",
+          "type": "string"
+        },
+        "local_path": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Local Path"
+        },
+        "asset_sha256": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Asset Sha256"
+        },
+        "availability_reason": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Availability Reason"
+        },
+        "content_game_id": {
+          "const": "gta5",
+          "default": "gta5",
+          "title": "Content Game Id",
+          "type": "string"
+        },
+        "target_game_id": {
+          "const": "gta6",
+          "default": "gta6",
+          "title": "Target Game Id",
+          "type": "string"
+        },
+        "evidence_scope": {
+          "const": "proxy_demo",
+          "default": "proxy_demo",
+          "title": "Evidence Scope",
+          "type": "string"
+        },
+        "media_start_seconds": {
+          "default": 0,
+          "minimum": 0.0,
+          "title": "Media Start Seconds",
+          "type": "number"
+        },
+        "timeline_start_seconds": {
+          "default": 0,
+          "title": "Timeline Start Seconds",
+          "type": "number"
+        },
+        "chat_region": {
+          "$ref": "#/$defs/ChatRegion"
+        },
+        "sample_interval_seconds": {
+          "default": 2,
+          "exclusiveMinimum": 0.0,
+          "maximum": 60.0,
+          "title": "Sample Interval Seconds",
+          "type": "number"
+        },
+        "language": {
+          "default": "eng",
+          "title": "Language",
+          "type": "string"
+        },
+        "source_url": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Source Url"
+        },
+        "permission_note": {
+          "title": "Permission Note",
+          "type": "string"
+        },
+        "evidence_mode": {
+          "default": "recorded",
+          "enum": [
+            "recorded",
+            "synthetic_replay"
+          ],
+          "title": "Evidence Mode",
+          "type": "string"
+        },
+        "media_end_seconds": {
+          "anyOf": [
+            {
+              "minimum": 0.0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Media End Seconds"
+        },
+        "scene_id": {
+          "default": "manual-unassigned",
+          "maxLength": 240,
+          "minLength": 1,
+          "title": "Scene Id",
+          "type": "string"
+        },
+        "audio_transcription": {
+          "default": "disabled",
+          "enum": [
+            "disabled",
+            "faster_whisper"
+          ],
+          "title": "Audio Transcription",
+          "type": "string"
+        },
+        "speech_model_path": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Speech Model Path"
+        },
+        "speaker_role": {
+          "default": "unknown",
+          "enum": [
+            "streamer",
+            "unknown"
+          ],
+          "title": "Speaker Role",
+          "type": "string"
+        }
+      },
+      "required": [
+        "asset_id",
+        "stream_id",
+        "label",
+        "local_path",
+        "asset_sha256",
+        "availability_reason",
+        "chat_region",
+        "permission_note"
+      ],
+      "title": "RecordingAsset",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": {
+      "const": "2",
+      "default": "2",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "manifest_version": {
+      "maxLength": 240,
+      "minLength": 1,
+      "title": "Manifest Version",
+      "type": "string"
+    },
+    "recordings": {
+      "items": {
+        "$ref": "#/$defs/RecordingAsset"
+      },
+      "maxItems": 6,
+      "minItems": 2,
+      "title": "Recordings",
+      "type": "array"
+    },
+    "ocr_version": {
+      "maxLength": 240,
+      "minLength": 1,
+      "title": "Ocr Version",
+      "type": "string"
+    },
+    "preprocessing_version": {
+      "maxLength": 240,
+      "minLength": 1,
+      "title": "Preprocessing Version",
+      "type": "string"
+    },
+    "semantic_version": {
+      "maxLength": 240,
+      "minLength": 1,
+      "title": "Semantic Version",
+      "type": "string"
+    }
+  },
+  "required": [
+    "manifest_version",
+    "recordings",
+    "ocr_version",
+    "preprocessing_version",
+    "semantic_version"
+  ],
+  "title": "RecordingManifest",
+  "type": "object"
+}

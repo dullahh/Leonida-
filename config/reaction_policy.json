@@ -1,0 +1,9 @@
+{
+  "policy_version": "reaction-pricing-v1",
+  "minimum_target_certainty": 0.9,
+  "minimum_market_relevance": 0.8,
+  "minimum_claim_confidence": 0.6,
+  "recent_window_seconds": 30,
+  "routed_aspects": ["narrative"],
+  "note": "Reaction intensity has no pricing weight. Eligibility also requires an existing supported game-quality claim. Actual GTA VI markets receive no relevance from GTA V proxy evidence."
+}

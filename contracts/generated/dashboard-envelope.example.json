@@ -1,0 +1,358 @@
+{
+  "schema_version": "2",
+  "run_id": "example-g1",
+  "sequence": 1,
+  "generated_at": "2026-11-14T20:30:00Z",
+  "type": "snapshot",
+  "payload": {
+    "schema_version": "2",
+    "run_id": "example-g1",
+    "gate": "G1",
+    "contract_revision": "g3-reactions-v1",
+    "reactions": [],
+    "reaction_recent_window_seconds": 30.0,
+    "scenario_name": "foundation",
+    "groups": [],
+    "execution": {
+      "enabled": false,
+      "reason": "Candidate-only input; no synthetic execution authorization.",
+      "fee_schedule_version": "simulation-linear-v1",
+      "orders": [],
+      "fills": [],
+      "positions": [],
+      "marks": [],
+      "traces": [],
+      "reserved_cash": "0",
+      "realized_pnl": "0",
+      "latest_reasons": []
+    },
+    "scheduler_cursor": 0.0,
+    "source_queue_capacity": 128,
+    "run_status": "paused",
+    "playback": {
+      "position_seconds": 0.0,
+      "duration_seconds": 0.0,
+      "speed": 1.0,
+      "playing": false
+    },
+    "replay_time": "2026-11-14T20:30:00Z",
+    "evidence_mode": "synthetic_replay",
+    "content_game_id": "gta5",
+    "target_game_id": "gta6",
+    "evidence_scope": "proxy_demo",
+    "execution_mode": "paper",
+    "calibration_status": "heuristic",
+    "cache_key": "5f1060a3fbccaea0d569a209828c150de783ea80f768e5d35e26914203e5d3df",
+    "configuration_fingerprint": "dff07620d0a592edb30d6ecaeb0a89b79b62412df49d85916a15a9ca02de486b",
+    "recording_manifest": {
+      "schema_version": "2",
+      "manifest_version": "gta5-recordings-example-v1",
+      "recordings": [
+        {
+          "asset_id": "proxy-video-1",
+          "stream_id": "stream-1",
+          "label": "Recording 01",
+          "local_path": null,
+          "asset_sha256": null,
+          "availability_reason": "No video supplied; G1 uses a synthetic chat observation fixture.",
+          "content_game_id": "gta5",
+          "target_game_id": "gta6",
+          "evidence_scope": "proxy_demo",
+          "media_start_seconds": 120.0,
+          "timeline_start_seconds": 0.0,
+          "chat_region": {
+            "x": 0.72,
+            "y": 0.08,
+            "width": 0.27,
+            "height": 0.8
+          },
+          "sample_interval_seconds": 2.0,
+          "language": "eng",
+          "source_url": null,
+          "permission_note": "Supply an authorized local recording before OCR preprocessing.",
+          "evidence_mode": "recorded",
+          "media_end_seconds": null,
+          "scene_id": "manual-unassigned",
+          "audio_transcription": "disabled",
+          "speech_model_path": null,
+          "speaker_role": "unknown"
+        },
+        {
+          "asset_id": "proxy-video-2",
+          "stream_id": "stream-2",
+          "label": "Recording 02",
+          "local_path": null,
+          "asset_sha256": null,
+          "availability_reason": "Recording not supplied; no observations fabricated for this stream.",
+          "content_game_id": "gta5",
+          "target_game_id": "gta6",
+          "evidence_scope": "proxy_demo",
+          "media_start_seconds": 35.0,
+          "timeline_start_seconds": 2.0,
+          "chat_region": {
+            "x": 0.72,
+            "y": 0.08,
+            "width": 0.27,
+            "height": 0.8
+          },
+          "sample_interval_seconds": 2.0,
+          "language": "eng",
+          "source_url": null,
+          "permission_note": "Supply an authorized local recording before OCR preprocessing.",
+          "evidence_mode": "recorded",
+          "media_end_seconds": null,
+          "scene_id": "manual-unassigned",
+          "audio_transcription": "disabled",
+          "speech_model_path": null,
+          "speaker_role": "unknown"
+        }
+      ],
+      "ocr_version": "supplied-fixture-v1",
+      "preprocessing_version": "chat-crop-v1",
+      "semantic_version": "supplied-annotation-v1"
+    },
+    "streams": [
+      {
+        "stream_id": "stream-1",
+        "label": "Recording 01",
+        "state": "fixture_ready",
+        "reason": "No video supplied; G1 uses a synthetic chat observation fixture."
+      },
+      {
+        "stream_id": "stream-2",
+        "label": "Recording 02",
+        "state": "recording_missing",
+        "reason": "Recording not supplied; no observations fabricated for this stream."
+      }
+    ],
+    "windows": [
+      {
+        "schema_version": "2",
+        "run_id": "example-g1",
+        "window_id": "window:40c0e692e2fd6e40772385c2",
+        "stream_id": "stream-1",
+        "asset_id": "proxy-video-1",
+        "content_game_id": "gta5",
+        "evidence_scope": "proxy_demo",
+        "evidence_mode": "synthetic_replay",
+        "event_at": "2026-11-14T20:30:00Z",
+        "available_at": "2026-11-14T20:30:00Z",
+        "source_media_seconds": 120.0,
+        "replay_seconds": 0.0,
+        "raw_text": "demo_viewer: The dialogue in this scene is repetitive.",
+        "cache_key": "5f1060a3fbccaea0d569a209828c150de783ea80f768e5d35e26914203e5d3df",
+        "observation_id": "observation:e934eb79e2a86d4b0cb9ffcd",
+        "provider": "supplied_fixture",
+        "frame_ref": null,
+        "frame_reason": "No recording/frame supplied; this is an OCR-shaped fixture.",
+        "modalities": [
+          {
+            "modality": "chat",
+            "available": true,
+            "reason": "Supplied fixture text, not observed OCR"
+          },
+          {
+            "modality": "speech",
+            "available": false,
+            "reason": "No transcription supplied or run"
+          },
+          {
+            "modality": "facecam",
+            "available": false,
+            "reason": "No video supplied; no face-derived pricing"
+          }
+        ],
+        "source_modality": "chat",
+        "ocr_confidence": null,
+        "confidence_reason": null,
+        "audio_ref": null,
+        "observation": null
+      }
+    ],
+    "claims": [
+      {
+        "schema_version": "2",
+        "run_id": "example-g1",
+        "claim_id": "claim:3a665c7e5707cb04ffedf4cb",
+        "window_id": "window:40c0e692e2fd6e40772385c2",
+        "stream_id": "stream-1",
+        "content_game_id": "gta5",
+        "evidence_scope": "proxy_demo",
+        "evidence_mode": "synthetic_replay",
+        "aspect": "narrative",
+        "source_modality": "chat",
+        "target": "game",
+        "sentiment": -0.4,
+        "abstention_reason": null,
+        "semantic_confidence": null,
+        "quality": 1.0,
+        "dependency_group": null,
+        "supporting_quote": "The dialogue in this scene is repetitive.",
+        "scene_id": "manual-proxy-scene",
+        "extractor_version": "supplied-annotation-v1",
+        "revision": 1
+      }
+    ],
+    "features": [
+      {
+        "schema_version": "2",
+        "run_id": "example-g1",
+        "feature_id": "feature:47cbbd8b93aebde9d4ff33d1",
+        "claim_ids": [
+          "claim:3a665c7e5707cb04ffedf4cb"
+        ],
+        "content_game_id": "gta5",
+        "evidence_scope": "proxy_demo",
+        "absolute_sentiment": -0.4,
+        "mean_z": -2.0,
+        "baseline_status": "seeded_fixture",
+        "aspect": "narrative",
+        "source_modality": "chat",
+        "stream_ids": [],
+        "freshness": 1.0,
+        "z_freshness": 1.0,
+        "z_reason": null,
+        "disagreement": 0.0,
+        "unique_stream_count": 1,
+        "baseline_version": "seeded-fixture-v1",
+        "previous_mean": 0.0,
+        "previous_variance": 0.04,
+        "updated_mean": -0.021616212437293836,
+        "updated_variance": 0.04601760309105394,
+        "baseline_count": 21,
+        "unique_observation_count": 1,
+        "effective_source_diagnostic": 1.0,
+        "as_of": "2026-11-14T20:30:00Z"
+      }
+    ],
+    "markets": [
+      {
+        "market_id": "synthetic:gta5-proxy-foundation-v1:narrative",
+        "market_namespace": "synthetic",
+        "title": "Narrative scenario · GTA V proxy",
+        "target_game_id": "gta6",
+        "venue_ticker": null,
+        "reference_venue_ticker": null,
+        "rules_primary": "Synthetic $1 binary-payout scenario. GTA V proxy evidence is for demonstration only. No venue settlement or GTA VI forecasting claim.",
+        "definition_version": "proxy-scenario-v1"
+      }
+    ],
+    "quotes": [
+      {
+        "quote_id": "quote:28d33e0b634c386c9b8a2283",
+        "market_id": "synthetic:gta5-proxy-foundation-v1:narrative",
+        "quote_mode": "synthetic_replay",
+        "captured_at": "2026-11-14T20:30:00Z",
+        "venue_timestamp": null,
+        "venue_timestamp_reason": "No verified venue quote timestamp",
+        "venue_status": "active",
+        "is_stale": false,
+        "yes_bid": "0.14",
+        "yes_ask": "0.15",
+        "no_bid": "0.85",
+        "no_ask": "0.86",
+        "missing_reasons": {},
+        "source_ref": "config/foundation_scenario.json#quote"
+      }
+    ],
+    "estimates": [
+      {
+        "schema_version": "2",
+        "run_id": "example-g1",
+        "estimate_id": "estimate:5a2fa9e964a444ccf7d9587d",
+        "market_id": "synthetic:gta5-proxy-foundation-v1:narrative",
+        "quote_id": "quote:28d33e0b634c386c9b8a2283",
+        "feature_ids": [
+          "feature:47cbbd8b93aebde9d4ff33d1"
+        ],
+        "market_reference_probability": 0.145,
+        "correction_log_odds": -0.18000000000000002,
+        "model_probability": 0.12407788254178297,
+        "relevance": 1.0,
+        "model_version": "scenario-v1",
+        "calibration_status": "heuristic",
+        "uncertainty_status": "not_estimated",
+        "evidence_scope": "proxy_demo",
+        "coefficients": {
+          "narrative_absolute": 0.2,
+          "narrative_z": 0.05
+        }
+      }
+    ],
+    "decisions": [
+      {
+        "schema_version": "2",
+        "run_id": "example-g1",
+        "decision_id": "decision:dc4b0ec4779b4b46910dbadb",
+        "estimate_id": "estimate:5a2fa9e964a444ccf7d9587d",
+        "quote_id": "quote:28d33e0b634c386c9b8a2283",
+        "market_id": "synthetic:gta5-proxy-foundation-v1:narrative",
+        "execution_mode": "paper",
+        "action": "candidate",
+        "side": "no",
+        "quantity": "10",
+        "yes_ev_per_contract": "-0.03592211745821703",
+        "no_ev_per_contract": "0.00592211745821703",
+        "ev_missing_reasons": {},
+        "estimated_total_fee": "0.10",
+        "fee_schedule_version": "simulation-linear-v1",
+        "eligible_for_fill": false,
+        "reasons": [
+          "G1 candidate only; paper broker is not implemented.",
+          "GTA V proxy demo is not evidence about GTA VI.",
+          "Quote, fee and baseline are synthetic scenario inputs; executable depth is not modelled.",
+          "Net EV below $0.03 per-contract entry threshold."
+        ]
+      }
+    ],
+    "receipts": [
+      {
+        "schema_version": "2",
+        "run_id": "example-g1",
+        "receipt_id": "receipt:f8f58f55acd3bbf7934bc35c",
+        "window_ids": [
+          "window:40c0e692e2fd6e40772385c2"
+        ],
+        "claim_ids": [
+          "claim:3a665c7e5707cb04ffedf4cb"
+        ],
+        "feature_ids": [
+          "feature:47cbbd8b93aebde9d4ff33d1"
+        ],
+        "estimate_id": "estimate:5a2fa9e964a444ccf7d9587d",
+        "decision_id": "decision:dc4b0ec4779b4b46910dbadb",
+        "quote_id": "quote:28d33e0b634c386c9b8a2283",
+        "evidence_scope": "proxy_demo",
+        "explanation": [
+          "Source: supplied GTA V proxy chat fixture at media 120s; aligned replay 0s.",
+          "Absolute sentiment -0.4; pre-update z -2; seeded baseline count 20 -> 21.",
+          "Scenario-only relevance 1; relevance to actual GTA VI contracts is 0. Correction = .2×absolute + .05×z = -0.180000, capped at ±.5.",
+          "Synthetic Yes midpoint 0.145000; sigmoid(logit(midpoint) + correction) = 0.124077883.",
+          "No EV = 1 - p - No ask - total fee/Q = 0.00592211745821703; Decimal money, no additional spread charge.",
+          "The venue-context quotes never enter this computation. Replaying the same ID does not update the baseline."
+        ],
+        "limitations": [
+          "OCR and semantic annotation are fixture supplied.",
+          "One observation; no corroboration or calibrated uncertainty.",
+          "No orders, fills or accounting broker at G1."
+        ]
+      }
+    ],
+    "cash_usd": "10000.00",
+    "order_count": 0,
+    "fill_count": 0,
+    "warnings": [
+      "GTA V proxy demo evidence — not GTA VI gameplay.",
+      "No recordings supplied: one cached synthetic chat fixture.",
+      "Candidate-only G1 slice; actual OCR, 2–6 video playback and paper broker remain future work."
+    ],
+    "venue_context": {
+      "status": "unavailable",
+      "observed_at": null,
+      "error": "Deterministic example omits changing venue context; runtime loads actual captures separately.",
+      "markets": [],
+      "quotes": [],
+      "effect_on_proxy_estimate": "none"
+    }
+  }
+}

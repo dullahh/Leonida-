@@ -1,0 +1,11 @@
+[
+  {"text":"The writing in this game is excellent.","expected_aspect":"narrative","expected_sentiment":"positive","expected_target":"game","expected_supported":true},
+  {"text":"Rockstar cooked with this mission.","expected_aspect":"gameplay","expected_sentiment":"positive","expected_target":"game","expected_supported":true},
+  {"text":"This game is broken; it crashed again.","expected_aspect":"technical","expected_sentiment":"negative","expected_target":"game","expected_supported":true},
+  {"text":"The dialogue is carrying the whole game.","expected_aspect":"narrative","expected_sentiment":"positive","expected_target":"game","expected_supported":true},
+  {"text":"This mission design is awful.","expected_aspect":"gameplay","expected_sentiment":"negative","expected_target":"game","expected_supported":true},
+  {"text":"I’m so bad at this game.","expected_aspect":"gameplay","expected_sentiment":"abstain","expected_target":"player_skill","expected_supported":false},
+  {"text":"No, it’s not a problem.","expected_aspect":"overall","expected_sentiment":"abstain","expected_target":"ambiguous","expected_supported":false},
+  {"text":"Give me a phone.","expected_aspect":"overall","expected_sentiment":"abstain","expected_target":"unrelated","expected_supported":false},
+  {"text":"G4M3 wr1t1ng !!! ???","ocr_confidence":0.42,"expected_aspect":"overall","expected_sentiment":"abstain","expected_target":"ambiguous","expected_supported":false}
+]

@@ -1,0 +1,57 @@
+{
+  "additionalProperties": false,
+  "properties": {
+    "command_id": {
+      "maxLength": 240,
+      "minLength": 1,
+      "title": "Command Id",
+      "type": "string"
+    },
+    "action": {
+      "enum": [
+        "reset",
+        "replay_observation",
+        "play",
+        "pause",
+        "seek",
+        "set_speed",
+        "exit"
+      ],
+      "title": "Action",
+      "type": "string"
+    },
+    "position_seconds": {
+      "anyOf": [
+        {
+          "minimum": 0.0,
+          "type": "number"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Position Seconds"
+    },
+    "speed": {
+      "anyOf": [
+        {
+          "exclusiveMinimum": 0.0,
+          "maximum": 5.0,
+          "type": "number"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Speed"
+    }
+  },
+  "required": [
+    "command_id",
+    "action"
+  ],
+  "title": "RunCommand",
+  "type": "object"
+}

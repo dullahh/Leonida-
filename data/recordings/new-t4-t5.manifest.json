@@ -1,0 +1,64 @@
+{
+  "manifest_version": "local-gta5-new-t4-t5-v1",
+  "ocr_version": "rapidocr-onnxruntime-1.4.4",
+  "preprocessing_version": "local-media-v1",
+  "semantic_version": "conservative-lexical-v3",
+  "recordings": [
+    {
+      "asset_id": "t4",
+      "stream_id": "t4",
+      "label": "t4 - supplied GTA V recording",
+      "local_path": "data/recordings/inbox/t4.mp4",
+      "asset_sha256": null,
+      "availability_reason": "SHA-256 is computed from this supplied local recording during preprocessing.",
+      "evidence_mode": "recorded",
+      "content_game_id": "gta5",
+      "target_game_id": "gta6",
+      "evidence_scope": "proxy_demo",
+      "media_start_seconds": 0,
+      "timeline_start_seconds": 0,
+      "media_end_seconds": null,
+      "chat_region": {
+        "x": 0.884375,
+        "y": 0.05555555555555555,
+        "width": 0.115625,
+        "height": 0.29814814814814816
+      },
+      "sample_interval_seconds": 2,
+      "language": "eng",
+      "scene_id": "manual-unassigned",
+      "audio_transcription": "faster_whisper",
+      "speech_model_path": "var/models/faster-whisper-tiny.en",
+      "speaker_role": "unknown",
+      "permission_note": "Local recording supplied by the user for proxy demo processing; source channel identity is unverified."
+    },
+    {
+      "asset_id": "t5",
+      "stream_id": "t5",
+      "label": "t5 - supplied GTA V recording",
+      "local_path": "data/recordings/inbox/t5.mp4",
+      "asset_sha256": null,
+      "availability_reason": "SHA-256 is computed from this supplied local recording during preprocessing.",
+      "evidence_mode": "recorded",
+      "content_game_id": "gta5",
+      "target_game_id": "gta6",
+      "evidence_scope": "proxy_demo",
+      "media_start_seconds": 0,
+      "timeline_start_seconds": 0,
+      "media_end_seconds": null,
+      "chat_region": {
+        "x": 0.884375,
+        "y": 0.05555555555555555,
+        "width": 0.115625,
+        "height": 0.2962962962962963
+      },
+      "sample_interval_seconds": 2,
+      "language": "eng",
+      "scene_id": "manual-unassigned",
+      "audio_transcription": "faster_whisper",
+      "speech_model_path": "var/models/faster-whisper-tiny.en",
+      "speaker_role": "unknown",
+      "permission_note": "Local recording supplied by the user for proxy demo processing; source channel identity is unverified."
+    }
+  ]
+}

@@ -1,0 +1,30 @@
+{
+  "model_version": "scenario-v1",
+  "calibration_status": "heuristic",
+  "execution_eligibility": "synthetic_replay_only",
+  "note": "Illustrative demo settings, not fitted or validated. No direct webcam sentiment feature.",
+  "anchor": "current_valid_yes_midpoint",
+  "update_mode": "recompute_from_unique_evidence_view",
+  "correction_cap_log_odds": 0.5,
+  "normalization": {
+    "bucket_seconds": 10,
+    "warmup_valid_buckets": 20,
+    "std_floor": 0.1,
+    "z_clip": 4,
+    "baseline_update": "pre_score_then_update",
+    "maturity_multiplier": 1,
+    "ewma_time_constant_seconds": 180
+  },
+  "illustrative_coefficients": {
+    "gta_narrative_2026": {
+      "narrative_absolute": 0.2,
+      "narrative_z": 0.05
+    },
+    "gta_score_above_96": {
+      "overall_absolute": 0.15,
+      "technical_defect_severity": -0.2
+    }
+  },
+  "uncertainty_status": "not_estimated",
+  "face_pricing_weight": 0
+}

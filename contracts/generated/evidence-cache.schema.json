@@ -1,0 +1,748 @@
+{
+  "$defs": {
+    "CachedObservation": {
+      "additionalProperties": false,
+      "properties": {
+        "observation_id": {
+          "maxLength": 240,
+          "minLength": 1,
+          "title": "Observation Id",
+          "type": "string"
+        },
+        "asset_id": {
+          "maxLength": 240,
+          "minLength": 1,
+          "title": "Asset Id",
+          "type": "string"
+        },
+        "stream_id": {
+          "maxLength": 240,
+          "minLength": 1,
+          "title": "Stream Id",
+          "type": "string"
+        },
+        "content_game_id": {
+          "const": "gta5",
+          "default": "gta5",
+          "title": "Content Game Id",
+          "type": "string"
+        },
+        "evidence_scope": {
+          "const": "proxy_demo",
+          "default": "proxy_demo",
+          "title": "Evidence Scope",
+          "type": "string"
+        },
+        "evidence_mode": {
+          "enum": [
+            "recorded",
+            "synthetic_replay"
+          ],
+          "title": "Evidence Mode",
+          "type": "string"
+        },
+        "provider": {
+          "enum": [
+            "supplied_fixture",
+            "sampled_frame_ocr",
+            "recorded_asr"
+          ],
+          "title": "Provider",
+          "type": "string"
+        },
+        "media_seconds": {
+          "minimum": 0.0,
+          "title": "Media Seconds",
+          "type": "number"
+        },
+        "replay_seconds": {
+          "minimum": 0.0,
+          "title": "Replay Seconds",
+          "type": "number"
+        },
+        "raw_text": {
+          "maxLength": 240,
+          "minLength": 1,
+          "title": "Raw Text",
+          "type": "string"
+        },
+        "supporting_quote": {
+          "maxLength": 240,
+          "minLength": 1,
+          "title": "Supporting Quote",
+          "type": "string"
+        },
+        "sentiment": {
+          "anyOf": [
+            {
+              "maximum": 1.0,
+              "minimum": -1.0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Sentiment"
+        },
+        "abstention_reason": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Abstention Reason"
+        },
+        "ocr_confidence": {
+          "anyOf": [
+            {
+              "maximum": 1.0,
+              "minimum": 0.0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Ocr Confidence"
+        },
+        "confidence_reason": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Confidence Reason"
+        },
+        "frame_ref": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Frame Ref"
+        },
+        "frame_reason": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Frame Reason"
+        },
+        "aspect": {
+          "default": "narrative",
+          "enum": [
+            "narrative",
+            "overall",
+            "technical",
+            "gameplay",
+            "audio"
+          ],
+          "title": "Aspect",
+          "type": "string"
+        },
+        "target": {
+          "default": "game",
+          "enum": [
+            "game",
+            "player_skill",
+            "streamer",
+            "unrelated",
+            "ambiguous"
+          ],
+          "title": "Target",
+          "type": "string"
+        },
+        "source_modality": {
+          "default": "chat",
+          "enum": [
+            "chat",
+            "speech"
+          ],
+          "title": "Source Modality",
+          "type": "string"
+        },
+        "semantic_confidence": {
+          "anyOf": [
+            {
+              "maximum": 1.0,
+              "minimum": 0.0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Semantic Confidence"
+        },
+        "media_end_seconds": {
+          "anyOf": [
+            {
+              "minimum": 0.0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Media End Seconds"
+        },
+        "replay_end_seconds": {
+          "anyOf": [
+            {
+              "minimum": 0.0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Replay End Seconds"
+        },
+        "available_replay_seconds": {
+          "anyOf": [
+            {
+              "minimum": 0.0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Available Replay Seconds"
+        },
+        "ocr_boxes": {
+          "items": {
+            "items": {
+              "type": "number"
+            },
+            "type": "array"
+          },
+          "title": "Ocr Boxes",
+          "type": "array"
+        },
+        "track_id": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Track Id"
+        },
+        "dependency_group": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Dependency Group"
+        },
+        "audio_ref": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Audio Ref"
+        },
+        "scene_id": {
+          "maxLength": 240,
+          "minLength": 1,
+          "title": "Scene Id",
+          "type": "string"
+        },
+        "extractor_version": {
+          "maxLength": 240,
+          "minLength": 1,
+          "title": "Extractor Version",
+          "type": "string"
+        }
+      },
+      "required": [
+        "observation_id",
+        "asset_id",
+        "stream_id",
+        "evidence_mode",
+        "provider",
+        "media_seconds",
+        "replay_seconds",
+        "raw_text",
+        "supporting_quote",
+        "sentiment",
+        "ocr_confidence",
+        "frame_ref",
+        "frame_reason",
+        "scene_id",
+        "extractor_version"
+      ],
+      "title": "CachedObservation",
+      "type": "object"
+    },
+    "ChatRegion": {
+      "additionalProperties": false,
+      "properties": {
+        "x": {
+          "maximum": 1.0,
+          "minimum": 0.0,
+          "title": "X",
+          "type": "number"
+        },
+        "y": {
+          "maximum": 1.0,
+          "minimum": 0.0,
+          "title": "Y",
+          "type": "number"
+        },
+        "width": {
+          "exclusiveMinimum": 0.0,
+          "maximum": 1.0,
+          "title": "Width",
+          "type": "number"
+        },
+        "height": {
+          "exclusiveMinimum": 0.0,
+          "maximum": 1.0,
+          "title": "Height",
+          "type": "number"
+        }
+      },
+      "required": [
+        "x",
+        "y",
+        "width",
+        "height"
+      ],
+      "title": "ChatRegion",
+      "type": "object"
+    },
+    "MediaAssetReport": {
+      "additionalProperties": false,
+      "properties": {
+        "asset_id": {
+          "maxLength": 240,
+          "minLength": 1,
+          "title": "Asset Id",
+          "type": "string"
+        },
+        "available": {
+          "title": "Available",
+          "type": "boolean"
+        },
+        "reason": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Reason"
+        },
+        "duration_seconds": {
+          "anyOf": [
+            {
+              "minimum": 0.0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Duration Seconds"
+        },
+        "frame_count": {
+          "default": 0,
+          "minimum": 0,
+          "title": "Frame Count",
+          "type": "integer"
+        },
+        "audio_available": {
+          "default": false,
+          "title": "Audio Available",
+          "type": "boolean"
+        },
+        "audio_reason": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Audio Reason"
+        },
+        "audio_ref": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Audio Ref"
+        },
+        "speech_available": {
+          "default": false,
+          "title": "Speech Available",
+          "type": "boolean"
+        },
+        "speech_reason": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Speech Reason"
+        }
+      },
+      "required": [
+        "asset_id",
+        "available"
+      ],
+      "title": "MediaAssetReport",
+      "type": "object"
+    },
+    "RecordingAsset": {
+      "additionalProperties": false,
+      "properties": {
+        "asset_id": {
+          "maxLength": 240,
+          "minLength": 1,
+          "title": "Asset Id",
+          "type": "string"
+        },
+        "stream_id": {
+          "maxLength": 240,
+          "minLength": 1,
+          "title": "Stream Id",
+          "type": "string"
+        },
+        "label": {
+          "maxLength": 240,
+          "minLength": 1,
+          "title": "Label",
+          "type": "string"
+        },
+        "local_path": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Local Path"
+        },
+        "asset_sha256": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Asset Sha256"
+        },
+        "availability_reason": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Availability Reason"
+        },
+        "content_game_id": {
+          "const": "gta5",
+          "default": "gta5",
+          "title": "Content Game Id",
+          "type": "string"
+        },
+        "target_game_id": {
+          "const": "gta6",
+          "default": "gta6",
+          "title": "Target Game Id",
+          "type": "string"
+        },
+        "evidence_scope": {
+          "const": "proxy_demo",
+          "default": "proxy_demo",
+          "title": "Evidence Scope",
+          "type": "string"
+        },
+        "media_start_seconds": {
+          "default": 0,
+          "minimum": 0.0,
+          "title": "Media Start Seconds",
+          "type": "number"
+        },
+        "timeline_start_seconds": {
+          "default": 0,
+          "title": "Timeline Start Seconds",
+          "type": "number"
+        },
+        "chat_region": {
+          "$ref": "#/$defs/ChatRegion"
+        },
+        "sample_interval_seconds": {
+          "default": 2,
+          "exclusiveMinimum": 0.0,
+          "maximum": 60.0,
+          "title": "Sample Interval Seconds",
+          "type": "number"
+        },
+        "language": {
+          "default": "eng",
+          "title": "Language",
+          "type": "string"
+        },
+        "source_url": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Source Url"
+        },
+        "permission_note": {
+          "title": "Permission Note",
+          "type": "string"
+        },
+        "evidence_mode": {
+          "default": "recorded",
+          "enum": [
+            "recorded",
+            "synthetic_replay"
+          ],
+          "title": "Evidence Mode",
+          "type": "string"
+        },
+        "media_end_seconds": {
+          "anyOf": [
+            {
+              "minimum": 0.0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Media End Seconds"
+        },
+        "scene_id": {
+          "default": "manual-unassigned",
+          "maxLength": 240,
+          "minLength": 1,
+          "title": "Scene Id",
+          "type": "string"
+        },
+        "audio_transcription": {
+          "default": "disabled",
+          "enum": [
+            "disabled",
+            "faster_whisper"
+          ],
+          "title": "Audio Transcription",
+          "type": "string"
+        },
+        "speech_model_path": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Speech Model Path"
+        },
+        "speaker_role": {
+          "default": "unknown",
+          "enum": [
+            "streamer",
+            "unknown"
+          ],
+          "title": "Speaker Role",
+          "type": "string"
+        }
+      },
+      "required": [
+        "asset_id",
+        "stream_id",
+        "label",
+        "local_path",
+        "asset_sha256",
+        "availability_reason",
+        "chat_region",
+        "permission_note"
+      ],
+      "title": "RecordingAsset",
+      "type": "object"
+    },
+    "RecordingManifest": {
+      "additionalProperties": false,
+      "properties": {
+        "schema_version": {
+          "const": "2",
+          "default": "2",
+          "title": "Schema Version",
+          "type": "string"
+        },
+        "manifest_version": {
+          "maxLength": 240,
+          "minLength": 1,
+          "title": "Manifest Version",
+          "type": "string"
+        },
+        "recordings": {
+          "items": {
+            "$ref": "#/$defs/RecordingAsset"
+          },
+          "maxItems": 6,
+          "minItems": 2,
+          "title": "Recordings",
+          "type": "array"
+        },
+        "ocr_version": {
+          "maxLength": 240,
+          "minLength": 1,
+          "title": "Ocr Version",
+          "type": "string"
+        },
+        "preprocessing_version": {
+          "maxLength": 240,
+          "minLength": 1,
+          "title": "Preprocessing Version",
+          "type": "string"
+        },
+        "semantic_version": {
+          "maxLength": 240,
+          "minLength": 1,
+          "title": "Semantic Version",
+          "type": "string"
+        }
+      },
+      "required": [
+        "manifest_version",
+        "recordings",
+        "ocr_version",
+        "preprocessing_version",
+        "semantic_version"
+      ],
+      "title": "RecordingManifest",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": {
+      "const": "2",
+      "default": "2",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "cache_key": {
+      "maxLength": 240,
+      "minLength": 1,
+      "title": "Cache Key",
+      "type": "string"
+    },
+    "input_sha256": {
+      "maxLength": 240,
+      "minLength": 1,
+      "title": "Input Sha256",
+      "type": "string"
+    },
+    "payload_sha256": {
+      "maxLength": 240,
+      "minLength": 1,
+      "title": "Payload Sha256",
+      "type": "string"
+    },
+    "manifest": {
+      "$ref": "#/$defs/RecordingManifest"
+    },
+    "observations": {
+      "items": {
+        "$ref": "#/$defs/CachedObservation"
+      },
+      "title": "Observations",
+      "type": "array"
+    },
+    "asset_reports": {
+      "items": {
+        "$ref": "#/$defs/MediaAssetReport"
+      },
+      "title": "Asset Reports",
+      "type": "array"
+    },
+    "extraction_metadata": {
+      "additionalProperties": {
+        "type": "string"
+      },
+      "title": "Extraction Metadata",
+      "type": "object"
+    }
+  },
+  "required": [
+    "cache_key",
+    "input_sha256",
+    "payload_sha256",
+    "manifest",
+    "observations"
+  ],
+  "title": "EvidenceCache",
+  "type": "object"
+}

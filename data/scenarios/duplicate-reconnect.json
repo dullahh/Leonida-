@@ -1,0 +1,302 @@
+{
+  "scenario_version": "duplicate-reconnect-v3",
+  "origin": "2026-11-14T20:30:00+00:00",
+  "seed": 20261114,
+  "baseline": {
+    "mean": 0,
+    "variance": 0.04,
+    "count": 20,
+    "version": "seeded-synthetic-v3"
+  },
+  "manifest": {
+    "manifest_version": "duplicate-reconnect-v3",
+    "ocr_version": "supplied-fixture-no-ocr",
+    "preprocessing_version": "structured-replay-v3",
+    "semantic_version": "supplied-fixture-claims-v3",
+    "recordings": [
+      {
+        "asset_id": "fixture-video-1",
+        "stream_id": "stream-1",
+        "label": "Synthetic stream 1",
+        "local_path": null,
+        "asset_sha256": null,
+        "availability_reason": "Structured fixture has no media file.",
+        "evidence_mode": "synthetic_replay",
+        "media_start_seconds": 0,
+        "timeline_start_seconds": 0,
+        "chat_region": {
+          "x": 0.5,
+          "y": 0,
+          "width": 0.5,
+          "height": 1
+        },
+        "permission_note": "Authored synthetic fixture; not observed GTA V gameplay."
+      },
+      {
+        "asset_id": "fixture-video-2",
+        "stream_id": "stream-2",
+        "label": "Synthetic stream 2",
+        "local_path": null,
+        "asset_sha256": null,
+        "availability_reason": "Structured fixture has no media file.",
+        "evidence_mode": "synthetic_replay",
+        "media_start_seconds": 0,
+        "timeline_start_seconds": 0,
+        "chat_region": {
+          "x": 0.5,
+          "y": 0,
+          "width": 0.5,
+          "height": 1
+        },
+        "permission_note": "Authored synthetic fixture; not observed GTA V gameplay."
+      },
+      {
+        "asset_id": "fixture-video-3",
+        "stream_id": "stream-3",
+        "label": "Synthetic stream 3",
+        "local_path": null,
+        "asset_sha256": null,
+        "availability_reason": "Structured fixture has no media file.",
+        "evidence_mode": "synthetic_replay",
+        "media_start_seconds": 0,
+        "timeline_start_seconds": 0,
+        "chat_region": {
+          "x": 0.5,
+          "y": 0,
+          "width": 0.5,
+          "height": 1
+        },
+        "permission_note": "Authored synthetic fixture; not observed GTA V gameplay."
+      },
+      {
+        "asset_id": "fixture-video-4",
+        "stream_id": "stream-4",
+        "label": "Synthetic stream 4",
+        "local_path": null,
+        "asset_sha256": null,
+        "availability_reason": "Structured fixture has no media file.",
+        "evidence_mode": "synthetic_replay",
+        "media_start_seconds": 0,
+        "timeline_start_seconds": 0,
+        "chat_region": {
+          "x": 0.5,
+          "y": 0,
+          "width": 0.5,
+          "height": 1
+        },
+        "permission_note": "Authored synthetic fixture; not observed GTA V gameplay."
+      },
+      {
+        "asset_id": "fixture-video-5",
+        "stream_id": "stream-5",
+        "label": "Synthetic stream 5",
+        "local_path": null,
+        "asset_sha256": null,
+        "availability_reason": "Structured fixture has no media file.",
+        "evidence_mode": "synthetic_replay",
+        "media_start_seconds": 0,
+        "timeline_start_seconds": 0,
+        "chat_region": {
+          "x": 0.5,
+          "y": 0,
+          "width": 0.5,
+          "height": 1
+        },
+        "permission_note": "Authored synthetic fixture; not observed GTA V gameplay."
+      },
+      {
+        "asset_id": "fixture-video-6",
+        "stream_id": "stream-6",
+        "label": "Synthetic stream 6",
+        "local_path": null,
+        "asset_sha256": null,
+        "availability_reason": "Structured fixture has no media file.",
+        "evidence_mode": "synthetic_replay",
+        "media_start_seconds": 0,
+        "timeline_start_seconds": 0,
+        "chat_region": {
+          "x": 0.5,
+          "y": 0,
+          "width": 0.5,
+          "height": 1
+        },
+        "permission_note": "Authored synthetic fixture; not observed GTA V gameplay."
+      }
+    ]
+  },
+  "observations": [
+    {
+      "asset_id": "fixture-video-1",
+      "stream_id": "stream-1",
+      "evidence_mode": "synthetic_replay",
+      "provider": "supplied_fixture",
+      "source_modality": "chat",
+      "media_seconds": 0.0,
+      "replay_seconds": 0.0,
+      "available_replay_seconds": 1.0,
+      "raw_text": "The story is excellent.",
+      "supporting_quote": "The story is excellent.",
+      "sentiment": 0.4,
+      "abstention_reason": null,
+      "ocr_confidence": null,
+      "confidence_reason": "Supplied synthetic annotation; OCR and ASR were not run.",
+      "frame_ref": null,
+      "frame_reason": "Structured synthetic fixture; no video frame exists.",
+      "aspect": "narrative",
+      "target": "game",
+      "scene_id": "manual-courtroom",
+      "extractor_version": "supplied-fixture-claims-v3",
+      "semantic_confidence": 0.6,
+      "dependency_group": "original-courtroom-clip"
+    },
+    {
+      "asset_id": "fixture-video-2",
+      "stream_id": "stream-2",
+      "evidence_mode": "synthetic_replay",
+      "provider": "supplied_fixture",
+      "source_modality": "chat",
+      "media_seconds": 4.0,
+      "replay_seconds": 4.0,
+      "available_replay_seconds": 5.0,
+      "raw_text": "The story is excellent.",
+      "supporting_quote": "The story is excellent.",
+      "sentiment": 0.4,
+      "abstention_reason": null,
+      "ocr_confidence": null,
+      "confidence_reason": "Supplied synthetic annotation; OCR and ASR were not run.",
+      "frame_ref": null,
+      "frame_reason": "Structured synthetic fixture; no video frame exists.",
+      "aspect": "narrative",
+      "target": "game",
+      "scene_id": "manual-courtroom",
+      "extractor_version": "supplied-fixture-claims-v3",
+      "semantic_confidence": 0.6,
+      "dependency_group": "original-courtroom-clip"
+    }
+  ],
+  "source_statuses": [
+    {
+      "stream_id": "stream-1",
+      "state": "fixture_ready",
+      "reason": "Labelled supplied observations."
+    },
+    {
+      "stream_id": "stream-2",
+      "state": "fixture_ready",
+      "reason": "Labelled supplied observations."
+    },
+    {
+      "stream_id": "stream-3",
+      "state": "recording_missing",
+      "reason": "Source offline in this scenario; no fabricated observations."
+    },
+    {
+      "stream_id": "stream-4",
+      "state": "recording_missing",
+      "reason": "Source offline in this scenario; no fabricated observations."
+    },
+    {
+      "stream_id": "stream-5",
+      "state": "recording_missing",
+      "reason": "Source offline in this scenario; no fabricated observations."
+    },
+    {
+      "stream_id": "stream-6",
+      "state": "recording_missing",
+      "reason": "Source offline in this scenario; no fabricated observations."
+    }
+  ],
+  "quote_timeline": [
+    {
+      "event_id": "duplicate-reconnect-v3-quote-0",
+      "event_seconds": 0,
+      "available_replay_seconds": 0,
+      "captured_replay_seconds": 0,
+      "market_id": "synthetic:duplicate-reconnect-v3:narrative",
+      "quote_mode": "synthetic_replay",
+      "yes_bid": ".4975",
+      "yes_ask": ".5025",
+      "no_bid": "0.4975",
+      "no_ask": "0.5025",
+      "yes_bid_size": "10",
+      "yes_ask_size": "6",
+      "no_bid_size": "10",
+      "no_ask_size": "6",
+      "liquidity_event_id": "duplicate-reconnect-v3-liquidity-0",
+      "venue_status": "active",
+      "fee_schedule_version": "simulation-linear-v1",
+      "fee_per_contract": "0.01",
+      "book_event": "replace",
+      "note": "Explicit synthetic book snapshot; not a venue quote."
+    },
+    {
+      "event_id": "duplicate-reconnect-v3-quote-2",
+      "event_seconds": 2,
+      "available_replay_seconds": 2,
+      "captured_replay_seconds": 2,
+      "market_id": "synthetic:duplicate-reconnect-v3:narrative",
+      "quote_mode": "synthetic_replay",
+      "yes_bid": ".4975",
+      "yes_ask": ".5025",
+      "no_bid": "0.4975",
+      "no_ask": "0.5025",
+      "yes_bid_size": "10",
+      "yes_ask_size": "6",
+      "no_bid_size": "10",
+      "no_ask_size": "6",
+      "liquidity_event_id": "duplicate-reconnect-v3-liquidity-0",
+      "venue_status": "active",
+      "fee_schedule_version": "simulation-linear-v1",
+      "fee_per_contract": "0.01",
+      "book_event": "republish_same_liquidity",
+      "note": "Republication of the same explicit synthetic book; consumed liquidity is not replenished."
+    },
+    {
+      "event_id": "duplicate-reconnect-v3-quote-5",
+      "event_seconds": 5,
+      "available_replay_seconds": 5,
+      "captured_replay_seconds": 5,
+      "market_id": "synthetic:duplicate-reconnect-v3:narrative",
+      "quote_mode": "synthetic_replay",
+      "yes_bid": ".4975",
+      "yes_ask": ".5025",
+      "no_bid": "0.4975",
+      "no_ask": "0.5025",
+      "yes_bid_size": "10",
+      "yes_ask_size": "6",
+      "no_bid_size": "10",
+      "no_ask_size": "6",
+      "liquidity_event_id": "duplicate-reconnect-v3-liquidity-0",
+      "venue_status": "active",
+      "fee_schedule_version": "simulation-linear-v1",
+      "fee_per_contract": "0.01",
+      "book_event": "republish_same_liquidity",
+      "note": "Second republication of the same explicit synthetic book after duplicate/rebroadcast delivery."
+    }
+  ],
+  "expected_invariants": [
+    "Replay source delivers identical IDs three times.",
+    "Each observation counts once.",
+    "Rebroadcast dependency group is shared.",
+    "Quote republications use the same liquidity ID and exact depth; consumed ask depth is not replenished.",
+    "Duplicate/rebroadcast deliveries cannot cause a second entry fill."
+  ],
+  "duplicate_delivery_count": 3,
+  "scene_context": {
+    "identity_source": "manual_fixture",
+    "phase": "authored-scene-excerpt",
+    "build": "synthetic-fixture-build-v1",
+    "platform": "synthetic-not-observed-hardware",
+    "automatic_match_confidence": null,
+    "automatic_match_reason": "No perceptual matching is performed."
+  },
+  "simulation_authorized": true,
+  "duration_seconds": 30,
+  "execution_note": "Paper simulation authorized only for these authored synthetic observations and synthetic quote/depth timeline. Not authorized for recorded media or actual venue quotes.",
+  "expected_lifecycle": {
+    "requested_entry_quantity": "10",
+    "available_entry_quantity": "6",
+    "maximum_entry_fill_count": 1,
+    "duplicate_delivery_count": 3
+  }
+}

@@ -1,0 +1,811 @@
+/* Generated from schema 2 serialization output. Root-owned; do not edit. */
+
+export type SchemaVersion = "2";
+export type RunId = string;
+export type Sequence = number;
+export type GeneratedAt = string;
+export type Type = "snapshot";
+export type SchemaVersion1 = "2";
+export type RunId1 = string;
+export type Gate = "G1" | "G2" | "G3";
+export type ContractRevision = "g2-v1" | "g3-v1" | "g3-reactions-v1";
+export type SchemaVersion2 = "2";
+export type RunId2 = string;
+export type ReactionId = string;
+export type ObservationId = string;
+export type WindowId = string;
+export type StreamId = string;
+export type AssetId = string;
+export type EvidenceMode = "recorded" | "synthetic_replay";
+export type EvidenceScope = "proxy_demo";
+export type MediaSeconds = number;
+export type MediaEndSeconds = number | null;
+export type ReplaySeconds = number;
+export type AvailableReplaySeconds = number;
+export type Valence = "negative" | "neutral" | "positive" | "uncertain";
+export type Intensity = number | null;
+export type IntensityBasis = "text_only";
+export type Emotion = ("excitement" | "frustration" | "surprise" | "amusement" | "confusion") | null;
+export type TargetCertainty = number;
+export type LikelyTarget =
+  "game_quality" | "in_game_event" | "player_skill" | "another_player" | "role_play" | "unknown";
+export type SourceModality = "chat" | "speech";
+export type Confidence = number | null;
+export type SupportingText = string;
+export type AbstentionReason = string | null;
+export type ExclusionReason = string | null;
+export type SupportedClaimId = string | null;
+export type MarketRelevance = number;
+export type PricingEligible = boolean;
+export type IncludedInEstimate = boolean;
+export type ClassifierVersion = string;
+export type PolicyVersion = string;
+export type Reactions = ReactionSignal[];
+export type ReactionRecentWindowSeconds = number;
+export type ScenarioName = string;
+export type SchemaVersion3 = "2";
+export type RunId3 = string;
+export type GroupId = string;
+export type SceneId = string;
+export type ClaimIds = string[];
+export type IdentitySource = "manual";
+export type MatchConfidence = null;
+export type Groups = EvidenceGroup[];
+export type Enabled = boolean;
+export type Reason = string;
+export type FeeScheduleVersion = string;
+export type SchemaVersion4 = "2";
+export type RunId4 = string;
+export type OrderId = string;
+export type IntentId = string;
+export type RequestDigest = string;
+export type MarketId = string;
+export type GameId = string;
+export type Side = "yes" | "no";
+export type Direction = "buy" | "sell";
+export type Status = "pending" | "filled" | "partial" | "cancelled";
+export type RequestedQuantity = string;
+export type Quantity = string;
+export type FilledQuantity = string;
+export type LimitPrice = string;
+export type ReservedCash = string;
+export type DecisionProbability = string | null;
+export type EligibleProbability = string | null;
+export type DecisionQuoteId = string;
+export type ExecutionQuoteId = string | null;
+export type CreatedAt = string;
+export type EligibleAt = string;
+export type CompletedAt = string | null;
+export type Reasons = string[];
+export type DecisionQuoteAt = string | null;
+export type Orders = OrderRecord[];
+export type FillId = string;
+export type OrderId1 = string;
+export type QuoteId = string;
+export type BookRevision = string;
+export type MarketId1 = string;
+export type Side1 = "yes" | "no";
+export type Direction1 = "buy" | "sell";
+export type Quantity1 = string;
+export type GrossValue = string;
+export type Fee = string;
+export type Vwap = string;
+export type At = string;
+export type Fills = FillRecord[];
+export type MarketId2 = string;
+export type GameId1 = string;
+export type Side2 = "yes" | "no";
+export type Quantity2 = string;
+export type CostBasis = string;
+export type EntryFairSide = string;
+export type Positions = PositionRecord[];
+export type MarketId3 = string;
+export type Side3 = "yes" | "no";
+export type QuoteId1 = string | null;
+export type AsOf = string;
+export type PricedQuantity = string;
+export type UnpricedQuantity = string;
+export type NetLiquidationValue = string | null;
+export type UnrealizedPnlPricedQuantity = string | null;
+export type Reason1 = string | null;
+export type Marks = PositionMark[];
+export type SchemaVersion5 = "2";
+export type RunId5 = string;
+export type TraceId = string;
+export type OrderId2 = string;
+export type Stage = "entry_plan" | "exit_plan" | "eligibility";
+export type At1 = string;
+export type SchemaVersion6 = "2";
+export type RunId6 = string;
+export type WindowId1 = string;
+export type StreamId1 = string;
+export type AssetId1 = string;
+export type ContentGameId = "gta5";
+export type EvidenceScope1 = "proxy_demo";
+export type EvidenceMode1 = "recorded" | "synthetic_replay";
+export type EventAt = string;
+export type AvailableAt = string;
+export type SourceMediaSeconds = number;
+export type ReplaySeconds1 = number;
+export type RawText = string;
+export type CacheKey = string;
+export type ObservationId1 = string;
+export type Provider = string;
+export type FrameRef = string | null;
+export type FrameReason = string | null;
+export type Modality = "chat" | "speech" | "facecam";
+export type Available = boolean;
+export type Reason2 = string | null;
+export type Modalities = ModalityAvailability[];
+export type SourceModality1 = "chat" | "speech";
+export type OcrConfidence = number | null;
+export type ConfidenceReason = string | null;
+export type AudioRef = string | null;
+export type ObservationId2 = string;
+export type AssetId2 = string;
+export type StreamId2 = string;
+export type ContentGameId1 = "gta5";
+export type EvidenceScope2 = "proxy_demo";
+export type EvidenceMode2 = "recorded" | "synthetic_replay";
+export type Provider1 = "supplied_fixture" | "sampled_frame_ocr" | "recorded_asr";
+export type MediaSeconds1 = number;
+export type ReplaySeconds2 = number;
+export type RawText1 = string;
+export type SupportingQuote = string;
+export type Sentiment = number | null;
+export type AbstentionReason1 = string | null;
+export type OcrConfidence1 = number | null;
+export type ConfidenceReason1 = string | null;
+export type FrameRef1 = string | null;
+export type FrameReason1 = string | null;
+export type Aspect = "narrative" | "overall" | "technical" | "gameplay" | "audio";
+export type Target = "game" | "player_skill" | "streamer" | "unrelated" | "ambiguous";
+export type SourceModality2 = "chat" | "speech";
+export type SemanticConfidence = number | null;
+export type MediaEndSeconds1 = number | null;
+export type ReplayEndSeconds = number | null;
+export type AvailableReplaySeconds1 = number | null;
+export type OcrBoxes = number[][];
+export type TrackId = string | null;
+export type DependencyGroup = string | null;
+export type AudioRef1 = string | null;
+export type SceneId1 = string;
+export type ExtractorVersion = string;
+export type Windows = SourceWindow[];
+export type SchemaVersion7 = "2";
+export type RunId7 = string;
+export type ClaimId = string;
+export type WindowId2 = string;
+export type StreamId3 = string;
+export type ContentGameId2 = "gta5";
+export type EvidenceScope3 = "proxy_demo";
+export type EvidenceMode3 = "recorded" | "synthetic_replay";
+export type Aspect1 = "narrative" | "overall" | "technical" | "gameplay" | "audio";
+export type SourceModality3 = "chat" | "speech";
+export type Target1 = "game" | "player_skill" | "streamer" | "unrelated" | "ambiguous";
+export type Sentiment1 = number | null;
+export type AbstentionReason2 = string | null;
+export type SemanticConfidence1 = number | null;
+export type Quality = number;
+export type DependencyGroup1 = string | null;
+export type SupportingQuote1 = string;
+export type SceneId2 = string;
+export type ExtractorVersion1 = string;
+export type Revision = number;
+export type Claims = EvidenceClaim[];
+export type SchemaVersion8 = "2";
+export type RunId8 = string;
+export type FeatureId = string;
+/**
+ * @minItems 1
+ */
+export type ClaimIds1 = [string, ...string[]];
+export type ContentGameId3 = "gta5";
+export type EvidenceScope4 = "proxy_demo";
+export type AbsoluteSentiment = number;
+export type MeanZ = number | null;
+export type BaselineStatus = "seeded_fixture" | "warming_up" | "ready";
+export type Aspect2 = "narrative" | "overall" | "technical" | "gameplay" | "audio";
+export type SourceModality4 = "chat" | "speech" | "mixed";
+export type StreamIds = string[];
+export type Freshness = number;
+export type ZFreshness = number;
+export type ZReason = string | null;
+export type Disagreement = number;
+export type UniqueStreamCount = number;
+export type BaselineVersion = string;
+export type PreviousMean = number;
+export type PreviousVariance = number;
+export type UpdatedMean = number;
+export type UpdatedVariance = number;
+export type BaselineCount = number;
+export type UniqueObservationCount = number;
+export type EffectiveSourceDiagnostic = number;
+export type AsOf1 = string;
+export type Features = FeatureSnapshot[];
+export type QuoteId2 = string;
+export type MarketId4 = string;
+export type QuoteMode = "synthetic_replay" | "live" | "cached_stale";
+export type CapturedAt = string;
+export type VenueTimestamp = string | null;
+export type VenueTimestampReason = string | null;
+export type VenueStatus = string;
+export type IsStale = boolean;
+export type YesBid = string | null;
+export type YesAsk = string | null;
+export type NoBid = string | null;
+export type NoAsk = string | null;
+export type SourceRef = string;
+export type SchemaVersion9 = "2";
+export type RunId9 = string;
+export type EstimateId = string;
+export type MarketId5 = string;
+export type QuoteId3 = string;
+/**
+ * @minItems 1
+ */
+export type FeatureIds = [string, ...string[]];
+export type MarketReferenceProbability = number;
+export type CorrectionLogOdds = number;
+export type ModelProbability = number;
+export type Relevance = number;
+export type ModelVersion = string;
+export type CalibrationStatus = "heuristic";
+export type UncertaintyStatus = "not_estimated";
+export type EvidenceScope5 = "proxy_demo";
+export type SchemaVersion10 = "2";
+export type RunId10 = string;
+export type DecisionId = string;
+export type EstimateId1 = string;
+export type QuoteId4 = string;
+export type MarketId6 = string;
+export type ExecutionMode = "paper";
+export type Action = "candidate";
+export type Side4 = "yes" | "no";
+export type Quantity3 = string;
+export type YesEvPerContract = string | null;
+export type NoEvPerContract = string | null;
+export type EstimatedTotalFee = string;
+export type FeeScheduleVersion1 = string;
+export type EligibleForFill = false;
+/**
+ * @minItems 1
+ */
+export type Reasons1 = [string, ...string[]];
+export type SchemaVersion11 = "2";
+export type RunId11 = string;
+export type ReceiptId = string;
+export type WindowIds = string[];
+export type ClaimIds2 = string[];
+export type FeatureIds1 = string[];
+export type EstimateId2 = string;
+export type DecisionId1 = string;
+export type QuoteId5 = string;
+export type EvidenceScope6 = "proxy_demo";
+export type Explanation = string[];
+export type Limitations = string[];
+export type Reasons2 = string[];
+export type Traces = ExecutionTrace[];
+export type ReservedCash1 = string;
+export type RealizedPnl = string;
+export type LatestReasons = string[];
+export type SchedulerCursor = number;
+export type SourceQueueCapacity = number;
+export type RunStatus = "paused" | "playing" | "completed";
+export type PositionSeconds = number;
+export type DurationSeconds = number;
+export type Speed = number;
+export type Playing = boolean;
+export type ReplayTime = string;
+export type EvidenceMode4 = "recorded" | "synthetic_replay";
+export type ContentGameId4 = "gta5";
+export type TargetGameId = "gta6";
+export type EvidenceScope7 = "proxy_demo";
+export type ExecutionMode1 = "paper";
+export type CalibrationStatus1 = "heuristic";
+export type CacheKey1 = string;
+export type ConfigurationFingerprint = string;
+export type SchemaVersion12 = "2";
+export type ManifestVersion = string;
+/**
+ * @minItems 2
+ * @maxItems 6
+ */
+export type Recordings =
+  | [RecordingAsset, RecordingAsset]
+  | [RecordingAsset, RecordingAsset, RecordingAsset]
+  | [RecordingAsset, RecordingAsset, RecordingAsset, RecordingAsset]
+  | [RecordingAsset, RecordingAsset, RecordingAsset, RecordingAsset, RecordingAsset]
+  | [RecordingAsset, RecordingAsset, RecordingAsset, RecordingAsset, RecordingAsset, RecordingAsset];
+export type AssetId3 = string;
+export type StreamId4 = string;
+export type Label = string;
+export type LocalPath = string | null;
+export type AssetSha256 = string | null;
+export type AvailabilityReason = string | null;
+export type ContentGameId5 = "gta5";
+export type TargetGameId1 = "gta6";
+export type EvidenceScope8 = "proxy_demo";
+export type MediaStartSeconds = number;
+export type TimelineStartSeconds = number;
+export type X = number;
+export type Y = number;
+export type Width = number;
+export type Height = number;
+export type SampleIntervalSeconds = number;
+export type Language = string;
+export type SourceUrl = string | null;
+export type PermissionNote = string;
+export type EvidenceMode5 = "recorded" | "synthetic_replay";
+export type MediaEndSeconds2 = number | null;
+export type SceneId3 = string;
+export type AudioTranscription = "disabled" | "faster_whisper";
+export type SpeechModelPath = string | null;
+export type SpeakerRole = "streamer" | "unknown";
+export type OcrVersion = string;
+export type PreprocessingVersion = string;
+export type SemanticVersion = string;
+export type StreamId5 = string;
+export type Label1 = string;
+export type State = "fixture_ready" | "recording_missing" | "recording_ready" | "error";
+export type Reason3 = string;
+export type Streams = SourceStatus[];
+export type Windows1 = SourceWindow[];
+export type Claims1 = EvidenceClaim[];
+export type Features1 = FeatureSnapshot[];
+export type MarketId7 = string;
+export type MarketNamespace = "synthetic" | "venue";
+export type Title = string;
+export type TargetGameId2 = "gta6";
+export type VenueTicker = string | null;
+export type ReferenceVenueTicker = string | null;
+export type RulesPrimary = string;
+export type DefinitionVersion = string;
+export type Markets = MarketDefinition[];
+export type Quotes = MarketQuote[];
+export type Estimates = ModelEstimate[];
+export type Decisions = PaperDecision[];
+export type Receipts = Receipt[];
+export type CashUsd = string;
+export type OrderCount = number;
+export type FillCount = number;
+export type Warnings = string[];
+export type Status1 = "historical" | "live" | "unavailable" | "error";
+export type ObservedAt = string | null;
+export type Error = string | null;
+export type Markets1 = MarketDefinition[];
+export type Quotes1 = MarketQuote[];
+export type EffectOnProxyEstimate = "none";
+
+export interface StreamEnvelope {
+  schema_version?: SchemaVersion;
+  run_id: RunId;
+  sequence: Sequence;
+  generated_at: GeneratedAt;
+  type?: Type;
+  payload: DashboardSnapshot;
+}
+export interface DashboardSnapshot {
+  schema_version?: SchemaVersion1;
+  run_id: RunId1;
+  gate?: Gate;
+  contract_revision?: ContractRevision;
+  reactions?: Reactions;
+  reaction_recent_window_seconds?: ReactionRecentWindowSeconds;
+  scenario_name?: ScenarioName;
+  groups?: Groups;
+  execution?: ExecutionState;
+  scheduler_cursor?: SchedulerCursor;
+  source_queue_capacity?: SourceQueueCapacity;
+  run_status?: RunStatus;
+  playback?: PlaybackState;
+  replay_time: ReplayTime;
+  evidence_mode?: EvidenceMode4;
+  content_game_id?: ContentGameId4;
+  target_game_id?: TargetGameId;
+  evidence_scope?: EvidenceScope7;
+  execution_mode?: ExecutionMode1;
+  calibration_status?: CalibrationStatus1;
+  cache_key: CacheKey1;
+  configuration_fingerprint: ConfigurationFingerprint;
+  recording_manifest: RecordingManifest;
+  streams: Streams;
+  windows: Windows1;
+  claims: Claims1;
+  features: Features1;
+  markets: Markets;
+  quotes: Quotes;
+  estimates: Estimates;
+  decisions: Decisions;
+  receipts: Receipts;
+  cash_usd: CashUsd;
+  order_count?: OrderCount;
+  fill_count?: FillCount;
+  warnings: Warnings;
+  venue_context: VenueContext;
+}
+export interface ReactionSignal {
+  schema_version?: SchemaVersion2;
+  run_id: RunId2;
+  reaction_id: ReactionId;
+  observation_id: ObservationId;
+  window_id: WindowId;
+  stream_id: StreamId;
+  asset_id: AssetId;
+  evidence_mode: EvidenceMode;
+  evidence_scope?: EvidenceScope;
+  media_seconds: MediaSeconds;
+  media_end_seconds?: MediaEndSeconds;
+  replay_seconds: ReplaySeconds;
+  available_replay_seconds: AvailableReplaySeconds;
+  valence: Valence;
+  intensity: Intensity;
+  intensity_basis?: IntensityBasis;
+  emotion: Emotion;
+  target_certainty: TargetCertainty;
+  likely_target: LikelyTarget;
+  source_modality: SourceModality;
+  confidence: Confidence;
+  supporting_text: SupportingText;
+  abstention_reason: AbstentionReason;
+  exclusion_reason: ExclusionReason;
+  supported_claim_id: SupportedClaimId;
+  market_relevance: MarketRelevance;
+  pricing_eligible: PricingEligible;
+  included_in_estimate?: IncludedInEstimate;
+  classifier_version: ClassifierVersion;
+  policy_version: PolicyVersion;
+}
+export interface EvidenceGroup {
+  schema_version?: SchemaVersion3;
+  run_id: RunId3;
+  group_id: GroupId;
+  scene_id: SceneId;
+  claim_ids: ClaimIds;
+  identity_source?: IdentitySource;
+  match_confidence?: MatchConfidence;
+}
+export interface ExecutionState {
+  enabled?: Enabled;
+  reason?: Reason;
+  fee_schedule_version?: FeeScheduleVersion;
+  orders?: Orders;
+  fills?: Fills;
+  positions?: Positions;
+  marks?: Marks;
+  traces?: Traces;
+  reserved_cash?: ReservedCash1;
+  realized_pnl?: RealizedPnl;
+  latest_reasons?: LatestReasons;
+}
+export interface OrderRecord {
+  schema_version?: SchemaVersion4;
+  run_id: RunId4;
+  order_id: OrderId;
+  intent_id: IntentId;
+  request_digest: RequestDigest;
+  market_id: MarketId;
+  game_id: GameId;
+  side: Side;
+  direction: Direction;
+  status: Status;
+  requested_quantity: RequestedQuantity;
+  quantity: Quantity;
+  filled_quantity: FilledQuantity;
+  limit_price: LimitPrice;
+  reserved_cash: ReservedCash;
+  decision_probability: DecisionProbability;
+  eligible_probability: EligibleProbability;
+  decision_quote_id: DecisionQuoteId;
+  execution_quote_id: ExecutionQuoteId;
+  created_at: CreatedAt;
+  eligible_at: EligibleAt;
+  completed_at: CompletedAt;
+  reasons: Reasons;
+  decision_quote_at?: DecisionQuoteAt;
+}
+export interface FillRecord {
+  fill_id: FillId;
+  order_id: OrderId1;
+  quote_id: QuoteId;
+  book_revision: BookRevision;
+  market_id: MarketId1;
+  side: Side1;
+  direction: Direction1;
+  quantity: Quantity1;
+  gross_value: GrossValue;
+  fee: Fee;
+  vwap: Vwap;
+  at: At;
+}
+export interface PositionRecord {
+  market_id: MarketId2;
+  game_id: GameId1;
+  side: Side2;
+  quantity: Quantity2;
+  cost_basis: CostBasis;
+  entry_fair_side: EntryFairSide;
+}
+export interface PositionMark {
+  market_id: MarketId3;
+  side: Side3;
+  quote_id: QuoteId1;
+  as_of: AsOf;
+  priced_quantity: PricedQuantity;
+  unpriced_quantity: UnpricedQuantity;
+  net_liquidation_value: NetLiquidationValue;
+  unrealized_pnl_priced_quantity: UnrealizedPnlPricedQuantity;
+  reason: Reason1;
+}
+export interface ExecutionTrace {
+  schema_version?: SchemaVersion5;
+  run_id: RunId5;
+  trace_id: TraceId;
+  order_id: OrderId2;
+  stage: Stage;
+  at: At1;
+  windows: Windows;
+  claims: Claims;
+  features: Features;
+  quote: MarketQuote;
+  estimate: ModelEstimate | null;
+  decision: PaperDecision | null;
+  receipt: Receipt | null;
+  reasons: Reasons2;
+}
+export interface SourceWindow {
+  schema_version?: SchemaVersion6;
+  run_id: RunId6;
+  window_id: WindowId1;
+  stream_id: StreamId1;
+  asset_id: AssetId1;
+  content_game_id?: ContentGameId;
+  evidence_scope?: EvidenceScope1;
+  evidence_mode: EvidenceMode1;
+  event_at: EventAt;
+  available_at: AvailableAt;
+  source_media_seconds: SourceMediaSeconds;
+  replay_seconds: ReplaySeconds1;
+  raw_text: RawText;
+  cache_key: CacheKey;
+  observation_id: ObservationId1;
+  provider: Provider;
+  frame_ref: FrameRef;
+  frame_reason: FrameReason;
+  modalities: Modalities;
+  source_modality?: SourceModality1;
+  ocr_confidence?: OcrConfidence;
+  confidence_reason?: ConfidenceReason;
+  audio_ref?: AudioRef;
+  observation?: CachedObservation | null;
+}
+export interface ModalityAvailability {
+  modality: Modality;
+  available: Available;
+  reason?: Reason2;
+}
+export interface CachedObservation {
+  observation_id: ObservationId2;
+  asset_id: AssetId2;
+  stream_id: StreamId2;
+  content_game_id?: ContentGameId1;
+  evidence_scope?: EvidenceScope2;
+  evidence_mode: EvidenceMode2;
+  provider: Provider1;
+  media_seconds: MediaSeconds1;
+  replay_seconds: ReplaySeconds2;
+  raw_text: RawText1;
+  supporting_quote: SupportingQuote;
+  sentiment: Sentiment;
+  abstention_reason?: AbstentionReason1;
+  ocr_confidence: OcrConfidence1;
+  confidence_reason?: ConfidenceReason1;
+  frame_ref: FrameRef1;
+  frame_reason: FrameReason1;
+  aspect?: Aspect;
+  target?: Target;
+  source_modality?: SourceModality2;
+  semantic_confidence?: SemanticConfidence;
+  media_end_seconds?: MediaEndSeconds1;
+  replay_end_seconds?: ReplayEndSeconds;
+  available_replay_seconds?: AvailableReplaySeconds1;
+  ocr_boxes?: OcrBoxes;
+  track_id?: TrackId;
+  dependency_group?: DependencyGroup;
+  audio_ref?: AudioRef1;
+  scene_id: SceneId1;
+  extractor_version: ExtractorVersion;
+}
+export interface EvidenceClaim {
+  schema_version?: SchemaVersion7;
+  run_id: RunId7;
+  claim_id: ClaimId;
+  window_id: WindowId2;
+  stream_id: StreamId3;
+  content_game_id?: ContentGameId2;
+  evidence_scope?: EvidenceScope3;
+  evidence_mode: EvidenceMode3;
+  aspect?: Aspect1;
+  source_modality?: SourceModality3;
+  target?: Target1;
+  sentiment: Sentiment1;
+  abstention_reason?: AbstentionReason2;
+  semantic_confidence?: SemanticConfidence1;
+  quality?: Quality;
+  dependency_group?: DependencyGroup1;
+  supporting_quote: SupportingQuote1;
+  scene_id: SceneId2;
+  extractor_version: ExtractorVersion1;
+  revision?: Revision;
+}
+export interface FeatureSnapshot {
+  schema_version?: SchemaVersion8;
+  run_id: RunId8;
+  feature_id: FeatureId;
+  claim_ids: ClaimIds1;
+  content_game_id?: ContentGameId3;
+  evidence_scope?: EvidenceScope4;
+  absolute_sentiment: AbsoluteSentiment;
+  mean_z: MeanZ;
+  baseline_status?: BaselineStatus;
+  aspect?: Aspect2;
+  source_modality?: SourceModality4;
+  stream_ids?: StreamIds;
+  freshness?: Freshness;
+  z_freshness?: ZFreshness;
+  z_reason?: ZReason;
+  disagreement?: Disagreement;
+  unique_stream_count?: UniqueStreamCount;
+  baseline_version: BaselineVersion;
+  previous_mean: PreviousMean;
+  previous_variance: PreviousVariance;
+  updated_mean: UpdatedMean;
+  updated_variance: UpdatedVariance;
+  baseline_count: BaselineCount;
+  unique_observation_count: UniqueObservationCount;
+  effective_source_diagnostic: EffectiveSourceDiagnostic;
+  as_of: AsOf1;
+}
+export interface MarketQuote {
+  quote_id: QuoteId2;
+  market_id: MarketId4;
+  quote_mode: QuoteMode;
+  captured_at: CapturedAt;
+  venue_timestamp?: VenueTimestamp;
+  venue_timestamp_reason?: VenueTimestampReason;
+  venue_status: VenueStatus;
+  is_stale: IsStale;
+  yes_bid: YesBid;
+  yes_ask: YesAsk;
+  no_bid: NoBid;
+  no_ask: NoAsk;
+  missing_reasons?: MissingReasons;
+  source_ref: SourceRef;
+}
+export interface MissingReasons {
+  [k: string]: string;
+}
+export interface ModelEstimate {
+  schema_version?: SchemaVersion9;
+  run_id: RunId9;
+  estimate_id: EstimateId;
+  market_id: MarketId5;
+  quote_id: QuoteId3;
+  feature_ids: FeatureIds;
+  market_reference_probability: MarketReferenceProbability;
+  correction_log_odds: CorrectionLogOdds;
+  model_probability: ModelProbability;
+  relevance: Relevance;
+  model_version: ModelVersion;
+  calibration_status?: CalibrationStatus;
+  uncertainty_status?: UncertaintyStatus;
+  evidence_scope?: EvidenceScope5;
+  coefficients: Coefficients;
+}
+export interface Coefficients {
+  [k: string]: number;
+}
+export interface PaperDecision {
+  schema_version?: SchemaVersion10;
+  run_id: RunId10;
+  decision_id: DecisionId;
+  estimate_id: EstimateId1;
+  quote_id: QuoteId4;
+  market_id: MarketId6;
+  execution_mode?: ExecutionMode;
+  action?: Action;
+  side: Side4;
+  quantity: Quantity3;
+  yes_ev_per_contract: YesEvPerContract;
+  no_ev_per_contract: NoEvPerContract;
+  ev_missing_reasons?: EvMissingReasons;
+  estimated_total_fee: EstimatedTotalFee;
+  fee_schedule_version: FeeScheduleVersion1;
+  eligible_for_fill?: EligibleForFill;
+  reasons: Reasons1;
+}
+export interface EvMissingReasons {
+  [k: string]: string;
+}
+export interface Receipt {
+  schema_version?: SchemaVersion11;
+  run_id: RunId11;
+  receipt_id: ReceiptId;
+  window_ids: WindowIds;
+  claim_ids: ClaimIds2;
+  feature_ids: FeatureIds1;
+  estimate_id: EstimateId2;
+  decision_id: DecisionId1;
+  quote_id: QuoteId5;
+  evidence_scope?: EvidenceScope6;
+  explanation: Explanation;
+  limitations: Limitations;
+}
+export interface PlaybackState {
+  position_seconds?: PositionSeconds;
+  duration_seconds?: DurationSeconds;
+  speed?: Speed;
+  playing?: Playing;
+}
+export interface RecordingManifest {
+  schema_version?: SchemaVersion12;
+  manifest_version: ManifestVersion;
+  recordings: Recordings;
+  ocr_version: OcrVersion;
+  preprocessing_version: PreprocessingVersion;
+  semantic_version: SemanticVersion;
+}
+export interface RecordingAsset {
+  asset_id: AssetId3;
+  stream_id: StreamId4;
+  label: Label;
+  local_path: LocalPath;
+  asset_sha256: AssetSha256;
+  availability_reason: AvailabilityReason;
+  content_game_id?: ContentGameId5;
+  target_game_id?: TargetGameId1;
+  evidence_scope?: EvidenceScope8;
+  media_start_seconds?: MediaStartSeconds;
+  timeline_start_seconds?: TimelineStartSeconds;
+  chat_region: ChatRegion;
+  sample_interval_seconds?: SampleIntervalSeconds;
+  language?: Language;
+  source_url?: SourceUrl;
+  permission_note: PermissionNote;
+  evidence_mode?: EvidenceMode5;
+  media_end_seconds?: MediaEndSeconds2;
+  scene_id?: SceneId3;
+  audio_transcription?: AudioTranscription;
+  speech_model_path?: SpeechModelPath;
+  speaker_role?: SpeakerRole;
+}
+export interface ChatRegion {
+  x: X;
+  y: Y;
+  width: Width;
+  height: Height;
+}
+export interface SourceStatus {
+  stream_id: StreamId5;
+  label: Label1;
+  state: State;
+  reason: Reason3;
+}
+export interface MarketDefinition {
+  market_id: MarketId7;
+  market_namespace: MarketNamespace;
+  title: Title;
+  target_game_id?: TargetGameId2;
+  venue_ticker: VenueTicker;
+  reference_venue_ticker: ReferenceVenueTicker;
+  rules_primary: RulesPrimary;
+  definition_version: DefinitionVersion;
+}
+export interface VenueContext {
+  status: Status1;
+  observed_at: ObservedAt;
+  error: Error;
+  markets: Markets1;
+  quotes: Quotes1;
+  effect_on_proxy_estimate?: EffectOnProxyEstimate;
+}

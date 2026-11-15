@@ -1,0 +1,4068 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "Leonida Alpha proxy desk",
+    "version": "0.3.0"
+  },
+  "paths": {
+    "/": {
+      "get": {
+        "summary": "Viewer",
+        "operationId": "viewer__get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          }
+        }
+      }
+    },
+    "/foundation": {
+      "get": {
+        "summary": "Foundation Viewer",
+        "operationId": "foundation_viewer_foundation_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          }
+        }
+      }
+    },
+    "/assets/{name}": {
+      "get": {
+        "summary": "Asset",
+        "operationId": "asset_assets__name__get",
+        "parameters": [
+          {
+            "name": "name",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Name"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/recordings/{asset_id}/media": {
+      "get": {
+        "summary": "Recording Media",
+        "operationId": "recording_media_api_recordings__asset_id__media_get",
+        "parameters": [
+          {
+            "name": "asset_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Asset Id"
+            }
+          },
+          {
+            "name": "run_id",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Run Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/evidence/artifact": {
+      "get": {
+        "summary": "Evidence Artifact",
+        "operationId": "evidence_artifact_api_evidence_artifact_get",
+        "parameters": [
+          {
+            "name": "ref",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Ref"
+            }
+          },
+          {
+            "name": "run_id",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Run Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/health": {
+      "get": {
+        "summary": "Health",
+        "operationId": "health_health_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          }
+        }
+      }
+    },
+    "/ready": {
+      "get": {
+        "summary": "Ready",
+        "operationId": "ready_ready_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/state": {
+      "get": {
+        "summary": "State",
+        "operationId": "state_api_state_get",
+        "parameters": [
+          {
+            "name": "run_id",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Run Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/StreamEnvelope"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/cache": {
+      "get": {
+        "summary": "Evidence Cache",
+        "operationId": "evidence_cache_api_cache_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EvidenceCache"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/markets": {
+      "get": {
+        "summary": "Markets",
+        "operationId": "markets_api_markets_get",
+        "parameters": [
+          {
+            "name": "run_id",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Run Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/runs": {
+      "post": {
+        "summary": "Create Run",
+        "operationId": "create_run_api_runs_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateRunRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CommandResult"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/runs/{run_id}/control": {
+      "post": {
+        "summary": "Control",
+        "operationId": "control_api_runs__run_id__control_post",
+        "parameters": [
+          {
+            "name": "run_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Run Id"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RunCommand"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CommandResult"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/runs/{run_id}/inject": {
+      "post": {
+        "summary": "Inject",
+        "operationId": "inject_api_runs__run_id__inject_post",
+        "parameters": [
+          {
+            "name": "run_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Run Id"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ScenarioRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CommandResult"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/runs/{run_id}/receipts/{receipt_id}": {
+      "get": {
+        "summary": "Receipt",
+        "operationId": "receipt_api_runs__run_id__receipts__receipt_id__get",
+        "parameters": [
+          {
+            "name": "run_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Run Id"
+            }
+          },
+          {
+            "name": "receipt_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Receipt Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Receipt"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/runs/{run_id}/execution-traces/{trace_id}": {
+      "get": {
+        "summary": "Execution Trace",
+        "operationId": "execution_trace_api_runs__run_id__execution_traces__trace_id__get",
+        "parameters": [
+          {
+            "name": "run_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Run Id"
+            }
+          },
+          {
+            "name": "trace_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Trace Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ExecutionTrace"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "CachedObservation": {
+        "properties": {
+          "observation_id": {
+            "type": "string",
+            "maxLength": 240,
+            "minLength": 1,
+            "title": "Observation Id"
+          },
+          "asset_id": {
+            "type": "string",
+            "maxLength": 240,
+            "minLength": 1,
+            "title": "Asset Id"
+          },
+          "stream_id": {
+            "type": "string",
+            "maxLength": 240,
+            "minLength": 1,
+            "title": "Stream Id"
+          },
+          "content_game_id": {
+            "type": "string",
+            "const": "gta5",
+            "title": "Content Game Id",
+            "default": "gta5"
+          },
+          "evidence_scope": {
+            "type": "string",
+            "const": "proxy_demo",
+            "title": "Evidence Scope",
+            "default": "proxy_demo"
+          },
+          "evidence_mode": {
+            "type": "string",
+            "enum": [
+              "recorded",
+              "synthetic_replay"
+            ],
+            "title": "Evidence Mode"
+          },
+          "provider": {
+            "type": "string",
+            "enum": [
+              "supplied_fixture",
+              "sampled_frame_ocr",
+              "recorded_asr"
+            ],
+            "title": "Provider"
+          },
+          "media_seconds": {
+            "type": "number",
+            "minimum": 0.0,
+            "title": "Media Seconds"
+          },
+          "replay_seconds": {
+            "type": "number",
+            "minimum": 0.0,
+            "title": "Replay Seconds"
+          },
+          "raw_text": {
+            "type": "string",
+            "maxLength": 240,
+            "minLength": 1,
+            "title": "Raw Text"
+          },
+          "supporting_quote": {
+            "type": "string",
+            "maxLength": 240,
+            "minLength": 1,
+            "title": "Supporting Quote"
+          },
+          "sentiment": {
+            "anyOf": [
+              {
+                "type": "number",
+                "maximum": 1.0,
+                "minimum": -1.0
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Sentiment"
+          },
+          "abstention_reason": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Abstention Reason"
+          },
+          "ocr_confidence": {
+            "anyOf": [
+              {
+                "type": "number",
+                "maximum": 1.0,
+                "minimum": 0.0
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Ocr Confidence"
+          },
+          "confidence_reason": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Confidence Reason"
+          },
+          "frame_ref": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Frame Ref"
+          },
+          "frame_reason": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Frame Reason"
+          },
+          "aspect": {
+            "type": "string",
+            "enum": [
+              "narrative",
+              "overall",
+              "technical",
+              "gameplay",
+              "audio"
+            ],
+            "title": "Aspect",
+            "default": "narrative"
+          },
+          "target": {
+            "type": "string",
+            "enum": [
+              "game",
+              "player_skill",
+              "streamer",
+              "unrelated",
+              "ambiguous"
+            ],
+            "title": "Target",
+            "default": "game"
+          },
+          "source_modality": {
+            "type": "string",
+            "enum": [
+              "chat",
+              "speech"
+            ],
+            "title": "Source Modality",
+            "default": "chat"
+          },
+          "semantic_confidence": {
+            "anyOf": [
+              {
+                "type": "number",
+                "maximum": 1.0,
+                "minimum": 0.0
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Semantic Confidence"
+          },
+          "media_end_seconds": {
+            "anyOf": [
+              {
+                "type": "number",
+                "minimum": 0.0
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Media End Seconds"
+          },
+          "replay_end_seconds": {
+            "anyOf": [
+              {
+                "type": "number",
+                "minimum": 0.0
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Replay End Seconds"
+          },
+          "available_replay_seconds": {
+            "anyOf": [
+              {
+                "type": "number",
+                "minimum": 0.0
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Available Replay Seconds"
+          },
+          "ocr_boxes": {
+            "items": {
+              "items": {
+                "type": "number"
+              },
+              "type": "array"
+            },
+            "type": "array",
+            "title": "Ocr Boxes"
+          },
+          "track_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Track Id"
+          },
+          "dependency_group": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Dependency Group"
+          },
+          "audio_ref": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Audio Ref"
+          },
+          "scene_id": {
+            "type": "string",
+            "maxLength": 240,
+            "minLength": 1,
+            "title": "Scene Id"
+          },
+          "extractor_version": {
+            "type": "string",
+            "maxLength": 240,
+            "minLength": 1,
+            "title": "Extractor Version"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "observation_id",
+          "asset_id",
+          "stream_id",
+          "evidence_mode",
+          "provider",
+          "media_seconds",
+          "replay_seconds",
+          "raw_text",
+          "supporting_quote",
+          "sentiment",
+          "ocr_confidence",
+          "frame_ref",
+          "frame_reason",
+          "scene_id",
+          "extractor_version"
+        ],
+        "title": "CachedObservation"
+      },
+      "ChatRegion": {
+        "properties": {
+          "x": {
+            "type": "number",
+            "maximum": 1.0,
+            "minimum": 0.0,
+            "title": "X"
+          },
+          "y": {
+            "type": "number",
+            "maximum": 1.0,
+            "minimum": 0.0,
+            "title": "Y"
+          },
+          "width": {
+            "type": "number",
+            "maximum": 1.0,
+            "exclusiveMinimum": 0.0,
+            "title": "Width"
+          },
+          "height": {
+            "type": "number",
+            "maximum": 1.0,
+            "exclusiveMinimum": 0.0,
+            "title": "Height"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "x",
+          "y",
+          "width",
+          "height"
+        ],
+        "title": "ChatRegion"
+      },
+      "CommandResult": {
+        "properties": {
+          "command_id": {
+            "type": "string",
+            "maxLength": 240,
+            "minLength": 1,
+            "title": "Command Id"
+          },
+          "run_id": {
+            "type": "string",
+            "maxLength": 240,
+            "minLength": 1,
+            "title": "Run Id"
+          },
+          "previous_run_id": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 240,
+                "minLength": 1
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Previous Run Id"
+          },
+          "duplicate_observation": {
+            "type": "boolean",
+            "title": "Duplicate Observation",
+            "default": false
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "command_id",
+          "run_id"
+        ],
+        "title": "CommandResult"
+      },
+      "CreateRunRequest": {
+        "properties": {
+          "command_id": {
+            "type": "string",
+            "maxLength": 240,
+            "minLength": 1,
+            "title": "Command Id"
+          },
+          "scenario": {
+            "anyOf": [
+              {
+                "type": "string",
+                "enum": [
+                  "foundation",
+                  "recordings",
+                  "courtroom-praise",
+                  "technical-failure-laughter",
+                  "skill-rage-controls",
+                  "mixed-missing-facecam",
+                  "duplicate-reconnect",
+                  "venue-outage-reset"
+                ]
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Scenario"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "command_id"
+        ],
+        "title": "CreateRunRequest"
+      },
+      "DashboardSnapshot": {
+        "properties": {
+          "schema_version": {
+            "type": "string",
+            "const": "2",
+            "title": "Schema Version",
+            "default": "2"
+          },
+          "run_id": {
+            "type": "string",
+            "maxLength": 240,
+            "minLength": 1,
+            "title": "Run Id"
+          },
+          "gate": {
+            "type": "string",
+            "enum": [
+              "G1",
+              "G2",
+              "G3"
+            ],
+            "title": "Gate",
+            "default": "G1"
+          },
+          "contract_revision": {
+            "type": "string",
+            "enum": [
+              "g2-v1",
+              "g3-v1",
+              "g3-reactions-v1"
+            ],
+            "title": "Contract Revision",
+            "default": "g3-reactions-v1"
+          },
+          "reactions": {
+            "items": {
+              "$ref": "#/components/schemas/ReactionSignal"
+            },
+            "type": "array",
+            "title": "Reactions"
+          },
+          "reaction_recent_window_seconds": {
+            "type": "number",
+            "minimum": 0.0,
+            "title": "Reaction Recent Window Seconds",
+            "default": 30
+          },
+          "scenario_name": {
+            "type": "string",
+            "title": "Scenario Name",
+            "default": "foundation"
+          },
+          "groups": {
+            "items": {
+              "$ref": "#/components/schemas/EvidenceGroup"
+            },
+            "type": "array",
+            "title": "Groups"
+          },
+          "execution": {
+            "$ref": "#/components/schemas/ExecutionState"
+          },
+          "scheduler_cursor": {
+            "type": "number",
+            "minimum": 0.0,
+            "title": "Scheduler Cursor",
+            "default": 0
+          },
+          "source_queue_capacity": {
+            "type": "integer",
+            "minimum": 1.0,
+            "title": "Source Queue Capacity",
+            "default": 128
+          },
+          "run_status": {
+            "type": "string",
+            "enum": [
+              "paused",
+              "playing",
+              "completed"
+            ],
+            "title": "Run Status",
+            "default": "paused"
+          },
+          "playback": {
+            "$ref": "#/components/schemas/PlaybackState"
+          },
+          "replay_time": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Replay Time"
+          },
+          "evidence_mode": {
+            "type": "string",
+            "enum": [
+              "recorded",
+              "synthetic_replay"
+            ],
+            "title": "Evidence Mode",
+            "default": "synthetic_replay"
+          },
+          "content_game_id": {
+            "type": "string",
+            "const": "gta5",
+            "title": "Content Game Id",
+            "default": "gta5"
+          },
+          "target_game_id": {
+            "type": "string",
+            "const": "gta6",
+            "title": "Target Game Id",
+            "default": "gta6"
+          },
+          "evidence_scope": {
+            "type": "string",
+            "const": "proxy_demo",
+            "title": "Evidence Scope",
+            "default": "proxy_demo"
+          },
+          "execution_mode": {
+            "type": "string",
+            "const": "paper",
+            "title": "Execution Mode",
+            "default": "paper"
+          },
+          "calibration_status": {
+            "type": "string",
+            "const": "heuristic",
+            "title": "Calibration Status",
+            "default": "heuristic"
+          },
+          "cache_key": {
+            "type": "string",
+            "maxLength": 240,
+            "minLength": 1,
+            "title": "Cache Key"
+          },
+          "configuration_fingerprint": {
+            "type": "string",
+            "maxLength": 240,
+            "minLength": 1,
+            "title": "Configuration Fingerprint"
+          },
+          "recording_manifest": {
+            "$ref": "#/components/schemas/RecordingManifest"
+          },
+          "streams": {
+            "items": {
+              "$ref": "#/components/schemas/SourceStatus"
+            },
+            "type": "array",
+            "title": "Streams"
+          },
+          "windows": {
+            "items": {
+              "$ref": "#/components/schemas/SourceWindow"
+            },
+            "type": "array",
+            "title": "Windows"
+          },
+          "claims": {
+            "items": {
+              "$ref": "#/components/schemas/EvidenceClaim"
+            },
+            "type": "array",
+            "title": "Claims"
+          },
+          "features": {
+            "items": {
+              "$ref": "#/components/schemas/FeatureSnapshot"
+            },
+            "type": "array",
+            "title": "Features"
+          },
+          "markets": {
+            "items": {
+              "$ref": "#/components/schemas/MarketDefinition"
+            },
+            "type": "array",
+            "title": "Markets"
+          },
+          "quotes": {
+            "items": {
+              "$ref": "#/components/schemas/MarketQuote"
+            },
+            "type": "array",
+            "title": "Quotes"
+          },
+          "estimates": {
+            "items": {
+              "$ref": "#/components/schemas/ModelEstimate"
+            },
+            "type": "array",
+            "title": "Estimates"
+          },
+          "decisions": {
+            "items": {
+              "$ref": "#/components/schemas/PaperDecision"
+            },
+            "type": "array",
+            "title": "Decisions"
+          },
+          "receipts": {
+            "items": {
+              "$ref": "#/components/schemas/Receipt"
+            },
+            "type": "array",
+            "title": "Receipts"
+          },
+          "cash_usd": {
+            "type": "string",
+            "title": "Cash Usd"
+          },
+          "order_count": {
+            "type": "integer",
+            "minimum": 0.0,
+            "title": "Order Count",
+            "default": 0
+          },
+          "fill_count": {
+            "type": "integer",
+            "minimum": 0.0,
+            "title": "Fill Count",
+            "default": 0
+          },
+          "warnings": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Warnings"
+          },
+          "venue_context": {
+            "$ref": "#/components/schemas/VenueContext"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "run_id",
+          "replay_time",
+          "cache_key",
+          "configuration_fingerprint",
+          "recording_manifest",
+          "streams",
+          "windows",
+          "claims",
+          "features",
+          "markets",
+          "quotes",
+          "estimates",
+          "decisions",
+          "receipts",
+          "cash_usd",
+          "warnings",
+          "venue_context"
+        ],
+        "title": "DashboardSnapshot"
+      },
+      "EvidenceCache": {
+        "properties": {
+          "schema_version": {
+            "type": "string",
+            "const": "2",
+            "title": "Schema Version",
+            "default": "2"
+          },
+          "cache_key": {
+            "type": "string",
+            "maxLength": 240,
+            "minLength": 1,
+            "title": "Cache Key"
+          },
+          "input_sha256": {
+            "type": "string",
+            "maxLength": 240,
+            "minLength": 1,
+            "title": "Input Sha256"
+          },
+          "payload_sha256": {
+            "type": "string",
+            "maxLength": 240,
+            "minLength": 1,
+            "title": "Payload Sha256"
+          },
+          "manifest": {
+            "$ref": "#/components/schemas/RecordingManifest"
+          },
+          "observations": {
+            "items": {
+              "$ref": "#/components/schemas/CachedObservation"
+            },
+            "type": "array",
+            "title": "Observations"
+          },
+          "asset_reports": {
+            "items": {
+              "$ref": "#/components/schemas/MediaAssetReport"
+            },
+            "type": "array",
+            "title": "Asset Reports"
+          },
+          "extraction_metadata": {
+            "additionalProperties": {
+              "type": "string"
+            },
+            "type": "object",
+            "title": "Extraction Metadata"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "cache_key",
+          "input_sha256",
+          "payload_sha256",
+          "manifest",
+          "observations"
+        ],
+        "title": "EvidenceCache"
+      },
+      "EvidenceClaim": {
+        "properties": {
+          "schema_version": {
+            "type": "string",
+            "const": "2",
+            "title": "Schema Version",
+            "default": "2"
+          },
+          "run_id": {
+            "type": "string",
+            "maxLength": 240,
+            "minLength": 1,
+            "title": "Run Id"
+          },
+          "claim_id": {
+            "type": "string",
+            "maxLength": 240,
+            "minLength": 1,
+            "title": "Claim Id"
+          },
+          "window_id": {
+            "type": "string",
+            "maxLength": 240,
+            "minLength": 1,
+            "title": "Window Id"
+          },
+          "stream_id": {
+            "type": "string",
+            "maxLength": 240,
+            "minLength": 1,
+            "title": "Stream Id"
+          },
+          "content_game_id": {
+            "type": "string",
+            "const": "gta5",
+            "title": "Content Game Id",
+            "default": "gta5"
+          },
+          "evidence_scope": {
+            "type": "string",
+            "const": "proxy_demo",
+            "title": "Evidence Scope",
+            "default": "proxy_demo"
+          },
+          "evidence_mode": {
+            "type": "string",
+            "enum": [
+              "recorded",
+              "synthetic_replay"
+            ],
+            "title": "Evidence Mode"
+          },
+          "aspect": {
+            "type": "string",
+            "enum": [
+              "narrative",
+              "overall",
+              "technical",
+              "gameplay",
+              "audio"
+            ],
+            "title": "Aspect",
+            "default": "narrative"
+          },
+          "source_modality": {
+            "type": "string",
+            "enum": [
+              "chat",
+              "speech"
+            ],
+            "title": "Source Modality",
+            "default": "chat"
+          },
+          "target": {
+            "type": "string",
+            "enum": [
+              "game",
+              "player_skill",
+              "streamer",
+              "unrelated",
+              "ambiguous"
+            ],
+            "title": "Target",
+            "default": "game"
+          },
+          "sentiment": {
+            "anyOf": [
+              {
+                "type": "number",
+                "maximum": 1.0,
+                "minimum": -1.0
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Sentiment"
+          },
+          "abstention_reason": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Abstention Reason"
+          },
+          "semantic_confidence": {
+            "anyOf": [
+              {
+                "type": "number",
+                "maximum": 1.0,
+                "minimum": 0.0
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Semantic Confidence"
+          },
+          "quality": {
+            "type": "number",
+            "maximum": 1.0,
+            "minimum": 0.0,
+            "title": "Quality",
+            "default": 1
+          },
+          "dependency_group": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Dependency Group"
+          },
+          "supporting_quote": {
+            "type": "string",
+            "maxLength": 240,
+            "minLength": 1,
+            "title": "Supporting Quote"
+          },
+          "scene_id": {
+            "type": "string",
+            "maxLength": 240,
+            "minLength": 1,
+            "title": "Scene Id"
+          },
+          "extractor_version": {
+            "type": "string",
+            "maxLength": 240,
+            "minLength": 1,
+            "title": "Extractor Version"
+          },
+          "revision": {
+            "type": "integer",
+            "minimum": 1.0,
+            "title": "Revision",
+            "default": 1
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "run_id",
+          "claim_id",
+          "window_id",
+          "stream_id",
+          "evidence_mode",
+          "sentiment",
+          "supporting_quote",
+          "scene_id",
+          "extractor_version"
+        ],
+        "title": "EvidenceClaim"
+      },
+      "EvidenceGroup": {
+        "properties": {
+          "schema_version": {
+            "type": "string",
+            "const": "2",
+            "title": "Schema Version",
+            "default": "2"
+          },
+          "run_id": {
+            "type": "string",
+            "maxLength": 240,
+            "minLength": 1,
+            "title": "Run Id"
+          },
+          "group_id": {
+            "type": "string",
+            "maxLength": 240,
+            "minLength": 1,
+            "title": "Group Id"
+          },
+          "scene_id": {
+            "type": "string",
+            "maxLength": 240,
+            "minLength": 1,
+            "title": "Scene Id"
+          },
+          "claim_ids": {
+            "items": {
+              "type": "string",
+              "maxLength": 240,
+              "minLength": 1
+            },
+            "type": "array",
+            "title": "Claim Ids"
+          },
+          "identity_source": {
+            "type": "string",
+            "const": "manual",
+            "title": "Identity Source",
+            "default": "manual"
+          },
+          "match_confidence": {
+            "type": "null",
+            "title": "Match Confidence"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "run_id",
+          "group_id",
+          "scene_id",
+          "claim_ids"
+        ],
+        "title": "EvidenceGroup"
+      },
+      "ExecutionState": {
+        "properties": {
+          "enabled": {
+            "type": "boolean",
+            "title": "Enabled",
+            "default": false
+          },
+          "reason": {
+            "type": "string",
+            "title": "Reason",
+            "default": "Candidate-only input; no synthetic execution authorization."
+          },
+          "fee_schedule_version": {
+            "type": "string",
+            "maxLength": 240,
+            "minLength": 1,
+            "title": "Fee Schedule Version",
+            "default": "simulation-linear-v1"
+          },
+          "orders": {
+            "items": {
+              "$ref": "#/components/schemas/OrderRecord"
+            },
+            "type": "array",
+            "title": "Orders"
+          },
+          "fills": {
+            "items": {
+              "$ref": "#/components/schemas/FillRecord"
+            },
+            "type": "array",
+            "title": "Fills"
+          },
+          "positions": {
+            "items": {
+              "$ref": "#/components/schemas/PositionRecord"
+            },
+            "type": "array",
+            "title": "Positions"
+          },
+          "marks": {
+            "items": {
+              "$ref": "#/components/schemas/PositionMark"
+            },
+            "type": "array",
+            "title": "Marks"
+          },
+          "traces": {
+            "items": {
+              "$ref": "#/components/schemas/ExecutionTrace"
+            },
+            "type": "array",
+            "title": "Traces"
+          },
+          "reserved_cash": {
+            "type": "string",
+            "title": "Reserved Cash",
+            "default": "0"
+          },
+          "realized_pnl": {
+            "type": "string",
+            "title": "Realized Pnl",
+            "default": "0"
+          },
+          "latest_reasons": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Latest Reasons"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "title": "ExecutionState"
+      },
+      "ExecutionTrace": {
+        "properties": {
+          "schema_version": {
+            "type": "string",
+            "const": "2",
+            "title": "Schema Version",
+            "default": "2"
+          },
+          "run_id": {
+            "type": "string",
+            "maxLength": 240,
+            "minLength": 1,
+            "title": "Run Id"
+          },
+          "trace_id": {
+            "type": "string",
+            "maxLength": 240,
+            "minLength": 1,
+            "title": "Trace Id"
+          },
+          "order_id": {
+            "type": "string",
+            "maxLength": 240,
+            "minLength": 1,
+            "title": "Order Id"
+          },
+          "stage": {
+            "type": "string",
+            "enum": [
+              "entry_plan",
+              "exit_plan",
+              "eligibility"
+            ],
+            "title": "Stage"
+          },
+          "at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "At"
+          },
+          "windows": {
+            "items": {
+              "$ref": "#/components/schemas/SourceWindow"
+            },
+            "type": "array",
+            "title": "Windows"
+          },
+          "claims": {
+            "items": {
+              "$ref": "#/components/schemas/EvidenceClaim"
+            },
+            "type": "array",
+            "title": "Claims"
+          },
+          "features": {
+            "items": {
+              "$ref": "#/components/schemas/FeatureSnapshot"
+            },
+            "type": "array",
+            "title": "Features"
+          },
+          "quote": {
+            "$ref": "#/components/schemas/MarketQuote"
+          },
+          "estimate": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/ModelEstimate"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "decision": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/PaperDecision"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "receipt": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/Receipt"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "reasons": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Reasons"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "run_id",
+          "trace_id",
+          "order_id",
+          "stage",
+          "at",
+          "windows",
+          "claims",
+          "features",
+          "quote",
+          "estimate",
+          "decision",
+          "receipt",
+          "reasons"
+        ],
+        "title": "ExecutionTrace"
+      },
+      "FeatureSnapshot": {
+        "properties": {
+          "schema_version": {
+            "type": "string",
+            "const": "2",
+            "title": "Schema Version",
+            "default": "2"
+          },
+          "run_id": {
+            "type": "string",
+            "maxLength": 240,
+            "minLength": 1,
+            "title": "Run Id"
+          },
+          "feature_id": {
+            "type": "string",
+            "maxLength": 240,
+            "minLength": 1,
+            "title": "Feature Id"
+          },
+          "claim_ids": {
+            "items": {
+              "type": "string",
+              "maxLength": 240,
+              "minLength": 1
+            },
+            "type": "array",
+            "minItems": 1,
+            "title": "Claim Ids"
+          },
+          "content_game_id": {
+            "type": "string",
+            "const": "gta5",
+            "title": "Content Game Id",
+            "default": "gta5"
+          },
+          "evidence_scope": {
+            "type": "string",
+            "const": "proxy_demo",
+            "title": "Evidence Scope",
+            "default": "proxy_demo"
+          },
+          "absolute_sentiment": {
+            "type": "number",
+            "maximum": 1.0,
+            "minimum": -1.0,
+            "title": "Absolute Sentiment"
+          },
+          "mean_z": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Mean Z"
+          },
+          "baseline_status": {
+            "type": "string",
+            "enum": [
+              "seeded_fixture",
+              "warming_up",
+              "ready"
+            ],
+            "title": "Baseline Status",
+            "default": "seeded_fixture"
+          },
+          "aspect": {
+            "type": "string",
+            "enum": [
+              "narrative",
+              "overall",
+              "technical",
+              "gameplay",
+              "audio"
+            ],
+            "title": "Aspect",
+            "default": "narrative"
+          },
+          "source_modality": {
+            "type": "string",
+            "enum": [
+              "chat",
+              "speech",
+              "mixed"
+            ],
+            "title": "Source Modality",
+            "default": "chat"
+          },
+          "stream_ids": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Stream Ids"
+          },
+          "freshness": {
+            "type": "number",
+            "maximum": 1.0,
+            "minimum": 0.0,
+            "title": "Freshness",
+            "default": 1
+          },
+          "z_freshness": {
+            "type": "number",
+            "maximum": 1.0,
+            "minimum": 0.0,
+            "title": "Z Freshness",
+            "default": 1
+          },
+          "z_reason": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Z Reason"
+          },
+          "disagreement": {
+            "type": "number",
+            "minimum": 0.0,
+            "title": "Disagreement",
+            "default": 0
+          },
+          "unique_stream_count": {
+            "type": "integer",
+            "minimum": 1.0,
+            "title": "Unique Stream Count",
+            "default": 1
+          },
+          "baseline_version": {
+            "type": "string",
+            "maxLength": 240,
+            "minLength": 1,
+            "title": "Baseline Version"
+          },
+          "previous_mean": {
+            "type": "number",
+            "title": "Previous Mean"
+          },
+          "previous_variance": {
+            "type": "number",
+            "minimum": 0.0,
+            "title": "Previous Variance"
+          },
+          "updated_mean": {
+            "type": "number",
+            "title": "Updated Mean"
+          },
+          "updated_variance": {
+            "type": "number",
+            "minimum": 0.0,
+            "title": "Updated Variance"
+          },
+          "baseline_count": {
+            "type": "integer",
+            "minimum": 1.0,
+            "title": "Baseline Count"
+          },
+          "unique_observation_count": {
+            "type": "integer",
+            "minimum": 1.0,
+            "title": "Unique Observation Count"
+          },
+          "effective_source_diagnostic": {
+            "type": "number",
+            "minimum": 0.0,
+            "title": "Effective Source Diagnostic"
+          },
+          "as_of": {
+            "type": "string",
+            "format": "date-time",
+            "title": "As Of"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "run_id",
+          "feature_id",
+          "claim_ids",
+          "absolute_sentiment",
+          "mean_z",
+          "baseline_version",
+          "previous_mean",
+          "previous_variance",
+          "updated_mean",
+          "updated_variance",
+          "baseline_count",
+          "unique_observation_count",
+          "effective_source_diagnostic",
+          "as_of"
+        ],
+        "title": "FeatureSnapshot"
+      },
+      "FillRecord": {
+        "properties": {
+          "fill_id": {
+            "type": "string",
+            "maxLength": 240,
+            "minLength": 1,
+            "title": "Fill Id"
+          },
+          "order_id": {
+            "type": "string",
+            "maxLength": 240,
+            "minLength": 1,
+            "title": "Order Id"
+          },
+          "quote_id": {
+            "type": "string",
+            "maxLength": 240,
+            "minLength": 1,
+            "title": "Quote Id"
+          },
+          "book_revision": {
+            "type": "string",
+            "maxLength": 240,
+            "minLength": 1,
+            "title": "Book Revision"
+          },
+          "market_id": {
+            "type": "string",
+            "maxLength": 240,
+            "minLength": 1,
+            "title": "Market Id"
+          },
+          "side": {
+            "type": "string",
+            "enum": [
+              "yes",
+              "no"
+            ],
+            "title": "Side"
+          },
+          "direction": {
+            "type": "string",
+            "enum": [
+              "buy",
+              "sell"
+            ],
+            "title": "Direction"
+          },
+          "quantity": {
+            "type": "string",
+            "title": "Quantity"
+          },
+          "gross_value": {
+            "type": "string",
+            "title": "Gross Value"
+          },
+          "fee": {
+            "type": "string",
+            "title": "Fee"
+          },
+          "vwap": {
+            "type": "string",
+            "title": "Vwap"
+          },
+          "at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "At"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "fill_id",
+          "order_id",
+          "quote_id",
+          "book_revision",
+          "market_id",
+          "side",
+          "direction",
+          "quantity",
+          "gross_value",
+          "fee",
+          "vwap",
+          "at"
+        ],
+        "title": "FillRecord"
+      },
+      "HTTPValidationError": {
+        "properties": {
+          "detail": {
+            "items": {
+              "$ref": "#/components/schemas/ValidationError"
+            },
+            "type": "array",
+            "title": "Detail"
+          }
+        },
+        "type": "object",
+        "title": "HTTPValidationError"
+      },
+      "MarketDefinition": {
+        "properties": {
+          "market_id": {
+            "type": "string",
+            "maxLength": 240,
+            "minLength": 1,
+            "title": "Market Id"
+          },
+          "market_namespace": {
+            "type": "string",
+            "enum": [
+              "synthetic",
+              "venue"
+            ],
+            "title": "Market Namespace"
+          },
+          "title": {
+            "type": "string",
+            "maxLength": 240,
+            "minLength": 1,
+            "title": "Title"
+          },
+          "target_game_id": {
+            "type": "string",
+            "const": "gta6",
+            "title": "Target Game Id",
+            "default": "gta6"
+          },
+          "venue_ticker": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Venue Ticker"
+          },
+          "reference_venue_ticker": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Reference Venue Ticker"
+          },
+          "rules_primary": {
+            "type": "string",
+            "title": "Rules Primary"
+          },
+          "definition_version": {
+            "type": "string",
+            "maxLength": 240,
+            "minLength": 1,
+            "title": "Definition Version"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "market_id",
+          "market_namespace",
+          "title",
+          "venue_ticker",
+          "reference_venue_ticker",
+          "rules_primary",
+          "definition_version"
+        ],
+        "title": "MarketDefinition"
+      },
+      "MarketQuote": {
+        "properties": {
+          "quote_id": {
+            "type": "string",
+            "maxLength": 240,
+            "minLength": 1,
+            "title": "Quote Id"
+          },
+          "market_id": {
+            "type": "string",
+            "maxLength": 240,
+            "minLength": 1,
+            "title": "Market Id"
+          },
+          "quote_mode": {
+            "type": "string",
+            "enum": [
+              "synthetic_replay",
+              "live",
+              "cached_stale"
+            ],
+            "title": "Quote Mode"
+          },
+          "captured_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Captured At"
+          },
+          "venue_timestamp": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Venue Timestamp"
+          },
+          "venue_timestamp_reason": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Venue Timestamp Reason",
+            "default": "No verified venue quote timestamp"
+          },
+          "venue_status": {
+            "type": "string",
+            "title": "Venue Status"
+          },
+          "is_stale": {
+            "type": "boolean",
+            "title": "Is Stale"
+          },
+          "yes_bid": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Yes Bid"
+          },
+          "yes_ask": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Yes Ask"
+          },
+          "no_bid": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "No Bid"
+          },
+          "no_ask": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "No Ask"
+          },
+          "missing_reasons": {
+            "additionalProperties": {
+              "type": "string"
+            },
+            "type": "object",
+            "title": "Missing Reasons"
+          },
+          "source_ref": {
+            "type": "string",
+            "maxLength": 240,
+            "minLength": 1,
+            "title": "Source Ref"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "quote_id",
+          "market_id",
+          "quote_mode",
+          "captured_at",
+          "venue_status",
+          "is_stale",
+          "yes_bid",
+          "yes_ask",
+          "no_bid",
+          "no_ask",
+          "source_ref"
+        ],
+        "title": "MarketQuote"
+      },
+      "MediaAssetReport": {
+        "properties": {
+          "asset_id": {
+            "type": "string",
+            "maxLength": 240,
+            "minLength": 1,
+            "title": "Asset Id"
+          },
+          "available": {
+            "type": "boolean",
+            "title": "Available"
+          },
+          "reason": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Reason"
+          },
+          "duration_seconds": {
+            "anyOf": [
+              {
+                "type": "number",
+                "minimum": 0.0
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Duration Seconds"
+          },
+          "frame_count": {
+            "type": "integer",
+            "minimum": 0.0,
+            "title": "Frame Count",
+            "default": 0
+          },
+          "audio_available": {
+            "type": "boolean",
+            "title": "Audio Available",
+            "default": false
+          },
+          "audio_reason": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Audio Reason"
+          },
+          "audio_ref": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Audio Ref"
+          },
+          "speech_available": {
+            "type": "boolean",
+            "title": "Speech Available",
+            "default": false
+          },
+          "speech_reason": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Speech Reason"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "asset_id",
+          "available"
+        ],
+        "title": "MediaAssetReport"
+      },
+      "ModalityAvailability": {
+        "properties": {
+          "modality": {
+            "type": "string",
+            "enum": [
+              "chat",
+              "speech",
+              "facecam"
+            ],
+            "title": "Modality"
+          },
+          "available": {
+            "type": "boolean",
+            "title": "Available"
+          },
+          "reason": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Reason"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "modality",
+          "available"
+        ],
+        "title": "ModalityAvailability"
+      },
+      "ModelEstimate": {
+        "properties": {
+          "schema_version": {
+            "type": "string",
+            "const": "2",
+            "title": "Schema Version",
+            "default": "2"
+          },
+          "run_id": {
+            "type": "string",
+            "maxLength": 240,
+            "minLength": 1,
+            "title": "Run Id"
+          },
+          "estimate_id": {
+            "type": "string",
+            "maxLength": 240,
+            "minLength": 1,
+            "title": "Estimate Id"
+          },
+          "market_id": {
+            "type": "string",
+            "maxLength": 240,
+            "minLength": 1,
+            "title": "Market Id"
+          },
+          "quote_id": {
+            "type": "string",
+            "maxLength": 240,
+            "minLength": 1,
+            "title": "Quote Id"
+          },
+          "feature_ids": {
+            "items": {
+              "type": "string",
+              "maxLength": 240,
+              "minLength": 1
+            },
+            "type": "array",
+            "minItems": 1,
+            "title": "Feature Ids"
+          },
+          "market_reference_probability": {
+            "type": "number",
+            "maximum": 1.0,
+            "minimum": 0.0,
+            "title": "Market Reference Probability"
+          },
+          "correction_log_odds": {
+            "type": "number",
+            "title": "Correction Log Odds"
+          },
+          "model_probability": {
+            "type": "number",
+            "maximum": 1.0,
+            "minimum": 0.0,
+            "title": "Model Probability"
+          },
+          "relevance": {
+            "type": "number",
+            "maximum": 1.0,
+            "minimum": 0.0,
+            "title": "Relevance"
+          },
+          "model_version": {
+            "type": "string",
+            "maxLength": 240,
+            "minLength": 1,
+            "title": "Model Version"
+          },
+          "calibration_status": {
+            "type": "string",
+            "const": "heuristic",
+            "title": "Calibration Status",
+            "default": "heuristic"
+          },
+          "uncertainty_status": {
+            "type": "string",
+            "const": "not_estimated",
+            "title": "Uncertainty Status",
+            "default": "not_estimated"
+          },
+          "evidence_scope": {
+            "type": "string",
+            "const": "proxy_demo",
+            "title": "Evidence Scope",
+            "default": "proxy_demo"
+          },
+          "coefficients": {
+            "additionalProperties": {
+              "type": "number"
+            },
+            "type": "object",
+            "title": "Coefficients"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "run_id",
+          "estimate_id",
+          "market_id",
+          "quote_id",
+          "feature_ids",
+          "market_reference_probability",
+          "correction_log_odds",
+          "model_probability",
+          "relevance",
+          "model_version",
+          "coefficients"
+        ],
+        "title": "ModelEstimate"
+      },
+      "OrderRecord": {
+        "properties": {
+          "schema_version": {
+            "type": "string",
+            "const": "2",
+            "title": "Schema Version",
+            "default": "2"
+          },
+          "run_id": {
+            "type": "string",
+            "maxLength": 240,
+            "minLength": 1,
+            "title": "Run Id"
+          },
+          "order_id": {
+            "type": "string",
+            "maxLength": 240,
+            "minLength": 1,
+            "title": "Order Id"
+          },
+          "intent_id": {
+            "type": "string",
+            "maxLength": 240,
+            "minLength": 1,
+            "title": "Intent Id"
+          },
+          "request_digest": {
+            "type": "string",
+            "maxLength": 240,
+            "minLength": 1,
+            "title": "Request Digest"
+          },
+          "market_id": {
+            "type": "string",
+            "maxLength": 240,
+            "minLength": 1,
+            "title": "Market Id"
+          },
+          "game_id": {
+            "type": "string",
+            "maxLength": 240,
+            "minLength": 1,
+            "title": "Game Id"
+          },
+          "side": {
+            "type": "string",
+            "enum": [
+              "yes",
+              "no"
+            ],
+            "title": "Side"
+          },
+          "direction": {
+            "type": "string",
+            "enum": [
+              "buy",
+              "sell"
+            ],
+            "title": "Direction"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "pending",
+              "filled",
+              "partial",
+              "cancelled"
+            ],
+            "title": "Status"
+          },
+          "requested_quantity": {
+            "type": "string",
+            "title": "Requested Quantity"
+          },
+          "quantity": {
+            "type": "string",
+            "title": "Quantity"
+          },
+          "filled_quantity": {
+            "type": "string",
+            "title": "Filled Quantity"
+          },
+          "limit_price": {
+            "type": "string",
+            "title": "Limit Price"
+          },
+          "reserved_cash": {
+            "type": "string",
+            "title": "Reserved Cash"
+          },
+          "decision_probability": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Decision Probability"
+          },
+          "eligible_probability": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Eligible Probability"
+          },
+          "decision_quote_id": {
+            "type": "string",
+            "maxLength": 240,
+            "minLength": 1,
+            "title": "Decision Quote Id"
+          },
+          "execution_quote_id": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 240,
+                "minLength": 1
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Execution Quote Id"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Created At"
+          },
+          "eligible_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Eligible At"
+          },
+          "completed_at": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Completed At"
+          },
+          "reasons": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Reasons"
+          },
+          "decision_quote_at": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Decision Quote At"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "run_id",
+          "order_id",
+          "intent_id",
+          "request_digest",
+          "market_id",
+          "game_id",
+          "side",
+          "direction",
+          "status",
+          "requested_quantity",
+          "quantity",
+          "filled_quantity",
+          "limit_price",
+          "reserved_cash",
+          "decision_probability",
+          "eligible_probability",
+          "decision_quote_id",
+          "execution_quote_id",
+          "created_at",
+          "eligible_at",
+          "completed_at",
+          "reasons"
+        ],
+        "title": "OrderRecord"
+      },
+      "PaperDecision": {
+        "properties": {
+          "schema_version": {
+            "type": "string",
+            "const": "2",
+            "title": "Schema Version",
+            "default": "2"
+          },
+          "run_id": {
+            "type": "string",
+            "maxLength": 240,
+            "minLength": 1,
+            "title": "Run Id"
+          },
+          "decision_id": {
+            "type": "string",
+            "maxLength": 240,
+            "minLength": 1,
+            "title": "Decision Id"
+          },
+          "estimate_id": {
+            "type": "string",
+            "maxLength": 240,
+            "minLength": 1,
+            "title": "Estimate Id"
+          },
+          "quote_id": {
+            "type": "string",
+            "maxLength": 240,
+            "minLength": 1,
+            "title": "Quote Id"
+          },
+          "market_id": {
+            "type": "string",
+            "maxLength": 240,
+            "minLength": 1,
+            "title": "Market Id"
+          },
+          "execution_mode": {
+            "type": "string",
+            "const": "paper",
+            "title": "Execution Mode",
+            "default": "paper"
+          },
+          "action": {
+            "type": "string",
+            "const": "candidate",
+            "title": "Action",
+            "default": "candidate"
+          },
+          "side": {
+            "type": "string",
+            "enum": [
+              "yes",
+              "no"
+            ],
+            "title": "Side"
+          },
+          "quantity": {
+            "type": "string",
+            "title": "Quantity"
+          },
+          "yes_ev_per_contract": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Yes Ev Per Contract"
+          },
+          "no_ev_per_contract": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "No Ev Per Contract"
+          },
+          "ev_missing_reasons": {
+            "additionalProperties": {
+              "type": "string"
+            },
+            "type": "object",
+            "title": "Ev Missing Reasons"
+          },
+          "estimated_total_fee": {
+            "type": "string",
+            "title": "Estimated Total Fee"
+          },
+          "fee_schedule_version": {
+            "type": "string",
+            "maxLength": 240,
+            "minLength": 1,
+            "title": "Fee Schedule Version"
+          },
+          "eligible_for_fill": {
+            "type": "boolean",
+            "const": false,
+            "title": "Eligible For Fill",
+            "default": false
+          },
+          "reasons": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "minItems": 1,
+            "title": "Reasons"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "run_id",
+          "decision_id",
+          "estimate_id",
+          "quote_id",
+          "market_id",
+          "side",
+          "quantity",
+          "yes_ev_per_contract",
+          "no_ev_per_contract",
+          "estimated_total_fee",
+          "fee_schedule_version",
+          "reasons"
+        ],
+        "title": "PaperDecision"
+      },
+      "PlaybackState": {
+        "properties": {
+          "position_seconds": {
+            "type": "number",
+            "minimum": 0.0,
+            "title": "Position Seconds",
+            "default": 0
+          },
+          "duration_seconds": {
+            "type": "number",
+            "minimum": 0.0,
+            "title": "Duration Seconds",
+            "default": 0
+          },
+          "speed": {
+            "type": "number",
+            "maximum": 5.0,
+            "exclusiveMinimum": 0.0,
+            "title": "Speed",
+            "default": 1
+          },
+          "playing": {
+            "type": "boolean",
+            "title": "Playing",
+            "default": false
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "title": "PlaybackState"
+      },
+      "PositionMark": {
+        "properties": {
+          "market_id": {
+            "type": "string",
+            "maxLength": 240,
+            "minLength": 1,
+            "title": "Market Id"
+          },
+          "side": {
+            "type": "string",
+            "enum": [
+              "yes",
+              "no"
+            ],
+            "title": "Side"
+          },
+          "quote_id": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 240,
+                "minLength": 1
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Quote Id"
+          },
+          "as_of": {
+            "type": "string",
+            "format": "date-time",
+            "title": "As Of"
+          },
+          "priced_quantity": {
+            "type": "string",
+            "title": "Priced Quantity"
+          },
+          "unpriced_quantity": {
+            "type": "string",
+            "title": "Unpriced Quantity"
+          },
+          "net_liquidation_value": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Net Liquidation Value"
+          },
+          "unrealized_pnl_priced_quantity": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Unrealized Pnl Priced Quantity"
+          },
+          "reason": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Reason"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "market_id",
+          "side",
+          "quote_id",
+          "as_of",
+          "priced_quantity",
+          "unpriced_quantity",
+          "net_liquidation_value",
+          "unrealized_pnl_priced_quantity",
+          "reason"
+        ],
+        "title": "PositionMark"
+      },
+      "PositionRecord": {
+        "properties": {
+          "market_id": {
+            "type": "string",
+            "maxLength": 240,
+            "minLength": 1,
+            "title": "Market Id"
+          },
+          "game_id": {
+            "type": "string",
+            "maxLength": 240,
+            "minLength": 1,
+            "title": "Game Id"
+          },
+          "side": {
+            "type": "string",
+            "enum": [
+              "yes",
+              "no"
+            ],
+            "title": "Side"
+          },
+          "quantity": {
+            "type": "string",
+            "title": "Quantity"
+          },
+          "cost_basis": {
+            "type": "string",
+            "title": "Cost Basis"
+          },
+          "entry_fair_side": {
+            "type": "string",
+            "title": "Entry Fair Side"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "market_id",
+          "game_id",
+          "side",
+          "quantity",
+          "cost_basis",
+          "entry_fair_side"
+        ],
+        "title": "PositionRecord"
+      },
+      "ReactionSignal": {
+        "properties": {
+          "schema_version": {
+            "type": "string",
+            "const": "2",
+            "title": "Schema Version",
+            "default": "2"
+          },
+          "run_id": {
+            "type": "string",
+            "maxLength": 240,
+            "minLength": 1,
+            "title": "Run Id"
+          },
+          "reaction_id": {
+            "type": "string",
+            "maxLength": 240,
+            "minLength": 1,
+            "title": "Reaction Id"
+          },
+          "observation_id": {
+            "type": "string",
+            "maxLength": 240,
+            "minLength": 1,
+            "title": "Observation Id"
+          },
+          "window_id": {
+            "type": "string",
+            "maxLength": 240,
+            "minLength": 1,
+            "title": "Window Id"
+          },
+          "stream_id": {
+            "type": "string",
+            "maxLength": 240,
+            "minLength": 1,
+            "title": "Stream Id"
+          },
+          "asset_id": {
+            "type": "string",
+            "maxLength": 240,
+            "minLength": 1,
+            "title": "Asset Id"
+          },
+          "evidence_mode": {
+            "type": "string",
+            "enum": [
+              "recorded",
+              "synthetic_replay"
+            ],
+            "title": "Evidence Mode"
+          },
+          "evidence_scope": {
+            "type": "string",
+            "const": "proxy_demo",
+            "title": "Evidence Scope",
+            "default": "proxy_demo"
+          },
+          "media_seconds": {
+            "type": "number",
+            "minimum": 0.0,
+            "title": "Media Seconds"
+          },
+          "media_end_seconds": {
+            "anyOf": [
+              {
+                "type": "number",
+                "minimum": 0.0
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Media End Seconds"
+          },
+          "replay_seconds": {
+            "type": "number",
+            "minimum": 0.0,
+            "title": "Replay Seconds"
+          },
+          "available_replay_seconds": {
+            "type": "number",
+            "minimum": 0.0,
+            "title": "Available Replay Seconds"
+          },
+          "valence": {
+            "type": "string",
+            "enum": [
+              "negative",
+              "neutral",
+              "positive",
+              "uncertain"
+            ],
+            "title": "Valence"
+          },
+          "intensity": {
+            "anyOf": [
+              {
+                "type": "number",
+                "maximum": 1.0,
+                "minimum": 0.0
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Intensity"
+          },
+          "intensity_basis": {
+            "type": "string",
+            "const": "text_only",
+            "title": "Intensity Basis",
+            "default": "text_only"
+          },
+          "emotion": {
+            "anyOf": [
+              {
+                "type": "string",
+                "enum": [
+                  "excitement",
+                  "frustration",
+                  "surprise",
+                  "amusement",
+                  "confusion"
+                ]
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Emotion"
+          },
+          "target_certainty": {
+            "type": "number",
+            "maximum": 1.0,
+            "minimum": 0.0,
+            "title": "Target Certainty"
+          },
+          "likely_target": {
+            "type": "string",
+            "enum": [
+              "game_quality",
+              "in_game_event",
+              "player_skill",
+              "another_player",
+              "role_play",
+              "unknown"
+            ],
+            "title": "Likely Target"
+          },
+          "source_modality": {
+            "type": "string",
+            "enum": [
+              "chat",
+              "speech"
+            ],
+            "title": "Source Modality"
+          },
+          "confidence": {
+            "anyOf": [
+              {
+                "type": "number",
+                "maximum": 1.0,
+                "minimum": 0.0
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Confidence"
+          },
+          "supporting_text": {
+            "type": "string",
+            "maxLength": 240,
+            "minLength": 1,
+            "title": "Supporting Text"
+          },
+          "abstention_reason": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Abstention Reason"
+          },
+          "exclusion_reason": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Exclusion Reason"
+          },
+          "supported_claim_id": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 240,
+                "minLength": 1
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Supported Claim Id"
+          },
+          "market_relevance": {
+            "type": "number",
+            "maximum": 1.0,
+            "minimum": 0.0,
+            "title": "Market Relevance"
+          },
+          "pricing_eligible": {
+            "type": "boolean",
+            "title": "Pricing Eligible"
+          },
+          "included_in_estimate": {
+            "type": "boolean",
+            "title": "Included In Estimate",
+            "default": false
+          },
+          "classifier_version": {
+            "type": "string",
+            "maxLength": 240,
+            "minLength": 1,
+            "title": "Classifier Version"
+          },
+          "policy_version": {
+            "type": "string",
+            "maxLength": 240,
+            "minLength": 1,
+            "title": "Policy Version"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "run_id",
+          "reaction_id",
+          "observation_id",
+          "window_id",
+          "stream_id",
+          "asset_id",
+          "evidence_mode",
+          "media_seconds",
+          "replay_seconds",
+          "available_replay_seconds",
+          "valence",
+          "intensity",
+          "emotion",
+          "target_certainty",
+          "likely_target",
+          "source_modality",
+          "confidence",
+          "supporting_text",
+          "abstention_reason",
+          "exclusion_reason",
+          "supported_claim_id",
+          "market_relevance",
+          "pricing_eligible",
+          "classifier_version",
+          "policy_version"
+        ],
+        "title": "ReactionSignal"
+      },
+      "Receipt": {
+        "properties": {
+          "schema_version": {
+            "type": "string",
+            "const": "2",
+            "title": "Schema Version",
+            "default": "2"
+          },
+          "run_id": {
+            "type": "string",
+            "maxLength": 240,
+            "minLength": 1,
+            "title": "Run Id"
+          },
+          "receipt_id": {
+            "type": "string",
+            "maxLength": 240,
+            "minLength": 1,
+            "title": "Receipt Id"
+          },
+          "window_ids": {
+            "items": {
+              "type": "string",
+              "maxLength": 240,
+              "minLength": 1
+            },
+            "type": "array",
+            "title": "Window Ids"
+          },
+          "claim_ids": {
+            "items": {
+              "type": "string",
+              "maxLength": 240,
+              "minLength": 1
+            },
+            "type": "array",
+            "title": "Claim Ids"
+          },
+          "feature_ids": {
+            "items": {
+              "type": "string",
+              "maxLength": 240,
+              "minLength": 1
+            },
+            "type": "array",
+            "title": "Feature Ids"
+          },
+          "estimate_id": {
+            "type": "string",
+            "maxLength": 240,
+            "minLength": 1,
+            "title": "Estimate Id"
+          },
+          "decision_id": {
+            "type": "string",
+            "maxLength": 240,
+            "minLength": 1,
+            "title": "Decision Id"
+          },
+          "quote_id": {
+            "type": "string",
+            "maxLength": 240,
+            "minLength": 1,
+            "title": "Quote Id"
+          },
+          "evidence_scope": {
+            "type": "string",
+            "const": "proxy_demo",
+            "title": "Evidence Scope",
+            "default": "proxy_demo"
+          },
+          "explanation": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Explanation"
+          },
+          "limitations": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Limitations"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "run_id",
+          "receipt_id",
+          "window_ids",
+          "claim_ids",
+          "feature_ids",
+          "estimate_id",
+          "decision_id",
+          "quote_id",
+          "explanation",
+          "limitations"
+        ],
+        "title": "Receipt"
+      },
+      "RecordingAsset": {
+        "properties": {
+          "asset_id": {
+            "type": "string",
+            "maxLength": 240,
+            "minLength": 1,
+            "title": "Asset Id"
+          },
+          "stream_id": {
+            "type": "string",
+            "maxLength": 240,
+            "minLength": 1,
+            "title": "Stream Id"
+          },
+          "label": {
+            "type": "string",
+            "maxLength": 240,
+            "minLength": 1,
+            "title": "Label"
+          },
+          "local_path": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Local Path"
+          },
+          "asset_sha256": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Asset Sha256"
+          },
+          "availability_reason": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Availability Reason"
+          },
+          "content_game_id": {
+            "type": "string",
+            "const": "gta5",
+            "title": "Content Game Id",
+            "default": "gta5"
+          },
+          "target_game_id": {
+            "type": "string",
+            "const": "gta6",
+            "title": "Target Game Id",
+            "default": "gta6"
+          },
+          "evidence_scope": {
+            "type": "string",
+            "const": "proxy_demo",
+            "title": "Evidence Scope",
+            "default": "proxy_demo"
+          },
+          "media_start_seconds": {
+            "type": "number",
+            "minimum": 0.0,
+            "title": "Media Start Seconds",
+            "default": 0
+          },
+          "timeline_start_seconds": {
+            "type": "number",
+            "title": "Timeline Start Seconds",
+            "default": 0
+          },
+          "chat_region": {
+            "$ref": "#/components/schemas/ChatRegion"
+          },
+          "sample_interval_seconds": {
+            "type": "number",
+            "maximum": 60.0,
+            "exclusiveMinimum": 0.0,
+            "title": "Sample Interval Seconds",
+            "default": 2
+          },
+          "language": {
+            "type": "string",
+            "title": "Language",
+            "default": "eng"
+          },
+          "source_url": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Source Url"
+          },
+          "permission_note": {
+            "type": "string",
+            "title": "Permission Note"
+          },
+          "evidence_mode": {
+            "type": "string",
+            "enum": [
+              "recorded",
+              "synthetic_replay"
+            ],
+            "title": "Evidence Mode",
+            "default": "recorded"
+          },
+          "media_end_seconds": {
+            "anyOf": [
+              {
+                "type": "number",
+                "minimum": 0.0
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Media End Seconds"
+          },
+          "scene_id": {
+            "type": "string",
+            "maxLength": 240,
+            "minLength": 1,
+            "title": "Scene Id",
+            "default": "manual-unassigned"
+          },
+          "audio_transcription": {
+            "type": "string",
+            "enum": [
+              "disabled",
+              "faster_whisper"
+            ],
+            "title": "Audio Transcription",
+            "default": "disabled"
+          },
+          "speech_model_path": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Speech Model Path"
+          },
+          "speaker_role": {
+            "type": "string",
+            "enum": [
+              "streamer",
+              "unknown"
+            ],
+            "title": "Speaker Role",
+            "default": "unknown"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "asset_id",
+          "stream_id",
+          "label",
+          "local_path",
+          "asset_sha256",
+          "availability_reason",
+          "chat_region",
+          "permission_note"
+        ],
+        "title": "RecordingAsset"
+      },
+      "RecordingManifest": {
+        "properties": {
+          "schema_version": {
+            "type": "string",
+            "const": "2",
+            "title": "Schema Version",
+            "default": "2"
+          },
+          "manifest_version": {
+            "type": "string",
+            "maxLength": 240,
+            "minLength": 1,
+            "title": "Manifest Version"
+          },
+          "recordings": {
+            "items": {
+              "$ref": "#/components/schemas/RecordingAsset"
+            },
+            "type": "array",
+            "maxItems": 6,
+            "minItems": 2,
+            "title": "Recordings"
+          },
+          "ocr_version": {
+            "type": "string",
+            "maxLength": 240,
+            "minLength": 1,
+            "title": "Ocr Version"
+          },
+          "preprocessing_version": {
+            "type": "string",
+            "maxLength": 240,
+            "minLength": 1,
+            "title": "Preprocessing Version"
+          },
+          "semantic_version": {
+            "type": "string",
+            "maxLength": 240,
+            "minLength": 1,
+            "title": "Semantic Version"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "manifest_version",
+          "recordings",
+          "ocr_version",
+          "preprocessing_version",
+          "semantic_version"
+        ],
+        "title": "RecordingManifest"
+      },
+      "RunCommand": {
+        "properties": {
+          "command_id": {
+            "type": "string",
+            "maxLength": 240,
+            "minLength": 1,
+            "title": "Command Id"
+          },
+          "action": {
+            "type": "string",
+            "enum": [
+              "reset",
+              "replay_observation",
+              "play",
+              "pause",
+              "seek",
+              "set_speed",
+              "exit"
+            ],
+            "title": "Action"
+          },
+          "position_seconds": {
+            "anyOf": [
+              {
+                "type": "number",
+                "minimum": 0.0
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Position Seconds"
+          },
+          "speed": {
+            "anyOf": [
+              {
+                "type": "number",
+                "maximum": 5.0,
+                "exclusiveMinimum": 0.0
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Speed"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "command_id",
+          "action"
+        ],
+        "title": "RunCommand"
+      },
+      "ScenarioRequest": {
+        "properties": {
+          "command_id": {
+            "type": "string",
+            "maxLength": 240,
+            "minLength": 1,
+            "title": "Command Id"
+          },
+          "scenario": {
+            "type": "string",
+            "enum": [
+              "courtroom-praise",
+              "technical-failure-laughter",
+              "skill-rage-controls",
+              "mixed-missing-facecam",
+              "duplicate-reconnect",
+              "venue-outage-reset"
+            ],
+            "title": "Scenario"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "command_id",
+          "scenario"
+        ],
+        "title": "ScenarioRequest"
+      },
+      "SourceStatus": {
+        "properties": {
+          "stream_id": {
+            "type": "string",
+            "maxLength": 240,
+            "minLength": 1,
+            "title": "Stream Id"
+          },
+          "label": {
+            "type": "string",
+            "maxLength": 240,
+            "minLength": 1,
+            "title": "Label"
+          },
+          "state": {
+            "type": "string",
+            "enum": [
+              "fixture_ready",
+              "recording_missing",
+              "recording_ready",
+              "error"
+            ],
+            "title": "State"
+          },
+          "reason": {
+            "type": "string",
+            "title": "Reason"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "stream_id",
+          "label",
+          "state",
+          "reason"
+        ],
+        "title": "SourceStatus"
+      },
+      "SourceWindow": {
+        "properties": {
+          "schema_version": {
+            "type": "string",
+            "const": "2",
+            "title": "Schema Version",
+            "default": "2"
+          },
+          "run_id": {
+            "type": "string",
+            "maxLength": 240,
+            "minLength": 1,
+            "title": "Run Id"
+          },
+          "window_id": {
+            "type": "string",
+            "maxLength": 240,
+            "minLength": 1,
+            "title": "Window Id"
+          },
+          "stream_id": {
+            "type": "string",
+            "maxLength": 240,
+            "minLength": 1,
+            "title": "Stream Id"
+          },
+          "asset_id": {
+            "type": "string",
+            "maxLength": 240,
+            "minLength": 1,
+            "title": "Asset Id"
+          },
+          "content_game_id": {
+            "type": "string",
+            "const": "gta5",
+            "title": "Content Game Id",
+            "default": "gta5"
+          },
+          "evidence_scope": {
+            "type": "string",
+            "const": "proxy_demo",
+            "title": "Evidence Scope",
+            "default": "proxy_demo"
+          },
+          "evidence_mode": {
+            "type": "string",
+            "enum": [
+              "recorded",
+              "synthetic_replay"
+            ],
+            "title": "Evidence Mode"
+          },
+          "event_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Event At"
+          },
+          "available_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Available At"
+          },
+          "source_media_seconds": {
+            "type": "number",
+            "minimum": 0.0,
+            "title": "Source Media Seconds"
+          },
+          "replay_seconds": {
+            "type": "number",
+            "minimum": 0.0,
+            "title": "Replay Seconds"
+          },
+          "raw_text": {
+            "type": "string",
+            "maxLength": 240,
+            "minLength": 1,
+            "title": "Raw Text"
+          },
+          "cache_key": {
+            "type": "string",
+            "maxLength": 240,
+            "minLength": 1,
+            "title": "Cache Key"
+          },
+          "observation_id": {
+            "type": "string",
+            "maxLength": 240,
+            "minLength": 1,
+            "title": "Observation Id"
+          },
+          "provider": {
+            "type": "string",
+            "title": "Provider"
+          },
+          "frame_ref": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Frame Ref"
+          },
+          "frame_reason": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Frame Reason"
+          },
+          "modalities": {
+            "items": {
+              "$ref": "#/components/schemas/ModalityAvailability"
+            },
+            "type": "array",
+            "title": "Modalities"
+          },
+          "source_modality": {
+            "type": "string",
+            "enum": [
+              "chat",
+              "speech"
+            ],
+            "title": "Source Modality",
+            "default": "chat"
+          },
+          "ocr_confidence": {
+            "anyOf": [
+              {
+                "type": "number",
+                "maximum": 1.0,
+                "minimum": 0.0
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Ocr Confidence"
+          },
+          "confidence_reason": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Confidence Reason"
+          },
+          "audio_ref": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Audio Ref"
+          },
+          "observation": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/CachedObservation"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "run_id",
+          "window_id",
+          "stream_id",
+          "asset_id",
+          "evidence_mode",
+          "event_at",
+          "available_at",
+          "source_media_seconds",
+          "replay_seconds",
+          "raw_text",
+          "cache_key",
+          "observation_id",
+          "provider",
+          "frame_ref",
+          "frame_reason",
+          "modalities"
+        ],
+        "title": "SourceWindow"
+      },
+      "StreamEnvelope": {
+        "properties": {
+          "schema_version": {
+            "type": "string",
+            "const": "2",
+            "title": "Schema Version",
+            "default": "2"
+          },
+          "run_id": {
+            "type": "string",
+            "maxLength": 240,
+            "minLength": 1,
+            "title": "Run Id"
+          },
+          "sequence": {
+            "type": "integer",
+            "minimum": 1.0,
+            "title": "Sequence"
+          },
+          "generated_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Generated At"
+          },
+          "type": {
+            "type": "string",
+            "const": "snapshot",
+            "title": "Type",
+            "default": "snapshot"
+          },
+          "payload": {
+            "$ref": "#/components/schemas/DashboardSnapshot"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "run_id",
+          "sequence",
+          "generated_at",
+          "payload"
+        ],
+        "title": "StreamEnvelope"
+      },
+      "ValidationError": {
+        "properties": {
+          "loc": {
+            "items": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "integer"
+                }
+              ]
+            },
+            "type": "array",
+            "title": "Location"
+          },
+          "msg": {
+            "type": "string",
+            "title": "Message"
+          },
+          "type": {
+            "type": "string",
+            "title": "Error Type"
+          },
+          "input": {
+            "title": "Input"
+          },
+          "ctx": {
+            "type": "object",
+            "title": "Context"
+          }
+        },
+        "type": "object",
+        "required": [
+          "loc",
+          "msg",
+          "type"
+        ],
+        "title": "ValidationError"
+      },
+      "VenueContext": {
+        "properties": {
+          "status": {
+            "type": "string",
+            "enum": [
+              "historical",
+              "live",
+              "unavailable",
+              "error"
+            ],
+            "title": "Status"
+          },
+          "observed_at": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Observed At"
+          },
+          "error": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Error"
+          },
+          "markets": {
+            "items": {
+              "$ref": "#/components/schemas/MarketDefinition"
+            },
+            "type": "array",
+            "title": "Markets"
+          },
+          "quotes": {
+            "items": {
+              "$ref": "#/components/schemas/MarketQuote"
+            },
+            "type": "array",
+            "title": "Quotes"
+          },
+          "effect_on_proxy_estimate": {
+            "type": "string",
+            "const": "none",
+            "title": "Effect On Proxy Estimate",
+            "default": "none"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "status",
+          "observed_at",
+          "error",
+          "markets",
+          "quotes"
+        ],
+        "title": "VenueContext"
+      }
+    }
+  }
+}

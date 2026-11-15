@@ -1,0 +1,4 @@
+{
+  "compilerOptions": {"strict": true, "noEmit": true, "skipLibCheck": true, "target": "ES2020"},
+  "include": ["../frontend/src/generated/*.ts"]
+}

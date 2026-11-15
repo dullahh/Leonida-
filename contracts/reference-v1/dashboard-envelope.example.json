@@ -1,0 +1,178 @@
+{
+  "schema_version": "1",
+  "run_id": "demo-v1",
+  "sequence": 1,
+  "generated_at": "2026-11-14T20:30:00Z",
+  "type": "snapshot",
+  "payload": {
+    "schema_version": "1",
+    "run_id": "demo-v1",
+    "generated_at": "2026-11-14T20:30:00Z",
+    "evidence_modes": [
+      "synthetic_replay"
+    ],
+    "quote_modes": [
+      "synthetic_replay"
+    ],
+    "execution_mode": "paper",
+    "calibration_status": "heuristic",
+    "streams": [],
+    "markets": [],
+    "quotes": [
+      {
+        "schema_version": "1",
+        "run_id": "demo-v1",
+        "quote_id": "q1",
+        "ticker": "KXGAMEAWARDS-BNAR-GRA",
+        "quote_mode": "synthetic_replay",
+        "captured_at": "2026-11-14T20:30:00Z",
+        "available_at": "2026-11-14T20:30:00Z",
+        "venue_timestamp": null,
+        "venue_status": "active",
+        "is_stale": false,
+        "yes_bid": "0.14",
+        "yes_ask": "0.15",
+        "no_bid": "0.85",
+        "no_ask": "0.86",
+        "yes_ask_quantity": null,
+        "no_ask_quantity": "10",
+        "yes_bid_quantity": null,
+        "no_bid_quantity": null,
+        "yes_ask_depth": [],
+        "no_ask_depth": [],
+        "yes_bid_depth": [],
+        "no_bid_depth": [],
+        "source_ref": "scenario:negative-narrative"
+      }
+    ],
+    "claims": [
+      {
+        "schema_version": "1",
+        "run_id": "demo-v1",
+        "claim_id": "c1",
+        "revision": 1,
+        "supersedes_claim_id": null,
+        "window_id": "w1",
+        "stream_id": "s1",
+        "game_id": "gta6",
+        "evidence_mode": "synthetic_replay",
+        "event_at": "2026-11-14T20:30:00Z",
+        "available_at": "2026-11-14T20:30:00Z",
+        "source_modality": "speech",
+        "aspect": "narrative",
+        "subaspect": null,
+        "target": "scene",
+        "sentiment": -0.4,
+        "defect_severity": null,
+        "explicitness": "explicit",
+        "extraction_confidence": 0.9,
+        "attribution_confidence": 0.9,
+        "supporting_quote": "The dialogue in this scene is repetitive.",
+        "abstention_reason": null,
+        "scene_id": "courtroom",
+        "dependency_group_id": null,
+        "extractor_version": "fixture-v1"
+      }
+    ],
+    "features": [
+      {
+        "schema_version": "1",
+        "run_id": "demo-v1",
+        "feature_id": "f1",
+        "game_id": "gta6",
+        "aspect": "narrative",
+        "as_of": "2026-11-14T20:30:00Z",
+        "claim_ids": [
+          "c1"
+        ],
+        "absolute_sentiment": -0.4,
+        "mean_z": -2.0,
+        "defect_severity": null,
+        "baseline_ready": true,
+        "valid_stream_count": 1,
+        "independent_group_count": 1,
+        "scene_count": 1,
+        "effective_source_diagnostic": null,
+        "disagreement": null,
+        "coverage_note": "Illustrative seeded baseline, not inferred from one claim.",
+        "baseline_version": "seeded-fixture-v1",
+        "evidence_modes": [
+          "synthetic_replay"
+        ],
+        "features": {}
+      }
+    ],
+    "estimates": [
+      {
+        "schema_version": "1",
+        "run_id": "demo-v1",
+        "estimate_id": "e1",
+        "ticker": "KXGAMEAWARDS-BNAR-GRA",
+        "quote_id": "q1",
+        "feature_ids": [
+          "f1"
+        ],
+        "as_of": "2026-11-14T20:30:00Z",
+        "market_reference_probability": 0.145,
+        "correction_log_odds": -0.4566438483974167,
+        "model_probability": 0.097,
+        "model_version": "illustrative-wire-example",
+        "calibration_status": "heuristic",
+        "uncertainty_status": "not_estimated",
+        "uncertainty_note": null,
+        "receipt_id": "r1"
+      }
+    ],
+    "decisions": [
+      {
+        "schema_version": "1",
+        "run_id": "demo-v1",
+        "decision_id": "d1",
+        "estimate_id": "e1",
+        "quote_id": "q1",
+        "ticker": "KXGAMEAWARDS-BNAR-GRA",
+        "as_of": "2026-11-14T20:30:00Z",
+        "execution_mode": "paper",
+        "side": "no",
+        "action": "candidate",
+        "quantity": "1",
+        "estimated_ev_per_contract": "0.033",
+        "estimated_total_fee": "0.01",
+        "reason": "Illustrative fee; candidate only.",
+        "receipt_id": "r1"
+      }
+    ],
+    "orders": [],
+    "fills": [],
+    "positions": [],
+    "receipts": [
+      {
+        "schema_version": "1",
+        "run_id": "demo-v1",
+        "receipt_id": "r1",
+        "created_at": "2026-11-14T20:30:00Z",
+        "summary": "Synthetic negative narrative evidence; example No-side candidate.",
+        "claim_ids": [
+          "c1"
+        ],
+        "feature_ids": [
+          "f1"
+        ],
+        "quote_ids": [
+          "q1"
+        ],
+        "estimate_id": "e1",
+        "decision_id": "d1",
+        "order_ids": [],
+        "limitations": [
+          "All figures are illustrative wire-example values; not a validated forecast."
+        ]
+      }
+    ],
+    "cash_usd": "10000.00",
+    "equity_usd": "10000.00",
+    "warnings": [
+      "This is a reference payload, not an application run."
+    ]
+  }
+}

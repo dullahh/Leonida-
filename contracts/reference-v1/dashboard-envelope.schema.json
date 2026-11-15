@@ -1,0 +1,1828 @@
+{
+  "$defs": {
+    "DashboardSnapshot": {
+      "additionalProperties": false,
+      "properties": {
+        "schema_version": {
+          "const": "1",
+          "default": "1",
+          "title": "Schema Version",
+          "type": "string"
+        },
+        "run_id": {
+          "minLength": 1,
+          "title": "Run Id",
+          "type": "string"
+        },
+        "generated_at": {
+          "format": "date-time",
+          "title": "Generated At",
+          "type": "string"
+        },
+        "evidence_modes": {
+          "items": {
+            "enum": [
+              "live",
+              "recorded",
+              "synthetic_replay"
+            ],
+            "type": "string"
+          },
+          "title": "Evidence Modes",
+          "type": "array"
+        },
+        "quote_modes": {
+          "items": {
+            "enum": [
+              "live",
+              "cached_stale",
+              "synthetic_replay"
+            ],
+            "type": "string"
+          },
+          "title": "Quote Modes",
+          "type": "array"
+        },
+        "execution_mode": {
+          "const": "paper",
+          "default": "paper",
+          "title": "Execution Mode",
+          "type": "string"
+        },
+        "calibration_status": {
+          "enum": [
+            "heuristic",
+            "validated"
+          ],
+          "title": "Calibration Status",
+          "type": "string"
+        },
+        "streams": {
+          "items": {
+            "$ref": "#/$defs/SourceStatus"
+          },
+          "title": "Streams",
+          "type": "array"
+        },
+        "markets": {
+          "items": {
+            "$ref": "#/$defs/MarketDefinition"
+          },
+          "title": "Markets",
+          "type": "array"
+        },
+        "quotes": {
+          "items": {
+            "$ref": "#/$defs/MarketQuote"
+          },
+          "title": "Quotes",
+          "type": "array"
+        },
+        "claims": {
+          "items": {
+            "$ref": "#/$defs/EvidenceClaim"
+          },
+          "title": "Claims",
+          "type": "array"
+        },
+        "features": {
+          "items": {
+            "$ref": "#/$defs/FeatureSnapshot"
+          },
+          "title": "Features",
+          "type": "array"
+        },
+        "estimates": {
+          "items": {
+            "$ref": "#/$defs/ModelEstimate"
+          },
+          "title": "Estimates",
+          "type": "array"
+        },
+        "decisions": {
+          "items": {
+            "$ref": "#/$defs/PaperDecision"
+          },
+          "title": "Decisions",
+          "type": "array"
+        },
+        "orders": {
+          "items": {
+            "$ref": "#/$defs/PaperOrder"
+          },
+          "title": "Orders",
+          "type": "array"
+        },
+        "fills": {
+          "items": {
+            "$ref": "#/$defs/PaperFill"
+          },
+          "title": "Fills",
+          "type": "array"
+        },
+        "positions": {
+          "items": {
+            "$ref": "#/$defs/Position"
+          },
+          "title": "Positions",
+          "type": "array"
+        },
+        "receipts": {
+          "items": {
+            "$ref": "#/$defs/Receipt"
+          },
+          "title": "Receipts",
+          "type": "array"
+        },
+        "cash_usd": {
+          "anyOf": [
+            {
+              "minimum": 0.0,
+              "type": "number"
+            },
+            {
+              "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+              "type": "string"
+            }
+          ],
+          "title": "Cash Usd"
+        },
+        "equity_usd": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Equity Usd"
+        },
+        "warnings": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Warnings",
+          "type": "array"
+        }
+      },
+      "required": [
+        "run_id",
+        "generated_at",
+        "evidence_modes",
+        "quote_modes",
+        "calibration_status",
+        "cash_usd",
+        "equity_usd"
+      ],
+      "title": "DashboardSnapshot",
+      "type": "object"
+    },
+    "EvidenceClaim": {
+      "additionalProperties": false,
+      "properties": {
+        "schema_version": {
+          "const": "1",
+          "default": "1",
+          "title": "Schema Version",
+          "type": "string"
+        },
+        "run_id": {
+          "minLength": 1,
+          "title": "Run Id",
+          "type": "string"
+        },
+        "claim_id": {
+          "title": "Claim Id",
+          "type": "string"
+        },
+        "revision": {
+          "default": 1,
+          "minimum": 1,
+          "title": "Revision",
+          "type": "integer"
+        },
+        "supersedes_claim_id": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Supersedes Claim Id"
+        },
+        "window_id": {
+          "title": "Window Id",
+          "type": "string"
+        },
+        "stream_id": {
+          "title": "Stream Id",
+          "type": "string"
+        },
+        "game_id": {
+          "title": "Game Id",
+          "type": "string"
+        },
+        "evidence_mode": {
+          "enum": [
+            "live",
+            "recorded",
+            "synthetic_replay"
+          ],
+          "title": "Evidence Mode",
+          "type": "string"
+        },
+        "event_at": {
+          "format": "date-time",
+          "title": "Event At",
+          "type": "string"
+        },
+        "available_at": {
+          "format": "date-time",
+          "title": "Available At",
+          "type": "string"
+        },
+        "source_modality": {
+          "enum": [
+            "speech",
+            "chat",
+            "emotes",
+            "visual_context"
+          ],
+          "title": "Source Modality",
+          "type": "string"
+        },
+        "aspect": {
+          "enum": [
+            "narrative",
+            "gameplay",
+            "presentation",
+            "technical_quality",
+            "online_experience",
+            "overall",
+            "irrelevant_unclear"
+          ],
+          "title": "Aspect",
+          "type": "string"
+        },
+        "subaspect": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Subaspect"
+        },
+        "target": {
+          "enum": [
+            "game",
+            "scene",
+            "streamer_skill",
+            "story_character",
+            "streamer_or_chat",
+            "unrelated",
+            "ambiguous"
+          ],
+          "title": "Target",
+          "type": "string"
+        },
+        "sentiment": {
+          "anyOf": [
+            {
+              "maximum": 1,
+              "minimum": -1,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Sentiment"
+        },
+        "defect_severity": {
+          "anyOf": [
+            {
+              "maximum": 1,
+              "minimum": 0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Defect Severity"
+        },
+        "explicitness": {
+          "enum": [
+            "explicit",
+            "contextual",
+            "unclear"
+          ],
+          "title": "Explicitness",
+          "type": "string"
+        },
+        "extraction_confidence": {
+          "maximum": 1,
+          "minimum": 0,
+          "title": "Extraction Confidence",
+          "type": "number"
+        },
+        "attribution_confidence": {
+          "maximum": 1,
+          "minimum": 0,
+          "title": "Attribution Confidence",
+          "type": "number"
+        },
+        "supporting_quote": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Supporting Quote"
+        },
+        "abstention_reason": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Abstention Reason"
+        },
+        "scene_id": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Scene Id"
+        },
+        "dependency_group_id": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Dependency Group Id"
+        },
+        "extractor_version": {
+          "title": "Extractor Version",
+          "type": "string"
+        }
+      },
+      "required": [
+        "run_id",
+        "claim_id",
+        "window_id",
+        "stream_id",
+        "game_id",
+        "evidence_mode",
+        "event_at",
+        "available_at",
+        "source_modality",
+        "aspect",
+        "target",
+        "explicitness",
+        "extraction_confidence",
+        "attribution_confidence",
+        "extractor_version"
+      ],
+      "title": "EvidenceClaim",
+      "type": "object"
+    },
+    "FeatureSnapshot": {
+      "additionalProperties": false,
+      "properties": {
+        "schema_version": {
+          "const": "1",
+          "default": "1",
+          "title": "Schema Version",
+          "type": "string"
+        },
+        "run_id": {
+          "minLength": 1,
+          "title": "Run Id",
+          "type": "string"
+        },
+        "feature_id": {
+          "title": "Feature Id",
+          "type": "string"
+        },
+        "game_id": {
+          "title": "Game Id",
+          "type": "string"
+        },
+        "aspect": {
+          "enum": [
+            "narrative",
+            "gameplay",
+            "presentation",
+            "technical_quality",
+            "online_experience",
+            "overall",
+            "irrelevant_unclear"
+          ],
+          "title": "Aspect",
+          "type": "string"
+        },
+        "as_of": {
+          "format": "date-time",
+          "title": "As Of",
+          "type": "string"
+        },
+        "claim_ids": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Claim Ids",
+          "type": "array"
+        },
+        "absolute_sentiment": {
+          "anyOf": [
+            {
+              "maximum": 1,
+              "minimum": -1,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Absolute Sentiment"
+        },
+        "mean_z": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Mean Z"
+        },
+        "defect_severity": {
+          "anyOf": [
+            {
+              "maximum": 1,
+              "minimum": 0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Defect Severity"
+        },
+        "baseline_ready": {
+          "title": "Baseline Ready",
+          "type": "boolean"
+        },
+        "valid_stream_count": {
+          "minimum": 0,
+          "title": "Valid Stream Count",
+          "type": "integer"
+        },
+        "independent_group_count": {
+          "minimum": 0,
+          "title": "Independent Group Count",
+          "type": "integer"
+        },
+        "scene_count": {
+          "minimum": 0,
+          "title": "Scene Count",
+          "type": "integer"
+        },
+        "effective_source_diagnostic": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Effective Source Diagnostic"
+        },
+        "disagreement": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Disagreement"
+        },
+        "coverage_note": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Coverage Note"
+        },
+        "baseline_version": {
+          "title": "Baseline Version",
+          "type": "string"
+        },
+        "evidence_modes": {
+          "items": {
+            "enum": [
+              "live",
+              "recorded",
+              "synthetic_replay"
+            ],
+            "type": "string"
+          },
+          "title": "Evidence Modes",
+          "type": "array"
+        },
+        "features": {
+          "additionalProperties": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "title": "Features",
+          "type": "object"
+        }
+      },
+      "required": [
+        "run_id",
+        "feature_id",
+        "game_id",
+        "aspect",
+        "as_of",
+        "claim_ids",
+        "baseline_ready",
+        "valid_stream_count",
+        "independent_group_count",
+        "scene_count",
+        "baseline_version",
+        "evidence_modes"
+      ],
+      "title": "FeatureSnapshot",
+      "type": "object"
+    },
+    "MarketDefinition": {
+      "additionalProperties": false,
+      "properties": {
+        "ticker": {
+          "title": "Ticker",
+          "type": "string"
+        },
+        "event_ticker": {
+          "title": "Event Ticker",
+          "type": "string"
+        },
+        "title": {
+          "title": "Title",
+          "type": "string"
+        },
+        "game_id": {
+          "title": "Game Id",
+          "type": "string"
+        },
+        "rules_primary": {
+          "title": "Rules Primary",
+          "type": "string"
+        },
+        "rules_secondary": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Rules Secondary"
+        },
+        "rules_url": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Rules Url"
+        },
+        "market_url": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Market Url"
+        },
+        "closes_at": {
+          "anyOf": [
+            {
+              "format": "date-time",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Closes At"
+        },
+        "outcome_group": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Outcome Group"
+        },
+        "constraint": {
+          "default": "binary",
+          "enum": [
+            "binary",
+            "threshold",
+            "exclusive_winner"
+          ],
+          "title": "Constraint",
+          "type": "string"
+        },
+        "threshold": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Threshold"
+        },
+        "definition_version": {
+          "title": "Definition Version",
+          "type": "string"
+        }
+      },
+      "required": [
+        "ticker",
+        "event_ticker",
+        "title",
+        "game_id",
+        "rules_primary",
+        "definition_version"
+      ],
+      "title": "MarketDefinition",
+      "type": "object"
+    },
+    "MarketQuote": {
+      "additionalProperties": false,
+      "properties": {
+        "schema_version": {
+          "const": "1",
+          "default": "1",
+          "title": "Schema Version",
+          "type": "string"
+        },
+        "run_id": {
+          "minLength": 1,
+          "title": "Run Id",
+          "type": "string"
+        },
+        "quote_id": {
+          "title": "Quote Id",
+          "type": "string"
+        },
+        "ticker": {
+          "title": "Ticker",
+          "type": "string"
+        },
+        "quote_mode": {
+          "enum": [
+            "live",
+            "cached_stale",
+            "synthetic_replay"
+          ],
+          "title": "Quote Mode",
+          "type": "string"
+        },
+        "captured_at": {
+          "format": "date-time",
+          "title": "Captured At",
+          "type": "string"
+        },
+        "available_at": {
+          "format": "date-time",
+          "title": "Available At",
+          "type": "string"
+        },
+        "venue_timestamp": {
+          "anyOf": [
+            {
+              "format": "date-time",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Venue Timestamp"
+        },
+        "venue_status": {
+          "title": "Venue Status",
+          "type": "string"
+        },
+        "is_stale": {
+          "title": "Is Stale",
+          "type": "boolean"
+        },
+        "yes_bid": {
+          "anyOf": [
+            {
+              "maximum": 1.0,
+              "minimum": 0.0,
+              "type": "number"
+            },
+            {
+              "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Yes Bid"
+        },
+        "yes_ask": {
+          "anyOf": [
+            {
+              "maximum": 1.0,
+              "minimum": 0.0,
+              "type": "number"
+            },
+            {
+              "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Yes Ask"
+        },
+        "no_bid": {
+          "anyOf": [
+            {
+              "maximum": 1.0,
+              "minimum": 0.0,
+              "type": "number"
+            },
+            {
+              "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "No Bid"
+        },
+        "no_ask": {
+          "anyOf": [
+            {
+              "maximum": 1.0,
+              "minimum": 0.0,
+              "type": "number"
+            },
+            {
+              "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "No Ask"
+        },
+        "yes_ask_quantity": {
+          "anyOf": [
+            {
+              "minimum": 0.0,
+              "type": "number"
+            },
+            {
+              "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Yes Ask Quantity"
+        },
+        "no_ask_quantity": {
+          "anyOf": [
+            {
+              "minimum": 0.0,
+              "type": "number"
+            },
+            {
+              "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "No Ask Quantity"
+        },
+        "yes_bid_quantity": {
+          "anyOf": [
+            {
+              "minimum": 0.0,
+              "type": "number"
+            },
+            {
+              "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Yes Bid Quantity"
+        },
+        "no_bid_quantity": {
+          "anyOf": [
+            {
+              "minimum": 0.0,
+              "type": "number"
+            },
+            {
+              "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "No Bid Quantity"
+        },
+        "yes_ask_depth": {
+          "items": {
+            "$ref": "#/$defs/QuoteLevel"
+          },
+          "title": "Yes Ask Depth",
+          "type": "array"
+        },
+        "no_ask_depth": {
+          "items": {
+            "$ref": "#/$defs/QuoteLevel"
+          },
+          "title": "No Ask Depth",
+          "type": "array"
+        },
+        "yes_bid_depth": {
+          "items": {
+            "$ref": "#/$defs/QuoteLevel"
+          },
+          "title": "Yes Bid Depth",
+          "type": "array"
+        },
+        "no_bid_depth": {
+          "items": {
+            "$ref": "#/$defs/QuoteLevel"
+          },
+          "title": "No Bid Depth",
+          "type": "array"
+        },
+        "source_ref": {
+          "title": "Source Ref",
+          "type": "string"
+        }
+      },
+      "required": [
+        "run_id",
+        "quote_id",
+        "ticker",
+        "quote_mode",
+        "captured_at",
+        "available_at",
+        "venue_status",
+        "is_stale",
+        "source_ref"
+      ],
+      "title": "MarketQuote",
+      "type": "object"
+    },
+    "ModelEstimate": {
+      "additionalProperties": false,
+      "properties": {
+        "schema_version": {
+          "const": "1",
+          "default": "1",
+          "title": "Schema Version",
+          "type": "string"
+        },
+        "run_id": {
+          "minLength": 1,
+          "title": "Run Id",
+          "type": "string"
+        },
+        "estimate_id": {
+          "title": "Estimate Id",
+          "type": "string"
+        },
+        "ticker": {
+          "title": "Ticker",
+          "type": "string"
+        },
+        "quote_id": {
+          "title": "Quote Id",
+          "type": "string"
+        },
+        "feature_ids": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Feature Ids",
+          "type": "array"
+        },
+        "as_of": {
+          "format": "date-time",
+          "title": "As Of",
+          "type": "string"
+        },
+        "market_reference_probability": {
+          "maximum": 1,
+          "minimum": 0,
+          "title": "Market Reference Probability",
+          "type": "number"
+        },
+        "correction_log_odds": {
+          "title": "Correction Log Odds",
+          "type": "number"
+        },
+        "model_probability": {
+          "maximum": 1,
+          "minimum": 0,
+          "title": "Model Probability",
+          "type": "number"
+        },
+        "model_version": {
+          "title": "Model Version",
+          "type": "string"
+        },
+        "calibration_status": {
+          "enum": [
+            "heuristic",
+            "validated"
+          ],
+          "title": "Calibration Status",
+          "type": "string"
+        },
+        "uncertainty_status": {
+          "enum": [
+            "not_estimated",
+            "sensitivity_only",
+            "validated"
+          ],
+          "title": "Uncertainty Status",
+          "type": "string"
+        },
+        "uncertainty_note": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Uncertainty Note"
+        },
+        "receipt_id": {
+          "title": "Receipt Id",
+          "type": "string"
+        }
+      },
+      "required": [
+        "run_id",
+        "estimate_id",
+        "ticker",
+        "quote_id",
+        "feature_ids",
+        "as_of",
+        "market_reference_probability",
+        "correction_log_odds",
+        "model_probability",
+        "model_version",
+        "calibration_status",
+        "uncertainty_status",
+        "receipt_id"
+      ],
+      "title": "ModelEstimate",
+      "type": "object"
+    },
+    "PaperDecision": {
+      "additionalProperties": false,
+      "properties": {
+        "schema_version": {
+          "const": "1",
+          "default": "1",
+          "title": "Schema Version",
+          "type": "string"
+        },
+        "run_id": {
+          "minLength": 1,
+          "title": "Run Id",
+          "type": "string"
+        },
+        "decision_id": {
+          "title": "Decision Id",
+          "type": "string"
+        },
+        "estimate_id": {
+          "title": "Estimate Id",
+          "type": "string"
+        },
+        "quote_id": {
+          "title": "Quote Id",
+          "type": "string"
+        },
+        "ticker": {
+          "title": "Ticker",
+          "type": "string"
+        },
+        "as_of": {
+          "format": "date-time",
+          "title": "As Of",
+          "type": "string"
+        },
+        "execution_mode": {
+          "const": "paper",
+          "default": "paper",
+          "title": "Execution Mode",
+          "type": "string"
+        },
+        "side": {
+          "anyOf": [
+            {
+              "enum": [
+                "yes",
+                "no"
+              ],
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Side"
+        },
+        "action": {
+          "enum": [
+            "candidate",
+            "buy",
+            "exit",
+            "hold",
+            "blocked"
+          ],
+          "title": "Action",
+          "type": "string"
+        },
+        "quantity": {
+          "anyOf": [
+            {
+              "minimum": 0.0,
+              "type": "number"
+            },
+            {
+              "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+              "type": "string"
+            }
+          ],
+          "title": "Quantity"
+        },
+        "estimated_ev_per_contract": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Estimated Ev Per Contract"
+        },
+        "estimated_total_fee": {
+          "anyOf": [
+            {
+              "minimum": 0.0,
+              "type": "number"
+            },
+            {
+              "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Estimated Total Fee"
+        },
+        "reason": {
+          "title": "Reason",
+          "type": "string"
+        },
+        "receipt_id": {
+          "title": "Receipt Id",
+          "type": "string"
+        }
+      },
+      "required": [
+        "run_id",
+        "decision_id",
+        "estimate_id",
+        "quote_id",
+        "ticker",
+        "as_of",
+        "side",
+        "action",
+        "quantity",
+        "reason",
+        "receipt_id"
+      ],
+      "title": "PaperDecision",
+      "type": "object"
+    },
+    "PaperFill": {
+      "additionalProperties": false,
+      "properties": {
+        "schema_version": {
+          "const": "1",
+          "default": "1",
+          "title": "Schema Version",
+          "type": "string"
+        },
+        "run_id": {
+          "minLength": 1,
+          "title": "Run Id",
+          "type": "string"
+        },
+        "fill_id": {
+          "title": "Fill Id",
+          "type": "string"
+        },
+        "order_id": {
+          "title": "Order Id",
+          "type": "string"
+        },
+        "quote_id": {
+          "title": "Quote Id",
+          "type": "string"
+        },
+        "filled_at": {
+          "format": "date-time",
+          "title": "Filled At",
+          "type": "string"
+        },
+        "quantity": {
+          "anyOf": [
+            {
+              "minimum": 0.0,
+              "type": "number"
+            },
+            {
+              "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+              "type": "string"
+            }
+          ],
+          "title": "Quantity"
+        },
+        "price": {
+          "anyOf": [
+            {
+              "maximum": 1.0,
+              "minimum": 0.0,
+              "type": "number"
+            },
+            {
+              "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+              "type": "string"
+            }
+          ],
+          "title": "Price"
+        },
+        "fee": {
+          "anyOf": [
+            {
+              "minimum": 0.0,
+              "type": "number"
+            },
+            {
+              "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+              "type": "string"
+            }
+          ],
+          "title": "Fee"
+        },
+        "quote_mode": {
+          "enum": [
+            "live",
+            "cached_stale",
+            "synthetic_replay"
+          ],
+          "title": "Quote Mode",
+          "type": "string"
+        },
+        "fee_schedule_version": {
+          "title": "Fee Schedule Version",
+          "type": "string"
+        }
+      },
+      "required": [
+        "run_id",
+        "fill_id",
+        "order_id",
+        "quote_id",
+        "filled_at",
+        "quantity",
+        "price",
+        "fee",
+        "quote_mode",
+        "fee_schedule_version"
+      ],
+      "title": "PaperFill",
+      "type": "object"
+    },
+    "PaperOrder": {
+      "additionalProperties": false,
+      "properties": {
+        "schema_version": {
+          "const": "1",
+          "default": "1",
+          "title": "Schema Version",
+          "type": "string"
+        },
+        "run_id": {
+          "minLength": 1,
+          "title": "Run Id",
+          "type": "string"
+        },
+        "order_id": {
+          "title": "Order Id",
+          "type": "string"
+        },
+        "intent_id": {
+          "title": "Intent Id",
+          "type": "string"
+        },
+        "decision_id": {
+          "title": "Decision Id",
+          "type": "string"
+        },
+        "ticker": {
+          "title": "Ticker",
+          "type": "string"
+        },
+        "side": {
+          "enum": [
+            "yes",
+            "no"
+          ],
+          "title": "Side",
+          "type": "string"
+        },
+        "action": {
+          "enum": [
+            "buy",
+            "sell"
+          ],
+          "title": "Action",
+          "type": "string"
+        },
+        "quantity": {
+          "anyOf": [
+            {
+              "minimum": 0.0,
+              "type": "number"
+            },
+            {
+              "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+              "type": "string"
+            }
+          ],
+          "title": "Quantity"
+        },
+        "limit_price": {
+          "anyOf": [
+            {
+              "maximum": 1.0,
+              "minimum": 0.0,
+              "type": "number"
+            },
+            {
+              "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Limit Price"
+        },
+        "created_at": {
+          "format": "date-time",
+          "title": "Created At",
+          "type": "string"
+        },
+        "status": {
+          "enum": [
+            "pending",
+            "partial",
+            "filled",
+            "cancelled",
+            "rejected"
+          ],
+          "title": "Status",
+          "type": "string"
+        },
+        "execution_mode": {
+          "const": "paper",
+          "default": "paper",
+          "title": "Execution Mode",
+          "type": "string"
+        }
+      },
+      "required": [
+        "run_id",
+        "order_id",
+        "intent_id",
+        "decision_id",
+        "ticker",
+        "side",
+        "action",
+        "quantity",
+        "limit_price",
+        "created_at",
+        "status"
+      ],
+      "title": "PaperOrder",
+      "type": "object"
+    },
+    "Position": {
+      "additionalProperties": false,
+      "properties": {
+        "schema_version": {
+          "const": "1",
+          "default": "1",
+          "title": "Schema Version",
+          "type": "string"
+        },
+        "run_id": {
+          "minLength": 1,
+          "title": "Run Id",
+          "type": "string"
+        },
+        "ticker": {
+          "title": "Ticker",
+          "type": "string"
+        },
+        "side": {
+          "enum": [
+            "yes",
+            "no"
+          ],
+          "title": "Side",
+          "type": "string"
+        },
+        "quantity": {
+          "anyOf": [
+            {
+              "minimum": 0.0,
+              "type": "number"
+            },
+            {
+              "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+              "type": "string"
+            }
+          ],
+          "title": "Quantity"
+        },
+        "average_entry_price": {
+          "anyOf": [
+            {
+              "maximum": 1.0,
+              "minimum": 0.0,
+              "type": "number"
+            },
+            {
+              "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+              "type": "string"
+            }
+          ],
+          "title": "Average Entry Price"
+        },
+        "entry_fees": {
+          "anyOf": [
+            {
+              "minimum": 0.0,
+              "type": "number"
+            },
+            {
+              "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+              "type": "string"
+            }
+          ],
+          "title": "Entry Fees"
+        },
+        "liquidation_bid": {
+          "anyOf": [
+            {
+              "maximum": 1.0,
+              "minimum": 0.0,
+              "type": "number"
+            },
+            {
+              "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Liquidation Bid"
+        },
+        "estimated_exit_fee": {
+          "anyOf": [
+            {
+              "minimum": 0.0,
+              "type": "number"
+            },
+            {
+              "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Estimated Exit Fee"
+        },
+        "unrealised_pnl": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Unrealised Pnl"
+        },
+        "realised_pnl": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+              "type": "string"
+            }
+          ],
+          "title": "Realised Pnl"
+        }
+      },
+      "required": [
+        "run_id",
+        "ticker",
+        "side",
+        "quantity",
+        "average_entry_price",
+        "entry_fees",
+        "liquidation_bid",
+        "estimated_exit_fee",
+        "unrealised_pnl",
+        "realised_pnl"
+      ],
+      "title": "Position",
+      "type": "object"
+    },
+    "QuoteLevel": {
+      "additionalProperties": false,
+      "properties": {
+        "price": {
+          "anyOf": [
+            {
+              "maximum": 1.0,
+              "minimum": 0.0,
+              "type": "number"
+            },
+            {
+              "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+              "type": "string"
+            }
+          ],
+          "title": "Price"
+        },
+        "quantity": {
+          "anyOf": [
+            {
+              "minimum": 0.0,
+              "type": "number"
+            },
+            {
+              "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+              "type": "string"
+            }
+          ],
+          "title": "Quantity"
+        }
+      },
+      "required": [
+        "price",
+        "quantity"
+      ],
+      "title": "QuoteLevel",
+      "type": "object"
+    },
+    "Receipt": {
+      "additionalProperties": false,
+      "properties": {
+        "schema_version": {
+          "const": "1",
+          "default": "1",
+          "title": "Schema Version",
+          "type": "string"
+        },
+        "run_id": {
+          "minLength": 1,
+          "title": "Run Id",
+          "type": "string"
+        },
+        "receipt_id": {
+          "title": "Receipt Id",
+          "type": "string"
+        },
+        "created_at": {
+          "format": "date-time",
+          "title": "Created At",
+          "type": "string"
+        },
+        "summary": {
+          "title": "Summary",
+          "type": "string"
+        },
+        "claim_ids": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Claim Ids",
+          "type": "array"
+        },
+        "feature_ids": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Feature Ids",
+          "type": "array"
+        },
+        "quote_ids": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Quote Ids",
+          "type": "array"
+        },
+        "estimate_id": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Estimate Id"
+        },
+        "decision_id": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Decision Id"
+        },
+        "order_ids": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Order Ids",
+          "type": "array"
+        },
+        "limitations": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Limitations",
+          "type": "array"
+        }
+      },
+      "required": [
+        "run_id",
+        "receipt_id",
+        "created_at",
+        "summary",
+        "claim_ids",
+        "feature_ids",
+        "quote_ids",
+        "estimate_id",
+        "decision_id"
+      ],
+      "title": "Receipt",
+      "type": "object"
+    },
+    "SourceStatus": {
+      "additionalProperties": false,
+      "properties": {
+        "stream_id": {
+          "title": "Stream Id",
+          "type": "string"
+        },
+        "evidence_mode": {
+          "enum": [
+            "live",
+            "recorded",
+            "synthetic_replay"
+          ],
+          "title": "Evidence Mode",
+          "type": "string"
+        },
+        "state": {
+          "enum": [
+            "ready",
+            "warming_up",
+            "degraded",
+            "offline",
+            "paused"
+          ],
+          "title": "State",
+          "type": "string"
+        },
+        "last_available_at": {
+          "anyOf": [
+            {
+              "format": "date-time",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Last Available At"
+        },
+        "note": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Note"
+        }
+      },
+      "required": [
+        "stream_id",
+        "evidence_mode",
+        "state"
+      ],
+      "title": "SourceStatus",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": {
+      "const": "1",
+      "default": "1",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "run_id": {
+      "minLength": 1,
+      "title": "Run Id",
+      "type": "string"
+    },
+    "sequence": {
+      "minimum": 0,
+      "title": "Sequence",
+      "type": "integer"
+    },
+    "generated_at": {
+      "format": "date-time",
+      "title": "Generated At",
+      "type": "string"
+    },
+    "type": {
+      "const": "snapshot",
+      "default": "snapshot",
+      "title": "Type",
+      "type": "string"
+    },
+    "payload": {
+      "$ref": "#/$defs/DashboardSnapshot"
+    }
+  },
+  "required": [
+    "run_id",
+    "sequence",
+    "generated_at",
+    "payload"
+  ],
+  "title": "StreamEnvelope",
+  "type": "object"
+}

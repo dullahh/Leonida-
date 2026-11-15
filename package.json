@@ -1,0 +1,12 @@
+{
+  "name": "leonida-contract-tooling",
+  "private": true,
+  "scripts": {
+    "generate": "node scripts/generate_types.cjs",
+    "typecheck": "tsc -p contracts/tsconfig.json"
+  },
+  "devDependencies": {
+    "json-schema-to-typescript": "^15.0.0",
+    "typescript": "^5.7.0"
+  }
+}

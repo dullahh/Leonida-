@@ -1,0 +1,7 @@
+# Current documented settings; verify against the user's installed Codex.
+# Model and reasoning inherit from the selected parent session.
+# No MCP servers are required for the default build.
+[agents]
+enabled = true
+max_concurrent_threads_per_session = 3
+

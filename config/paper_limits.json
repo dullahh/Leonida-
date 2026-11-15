@@ -1,0 +1,20 @@
+{
+  "version": "paper-v1",
+  "execution_mode": "paper",
+  "currency": "USD",
+  "bankroll": "10000.00",
+  "max_cost_fraction_per_order": "0.005",
+  "max_cost_fraction_per_game": "0.03",
+  "max_total_cost_fraction": "0.05",
+  "max_quote_age_seconds": 10,
+  "min_net_ev_per_contract": "0.03",
+  "entry_cooldown_seconds": 60,
+  "kelly_enabled": false,
+  "require_known_fees": true,
+  "require_executable_size": true,
+  "fill_allowed_quote_modes": [
+    "synthetic_replay"
+  ],
+  "mixed_evidence_live_quotes": "candidate_only_by_default",
+  "notes": "Illustrative paper limits. Live observation execution eligibility requires an explicit configured paper experiment, not an inference from the existence of public quotes."
+}

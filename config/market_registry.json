@@ -1,0 +1,35 @@
+{
+  "registry_version": "1",
+  "observed_on": "2026-11-14",
+  "note": "Seeds only. Refresh actual contract definitions/status/rules. No quote in this registry is an execution price.",
+  "api_base": "https://external-api.kalshi.com/trade-api/v2",
+  "events": [
+    "KXMC-GTA6",
+    "KXGAMEAWARDS-2026",
+    "KXGAMEAWARDS-BNAR",
+    "KXGAMEAWARDSBGD-2026",
+    "KXGTAONLINE-GTA6ONLINE"
+  ],
+  "aliases": {
+    "gta_score_above_95": "KXMC-GTA6-95",
+    "gta_score_above_96": "KXMC-GTA6-96",
+    "gta_score_above_97": "KXMC-GTA6-97",
+    "gta_goty_2026": "KXGAMEAWARDS-2026-GTA",
+    "gta_narrative_2026": "KXGAMEAWARDS-BNAR-GRA",
+    "gta_direction_2026": "KXGAMEAWARDSBGD-2026-GTA6",
+    "gta_online_before_2027": "KXGTAONLINE-GTA6ONLINE-27",
+    "gta_online_before_july_2027": "KXGTAONLINE-GTA6ONLINE-27B"
+  },
+  "default_aspect_relevance": {
+    "narrative": {
+      "gta_narrative_2026": 1,
+      "gta_score_above_96": 0.5,
+      "gta_goty_2026": 0.3
+    },
+    "technical_quality": {
+      "gta_score_above_96": 0.7,
+      "gta_goty_2026": 0.3
+    }
+  },
+  "routing_note": "Illustrative nonnegative relevance, not fitted effects or likelihood ratios. No automatic route to Online timing from single-player bugs."
+}

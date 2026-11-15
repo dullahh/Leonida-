@@ -1,0 +1,360 @@
+{
+  "before_version": "conservative-lexical-v2",
+  "after_version": "conservative-lexical-v3",
+  "cases": [
+    {
+      "text": "The writing in this game is excellent.",
+      "expected": {
+        "aspect": "narrative",
+        "sentiment": "positive",
+        "target": "game",
+        "supported": true
+      },
+      "before": {
+        "aspect": "narrative",
+        "sentiment": "positive",
+        "target": "game",
+        "supported": true,
+        "confidence": 0.6,
+        "abstention_reason": null
+      },
+      "after": {
+        "aspect": "narrative",
+        "target": "game",
+        "sentiment": 0.4,
+        "abstention_reason": null,
+        "confidence": 0.7,
+        "causal_attribution": "game_quality",
+        "relevance": 1.0,
+        "supporting_text_span": {
+          "text": "The writing in this game is excellent.",
+          "start": 0,
+          "end": 38
+        },
+        "classifier_name": "conservative-lexical",
+        "classifier_version": "conservative-lexical-v3"
+      },
+      "after_label": {
+        "aspect": "narrative",
+        "sentiment": "positive",
+        "target": "game",
+        "supported": true
+      }
+    },
+    {
+      "text": "Rockstar cooked with this mission.",
+      "expected": {
+        "aspect": "gameplay",
+        "sentiment": "positive",
+        "target": "game",
+        "supported": true
+      },
+      "before": {
+        "aspect": "overall",
+        "sentiment": "abstain",
+        "target": "ambiguous",
+        "supported": false,
+        "confidence": null,
+        "abstention_reason": "No explicit supported game aspect in the text."
+      },
+      "after": {
+        "aspect": "gameplay",
+        "target": "game",
+        "sentiment": 0.4,
+        "abstention_reason": null,
+        "confidence": 0.7,
+        "causal_attribution": "game_quality",
+        "relevance": 1.0,
+        "supporting_text_span": {
+          "text": "Rockstar cooked with this mission.",
+          "start": 0,
+          "end": 34
+        },
+        "classifier_name": "conservative-lexical",
+        "classifier_version": "conservative-lexical-v3"
+      },
+      "after_label": {
+        "aspect": "gameplay",
+        "sentiment": "positive",
+        "target": "game",
+        "supported": true
+      }
+    },
+    {
+      "text": "This game is broken; it crashed again.",
+      "expected": {
+        "aspect": "technical",
+        "sentiment": "negative",
+        "target": "game",
+        "supported": true
+      },
+      "before": {
+        "aspect": "technical",
+        "sentiment": "negative",
+        "target": "game",
+        "supported": true,
+        "confidence": 0.6,
+        "abstention_reason": null
+      },
+      "after": {
+        "aspect": "technical",
+        "target": "game",
+        "sentiment": -0.4,
+        "abstention_reason": null,
+        "confidence": 0.7,
+        "causal_attribution": "game_quality",
+        "relevance": 1.0,
+        "supporting_text_span": {
+          "text": "This game is broken; it crashed again.",
+          "start": 0,
+          "end": 38
+        },
+        "classifier_name": "conservative-lexical",
+        "classifier_version": "conservative-lexical-v3"
+      },
+      "after_label": {
+        "aspect": "technical",
+        "sentiment": "negative",
+        "target": "game",
+        "supported": true
+      }
+    },
+    {
+      "text": "The dialogue is carrying the whole game.",
+      "expected": {
+        "aspect": "narrative",
+        "sentiment": "positive",
+        "target": "game",
+        "supported": true
+      },
+      "before": {
+        "aspect": "narrative",
+        "sentiment": "abstain",
+        "target": "ambiguous",
+        "supported": false,
+        "confidence": null,
+        "abstention_reason": "Mixed or absent evaluative language; lexical heuristic abstains."
+      },
+      "after": {
+        "aspect": "narrative",
+        "target": "game",
+        "sentiment": 0.4,
+        "abstention_reason": null,
+        "confidence": 0.7,
+        "causal_attribution": "game_quality",
+        "relevance": 1.0,
+        "supporting_text_span": {
+          "text": "The dialogue is carrying the whole game.",
+          "start": 0,
+          "end": 40
+        },
+        "classifier_name": "conservative-lexical",
+        "classifier_version": "conservative-lexical-v3"
+      },
+      "after_label": {
+        "aspect": "narrative",
+        "sentiment": "positive",
+        "target": "game",
+        "supported": true
+      }
+    },
+    {
+      "text": "This mission design is awful.",
+      "expected": {
+        "aspect": "gameplay",
+        "sentiment": "negative",
+        "target": "game",
+        "supported": true
+      },
+      "before": {
+        "aspect": "overall",
+        "sentiment": "abstain",
+        "target": "ambiguous",
+        "supported": false,
+        "confidence": null,
+        "abstention_reason": "No explicit supported game aspect in the text."
+      },
+      "after": {
+        "aspect": "gameplay",
+        "target": "game",
+        "sentiment": -0.4,
+        "abstention_reason": null,
+        "confidence": 0.7,
+        "causal_attribution": "game_quality",
+        "relevance": 1.0,
+        "supporting_text_span": {
+          "text": "This mission design is awful.",
+          "start": 0,
+          "end": 29
+        },
+        "classifier_name": "conservative-lexical",
+        "classifier_version": "conservative-lexical-v3"
+      },
+      "after_label": {
+        "aspect": "gameplay",
+        "sentiment": "negative",
+        "target": "game",
+        "supported": true
+      }
+    },
+    {
+      "text": "I’m so bad at this game.",
+      "expected": {
+        "aspect": "gameplay",
+        "sentiment": "abstain",
+        "target": "player_skill",
+        "supported": false
+      },
+      "before": {
+        "aspect": "overall",
+        "sentiment": "negative",
+        "target": "game",
+        "supported": true,
+        "confidence": 0.6,
+        "abstention_reason": null
+      },
+      "after": {
+        "aspect": "gameplay",
+        "target": "player_skill",
+        "sentiment": null,
+        "abstention_reason": "Player skill statement does not evaluate game quality.",
+        "confidence": null,
+        "causal_attribution": "player_skill",
+        "relevance": 0.0,
+        "supporting_text_span": null,
+        "classifier_name": "conservative-lexical",
+        "classifier_version": "conservative-lexical-v3"
+      },
+      "after_label": {
+        "aspect": "gameplay",
+        "sentiment": "abstain",
+        "target": "player_skill",
+        "supported": false
+      }
+    },
+    {
+      "text": "No, it’s not a problem.",
+      "expected": {
+        "aspect": "overall",
+        "sentiment": "abstain",
+        "target": "ambiguous",
+        "supported": false
+      },
+      "before": {
+        "aspect": "overall",
+        "sentiment": "abstain",
+        "target": "ambiguous",
+        "supported": false,
+        "confidence": null,
+        "abstention_reason": "No explicit supported game aspect in the text."
+      },
+      "after": {
+        "aspect": "overall",
+        "target": "ambiguous",
+        "sentiment": null,
+        "abstention_reason": "No explicit supported game aspect in the text.",
+        "confidence": null,
+        "causal_attribution": "ambiguous",
+        "relevance": 0.0,
+        "supporting_text_span": null,
+        "classifier_name": "conservative-lexical",
+        "classifier_version": "conservative-lexical-v3"
+      },
+      "after_label": {
+        "aspect": "overall",
+        "sentiment": "abstain",
+        "target": "ambiguous",
+        "supported": false
+      }
+    },
+    {
+      "text": "Give me a phone.",
+      "expected": {
+        "aspect": "overall",
+        "sentiment": "abstain",
+        "target": "unrelated",
+        "supported": false
+      },
+      "before": {
+        "aspect": "overall",
+        "sentiment": "abstain",
+        "target": "ambiguous",
+        "supported": false,
+        "confidence": null,
+        "abstention_reason": "No explicit supported game aspect in the text."
+      },
+      "after": {
+        "aspect": "overall",
+        "target": "unrelated",
+        "sentiment": null,
+        "abstention_reason": "No explicit supported game aspect in the text.",
+        "confidence": null,
+        "causal_attribution": "unrelated",
+        "relevance": 0.0,
+        "supporting_text_span": null,
+        "classifier_name": "conservative-lexical",
+        "classifier_version": "conservative-lexical-v3"
+      },
+      "after_label": {
+        "aspect": "overall",
+        "sentiment": "abstain",
+        "target": "unrelated",
+        "supported": false
+      }
+    },
+    {
+      "text": "G4M3 wr1t1ng !!! ???",
+      "expected": {
+        "aspect": "overall",
+        "sentiment": "abstain",
+        "target": "ambiguous",
+        "supported": false
+      },
+      "before": {
+        "aspect": "overall",
+        "sentiment": "abstain",
+        "target": "ambiguous",
+        "supported": false,
+        "confidence": null,
+        "abstention_reason": "OCR confidence below 0.75; review sampled frame."
+      },
+      "after": {
+        "aspect": "overall",
+        "target": "ambiguous",
+        "sentiment": null,
+        "abstention_reason": "OCR confidence below 0.75; review sampled frame.",
+        "confidence": null,
+        "causal_attribution": "low_quality",
+        "relevance": 0.0,
+        "supporting_text_span": null,
+        "classifier_name": "conservative-lexical",
+        "classifier_version": "conservative-lexical-v3"
+      },
+      "after_label": {
+        "aspect": "overall",
+        "sentiment": "abstain",
+        "target": "ambiguous",
+        "supported": false
+      }
+    }
+  ],
+  "real_recordings": {
+    "t1": {
+      "observations": 105,
+      "cached_supported": 0,
+      "v3_supported": 0
+    },
+    "t2": {
+      "observations": 221,
+      "cached_supported": 0,
+      "v3_supported": 0
+    },
+    "t3": {
+      "observations": 303,
+      "cached_supported": 0,
+      "v3_supported": 0
+    }
+  },
+  "provider_calls_for_repeated_observation": 1,
+  "deterministic_cache": "CacheInfo(hits=10, misses=629, maxsize=16384, currsize=629)"
+}

@@ -1,0 +1,38 @@
+{
+  "additionalProperties": false,
+  "properties": {
+    "command_id": {
+      "maxLength": 240,
+      "minLength": 1,
+      "title": "Command Id",
+      "type": "string"
+    },
+    "scenario": {
+      "anyOf": [
+        {
+          "enum": [
+            "foundation",
+            "recordings",
+            "courtroom-praise",
+            "technical-failure-laughter",
+            "skill-rage-controls",
+            "mixed-missing-facecam",
+            "duplicate-reconnect",
+            "venue-outage-reset"
+          ],
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Scenario"
+    }
+  },
+  "required": [
+    "command_id"
+  ],
+  "title": "CreateRunRequest",
+  "type": "object"
+}

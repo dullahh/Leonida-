@@ -1,0 +1,29 @@
+{
+  "additionalProperties": false,
+  "properties": {
+    "command_id": {
+      "maxLength": 240,
+      "minLength": 1,
+      "title": "Command Id",
+      "type": "string"
+    },
+    "scenario": {
+      "enum": [
+        "courtroom-praise",
+        "technical-failure-laughter",
+        "skill-rage-controls",
+        "mixed-missing-facecam",
+        "duplicate-reconnect",
+        "venue-outage-reset"
+      ],
+      "title": "Scenario",
+      "type": "string"
+    }
+  },
+  "required": [
+    "command_id",
+    "scenario"
+  ],
+  "title": "ScenarioRequest",
+  "type": "object"
+}
